@@ -1,0 +1,9 @@
+Django
+psycopg2
+django-rest-framework
+django-reset-migrations
+pytest
+pytest-django
+django-safedelete
+django-cors-headers
+djangorestframework-simplejwt
