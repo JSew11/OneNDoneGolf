@@ -12,10 +12,12 @@ class UserManager(BaseUserManager):
     def _create_user(self, username, email, password, **extra_fields):
         """Create and save a User with the given email and password.
         """
-        if not username:
-            raise ValueError('No username provided - this field is required.')
         if not email:
             raise ValueError('No email provided - this field is required.')
+        if not username:
+            raise ValueError('No username provided - this field is required.')
+        if not password:
+            raise ValueError('No password provided - this field is required.')
         email = self.normalize_email(email)
         user: User = self.model(username=username, email=email, **extra_fields)
         user.set_password(password)
@@ -30,12 +32,6 @@ class UserManager(BaseUserManager):
         kwargs.setdefault('is_staff', False)
         kwargs.setdefault('is_superuser', False)
         return self._create_user(username=username, email=email, password=password, **kwargs)
-
-    def create_user(self, username, email, password=None, **extra_fields):
-        """Create and save a regular User with the given credentials."""
-        extra_fields.setdefault('is_staff', False)
-        extra_fields.setdefault('is_superuser', False)
-        return self._create_user(username, email, password, **extra_fields)
 
     def create_superuser(self, username, email, password, **extra_fields):
         """Create and save a SuperUser with the given credentials."""
@@ -55,8 +51,7 @@ class User(AbstractUser, SafeDeleteModel):
     """
     deleted_by_cascade = None # removes this default field from the db table
     _safedelete_policy = SOFT_DELETE_CASCADE
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name', 'password']
 
     objects = UserManager()
 
