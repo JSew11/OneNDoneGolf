@@ -1,0 +1,54 @@
+name: Django Tests CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  simple_build:
+    runs-on: ubuntu-latest
+    env:
+      DJANGO_SECRET_KEY: very-bad-prod-secret-key
+      PYTHON_VERSION: 3.11.5
+      MY_POSTGRES_USER: postgres
+      MY_POSTGRES_PASSWORD: postgres
+      MY_POSTGRES_DB: postgres
+    services:
+      postgres_main:
+        image: postgres
+        env:
+          POSTGRES_USER: ${{ env.MY_POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.MY_POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ env.MY_POSTGRES_DB }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready 
+          --health-interval 10s 
+          --health-timeout 5s 
+          --health-retries 5
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install Requirements
+        run: |
+            pip install -r app/requirements.txt
+      - name: Run Tests
+        env:
+          DEBUG: "0"
+          SECRET_KEY: ${{ env.DJANGO_SECRET_KEY }}
+          DB_USERNAME: ${{ env.MY_POSTGRES_USER }}
+          DB_PASSWORD: ${{ env.MY_POSTGRES_PASSWORD }}
+          DB_HOST: localhost
+          DB_DATABASE: ${{ env.MY_POSTGRES_DB }}
+          DB_PORT: 5432
+        run: |
+            cd app
+            python manage.py test
