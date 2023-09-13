@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.realpath('manage.py'))
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -73,17 +73,30 @@ WSGI_APPLICATION = 'one_n_done_api.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('POSTGRES_NAME'),
-        'USER': os.environ.get('POSTGRES_USER'),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        'HOST': 'db',
-        'PORT': 5432,
-    }
-}
+DB_USERNAME=os.environ.get("DB_USERNAME")
+DB_PASSWORD=os.environ.get("DB_PASSWORD")
+DB_HOST=os.environ.get('DB_HOST')
+DB_PORT=os.environ.get('DB_PORT')
+DB_DATABASE=os.environ.get("DB_DATABASE")
+DB_IS_AVAIL = all([
+        DB_USERNAME, 
+        DB_PASSWORD, 
+        DB_HOST,
+        DB_PORT,
+        DB_DATABASE
+])
 
+if DB_IS_AVAIL:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": DB_DATABASE,
+            "USER": DB_USERNAME,
+            "PASSWORD": DB_PASSWORD,
+            "HOST": DB_HOST,
+            "PORT": DB_PORT,
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
