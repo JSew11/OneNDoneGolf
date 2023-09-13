@@ -39,7 +39,7 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install Requirements
         run: |
-            pip install -r app/requirements.txt
+            pip install -r backend/requirements.txt
       - name: Run Tests
         env:
           DEBUG: "0"
@@ -50,5 +50,5 @@ jobs:
           DB_DATABASE: ${{ env.MY_POSTGRES_DB }}
           DB_PORT: 5432
         run: |
-            cd app
+            cd backend
             python manage.py test
