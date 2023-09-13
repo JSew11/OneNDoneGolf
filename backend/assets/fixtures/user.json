@@ -1,0 +1,23 @@
+[
+{
+    "model": "core.user",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$600000$TdA1pEjIn0SeBSHSq4cCvs$4WnHMZkS+L07bLzNTRWdOFeCaBDcusunFI7w00n2X/M=",
+        "last_login": null,
+        "is_superuser": true,
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2023-09-13T22:13:33.362Z",
+        "deleted": null,
+        "created": "2023-09-13T22:13:33.688Z",
+        "updated": "2023-09-13T22:13:33.688Z",
+        "username": "OneNDoneDev",
+        "email": "onendonedev@gmail.com",
+        "first_name": "OneNDone",
+        "last_name": "Developer",
+        "groups": [],
+        "user_permissions": []
+    }
+}
+]
