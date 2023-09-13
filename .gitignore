@@ -1,0 +1,13 @@
+# Custom gitignore for the OneNDoneGolf Project
+
+# environment variables
+.env
+
+# pytest cache
+.pytest_cache/
+
+# vscode settings
+.vscode/
+
+# PostgreSQL local Docker storage
+data/
