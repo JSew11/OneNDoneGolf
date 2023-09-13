@@ -24,7 +24,7 @@ class UserManager(BaseUserManager):
         user.save(using=self.db)
         return user
     
-    def create(self, **kwargs: Any) -> Any:
+    def create_user(self, **kwargs):
         """Create and save a regular User with the given credentials."""
         username = kwargs.pop('username', None)
         email = kwargs.pop('email', None)
@@ -53,7 +53,7 @@ class User(AbstractUser, SafeDeleteModel):
     _safedelete_policy = SOFT_DELETE_CASCADE
     REQUIRED_FIELDS = ['email', 'first_name', 'last_name', 'password']
 
-    objects = UserManager()
+    objects: UserManager = UserManager()
 
     class Meta:
         ordering = ['created']

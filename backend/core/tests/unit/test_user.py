@@ -25,7 +25,7 @@ class TestUserModel(TestCase):
 
         # test creating a user without an email
         with raises(ValueError, match=r'No email provided - this field is required.'):
-                    User.objects.create(
+                    User.objects.create_user(
                         username=test_username,
                         first_name=test_first_name,
                         last_name=test_last_name,
@@ -34,7 +34,7 @@ class TestUserModel(TestCase):
 
         # test creating a user without a username
         with raises(ValueError, match=r'No username provided - this field is required.'):
-                    User.objects.create(
+                    User.objects.create_user(
                         email=test_email,
                         first_name=test_first_name,
                         last_name=test_last_name,
@@ -43,7 +43,7 @@ class TestUserModel(TestCase):
 
         # test creating a user without a password
         with raises(ValueError, match=r'No password provided - this field is required.'):
-                    User.objects.create(
+                    User.objects.create_user(
                         username=test_username,
                         email=test_email,
                         first_name=test_first_name,
@@ -51,7 +51,7 @@ class TestUserModel(TestCase):
                     )
 
         # test creating a user without a first or last name
-        test_user_nameless: User = User.objects.create(
+        test_user_nameless: User = User.objects.create_user(
             username=test_username,
             email=test_email,
             password=test_password
@@ -62,7 +62,7 @@ class TestUserModel(TestCase):
         # test creating a duplicate user
         with atomic(): # need this to allow the db query to run so this is caught
             with raises(IntegrityError):
-                    User.objects.create(
+                    User.objects.create_user(
                         username=test_username,
                         email=test_email,
                         first_name=test_first_name,
@@ -71,7 +71,7 @@ class TestUserModel(TestCase):
                     )
 
         # test creating a user with all credentials
-        test_user_complete: User = User.objects.create(
+        test_user_complete: User = User.objects.create_user(
                     username='CompleteUser',
                     email='completeuser@email.com',
                     first_name='Complete',
