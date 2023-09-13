@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'golf_pickem.apps.GolfPickemConfig',
     'core.apps.CoreConfig',
     'django.contrib.admin',
     'django.contrib.auth',
