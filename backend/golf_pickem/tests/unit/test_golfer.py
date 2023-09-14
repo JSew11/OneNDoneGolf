@@ -1,5 +1,4 @@
 from django.test import TestCase
-from pytest import raises
 
 from golf_pickem.models.golfer import Golfer
 
