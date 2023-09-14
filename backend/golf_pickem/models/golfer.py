@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import RegexValidator
 from safedelete.models import SafeDeleteModel
 from safedelete import SOFT_DELETE_CASCADE
 
@@ -19,7 +20,7 @@ class Golfer(SafeDeleteModel):
     updated = models.DateTimeField(auto_now=True)
 
     # golfer info
-    first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
-    country = models.CharField(max_length=255)
-    playerId = models.IntegerField()
+    first_name = models.CharField(max_length=255, validators=[RegexValidator(r'^[a-zA-Z]+$')])
+    last_name = models.CharField(max_length=255, validators=[RegexValidator(r'^[a-zA-Z .]+$')])
+    country = models.CharField(max_length=255, validators=[RegexValidator(r'^[a-zA-Z .,]+$')])
+    player_id = models.PositiveIntegerField()
