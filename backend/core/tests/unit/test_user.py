@@ -14,7 +14,7 @@ class TestUserModel(TestCase):
         self.test_user: User = User.objects.get(username='OneNDoneDev')
         return super().setUp()
     
-    def test_create_user(self):
+    def test_create_user(self) -> None:
         """Tests for creating a normal system user.
         """
         test_username = 'OneNDonePlayer'
