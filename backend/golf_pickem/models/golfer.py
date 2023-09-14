@@ -4,7 +4,7 @@ from safedelete.models import SafeDeleteModel
 from safedelete import SOFT_DELETE_CASCADE
 
 class Golfer(SafeDeleteModel):
-    """Model for a golfer
+    """Model for a golfer.
     """
     deleted_by_cascade = None # removes this default field from the db table
     _safedelete_policy = SOFT_DELETE_CASCADE
