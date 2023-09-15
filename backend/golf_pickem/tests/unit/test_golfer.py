@@ -17,7 +17,7 @@ class TestGolferModel(TestCase):
         test_country = 'COUNTRY'
         test_player_id = 1
 
-        # test creating a golfer
+        # test creating a golfer with all fields
         test_golfer: Golfer = Golfer.objects.create(
             first_name=test_first_name,
             last_name=test_last_name,

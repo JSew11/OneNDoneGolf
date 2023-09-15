@@ -70,7 +70,7 @@ class TestUserModel(TestCase):
                         password=test_password
                     )
 
-        # test creating a user with all credentials
+        # test creating a user with all fields
         test_user_complete: User = User.objects.create_user(
                     username='CompleteUser',
                     email='completeuser@email.com',
