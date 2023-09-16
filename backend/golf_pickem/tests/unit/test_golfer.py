@@ -5,6 +5,7 @@ from golf_pickem.models.golfer import Golfer
 class TestGolferModel(TestCase):
     """Tests for the golfer model.
     """
+    fixtures = ['golfer']
 
     def setUp(self) -> None:
         return super().setUp()

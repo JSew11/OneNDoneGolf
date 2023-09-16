@@ -1,0 +1,28 @@
+[
+{
+    "model": "golf_pickem.tournamentgolfer",
+    "pk": 1,
+    "fields": {
+        "deleted": null,
+        "created": "2023-09-15T22:44:33.362Z",
+        "updated": "2023-09-15T22:44:33.362Z",
+        "place": 1,
+        "prize_money_won": 15,
+        "golfer": 1,
+        "tournament": 1
+    }
+},
+{
+    "model": "golf_pickem.tournamentgolfer",
+    "pk": 2,
+    "fields": {
+        "deleted": null,
+        "created": "2023-09-15T22:44:33.362Z",
+        "updated": "2023-09-15T22:44:33.362Z",
+        "place": 2,
+        "prize_money_won": 0,
+        "golfer": 2,
+        "tournament": 1
+    }
+}
+]

@@ -5,6 +5,7 @@ from golf_pickem.models.tournament import Tournament
 class TestTournamentModel(TestCase):
     """Tests for the tournament model.
     """
+    fixtures = ['tournament']
 
     def setUp(self) -> None:
         return super().setUp()

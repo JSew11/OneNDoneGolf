@@ -1,0 +1,16 @@
+[
+{
+    "model": "golf_pickem.tournament",
+    "pk": 1,
+    "fields": {
+        "deleted": null,
+        "created": "2023-09-15T22:44:33.362Z",
+        "updated": "2023-09-15T22:44:33.362Z",
+        "name": "Test Tournament",
+        "course": "Shady Links",
+        "location": "USA",
+        "purse": 15,
+        "year": 2023
+    }
+}
+]
