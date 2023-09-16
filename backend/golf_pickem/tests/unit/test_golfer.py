@@ -16,7 +16,7 @@ class TestGolferModel(TestCase):
         test_first_name = 'Test'
         test_last_name = 'Name'
         test_country = 'COUNTRY'
-        test_player_id = 1
+        test_player_id = 99
 
         # test creating a golfer with all fields
         test_golfer: Golfer = Golfer.objects.create(
