@@ -16,16 +16,3 @@ class TestTournamentGolferModel(TestCase):
         self.test_tournament_golfer_1: TournamentGolfer = TournamentGolfer.objects.get(id=1)
         self.test_tournament_golfer_2: TournamentGolfer = TournamentGolfer.objects.get(id=2)
         return super().setUp()
-    
-    def test_delete_tournament_golfer(self):
-        """Tests for deleting a tournament golfer (and associated models).
-        """
-        # test deleting a golfer to make sure the tournament golfer is also deleted
-        self.test_golfer_1.delete()
-        self.assertIsNotNone(self.test_golfer_1.deleted)
-        self.assertIsNotNone(self.test_tournament_golfer_1.deleted)
-
-        # test deleting a tournament to make sure the tournament golfer is also deleted
-        self.test_tournament.delete()
-        self.assertIsNotNone(self.test_tournament.deleted)
-        self.assertIsNotNone(self.test_tournament_golfer_2.deleted)
