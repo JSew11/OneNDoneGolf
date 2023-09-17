@@ -33,8 +33,7 @@ class PickManager(SafeDeleteManager):
     def _is_valid_pick(self, user: User, tournament_golfer: TournamentGolfer) -> bool:
         """Determines if a valid pick can be made with the given user and tournament golfer.
         """
-        tournament_year: int = tournament_golfer.tournament.year
-        previous_picks = user.pick_history_by_year(tournament_year)
+        previous_picks = user.pick_history_by_year(tournament_golfer.tournament.year)
         previously_picked_golfers = previous_picks.values_list('tournament_golfer__golfer', flat=True).all()
         tournaments_picked_in = previous_picks.values_list('tournament_golfer__tournament', flat=True).all()
         if tournament_golfer.golfer.id not in previously_picked_golfers and tournament_golfer.tournament.id not in tournaments_picked_in:
