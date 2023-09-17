@@ -14,18 +14,22 @@ class TestPickModel(TestCase):
 
     def setUp(self) -> None:
         self.test_user: User = User.objects.get(id=1)
-        self.test_tournament_golfer_1: TournamentGolfer = TournamentGolfer.objects.get(id=1)
         self.test_tournament_golfer_2: TournamentGolfer = TournamentGolfer.objects.get(id=2)
+        self.test_tournament_golfer_3: TournamentGolfer = TournamentGolfer.objects.get(id=3)
+        self.test_tournament_golfer_4: TournamentGolfer = TournamentGolfer.objects.get(id=4)
         return super().setUp()
 
     def test_is_valid_pick(self):
         """Test the _is_valid_pick method that controls the golfer selection logic.
         """
-        # test a case that should return false
-        self.assertFalse(Pick.objects._is_valid_pick(self.test_user, self.test_tournament_golfer_1))
+        # test the case where this user has already picked this golfer this year (should return false)
+        self.assertFalse(Pick.objects._is_valid_pick(self.test_user, self.test_tournament_golfer_3))
 
-        # test a case that should return true
-        self.assertTrue(Pick.objects._is_valid_pick(self.test_user, self.test_tournament_golfer_2))
+        # test the case where this user has already picked for this tournament (should return false)
+        self.assertFalse(Pick.objects._is_valid_pick(self.test_user, self.test_tournament_golfer_2))
+
+        # test the case where this user has made a valid pick
+        self.assertTrue(Pick.objects._is_valid_pick(self.test_user, self.test_tournament_golfer_4))
 
     def test_create_pick(self):
         """Test creating a pick.
