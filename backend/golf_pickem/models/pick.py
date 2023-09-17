@@ -36,9 +36,7 @@ class PickManager(SafeDeleteManager):
         previous_picks = user.pick_history_by_year(tournament_golfer.tournament.year)
         previously_picked_golfers = previous_picks.values_list('tournament_golfer__golfer', flat=True).all()
         tournaments_picked_in = previous_picks.values_list('tournament_golfer__tournament', flat=True).all()
-        if tournament_golfer.golfer.id not in previously_picked_golfers and tournament_golfer.tournament.id not in tournaments_picked_in:
-            return True
-        return False
+        return tournament_golfer.golfer.id not in previously_picked_golfers and tournament_golfer.tournament.id not in tournaments_picked_in
 
 class Pick(SafeDeleteModel):
     """Model for a user's pick,
