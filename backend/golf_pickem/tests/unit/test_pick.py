@@ -35,9 +35,9 @@ class TestPickModel(TestCase):
         """Test creating a pick.
         """
         # test making a valid pick
-        valid_pick: Pick = Pick.objects.create(self.test_user.id, self.test_tournament_golfer_2.id)
-        self.assertEqual(valid_pick.tournament_golfer.id, self.test_tournament_golfer_2.id)
+        valid_pick: Pick = Pick.objects.create(self.test_user.id, self.test_tournament_golfer_4.id)
+        self.assertEqual(valid_pick.tournament_golfer.id, self.test_tournament_golfer_4.id)
 
         # test making an invalid pick
         with raises(Exception, match=r'Invalid Pick'):
-            Pick.objects.create(self.test_user.id, self.test_tournament_golfer_1.id)
+            Pick.objects.create(self.test_user.id, self.test_tournament_golfer_2.id)
