@@ -6,25 +6,24 @@ from django.db.models import (
     CharField,
     PositiveIntegerField
 )
-from django.core.validators import RegexValidator
 from safedelete.models import SafeDeleteModel
 from safedelete import SOFT_DELETE_CASCADE
 
-class Golfer(SafeDeleteModel):
-    """Model for a golfer.
+class Tournament(SafeDeleteModel):
+    """Model for a tournament.
     """
     deleted_by_cascade = None # removes this default field from the db table
     _safedelete_policy = SOFT_DELETE_CASCADE
 
     class Meta:
         ordering = ['created']
-        verbose_name = 'Golfer'
-        verbose_name_plural = 'Golfers'
+        verbose_name = 'Tournament'
+        verbose_name_plural = 'Tournaments'
         constraints = [
             UniqueConstraint(
-                fields=['player_id'],
+                fields=['name', 'year'],
                 condition=Q(deleted__isnull=True),
-                name='unique_active_player_id'
+                name='unique_active_name_year'
             )
         ]
 
@@ -33,8 +32,9 @@ class Golfer(SafeDeleteModel):
     created = DateTimeField(auto_now_add=True)
     updated = DateTimeField(auto_now=True)
 
-    # golfer info
-    first_name = CharField(max_length=255, validators=[RegexValidator(r'^[a-zA-Z]+$')])
-    last_name = CharField(max_length=255, validators=[RegexValidator(r'^[a-zA-Z .]+$')])
-    country = CharField(max_length=255, validators=[RegexValidator(r'^[a-zA-Z .,]+$')])
-    player_id = PositiveIntegerField()
+    # tournament info
+    name = CharField(max_length=255)
+    course = CharField(max_length=255)
+    location = CharField(max_length=255)
+    purse = PositiveIntegerField()
+    year = PositiveIntegerField()

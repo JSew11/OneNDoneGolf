@@ -8,13 +8,13 @@ from core.models.user import User
 class TestUserModel(TestCase):
     """Tests for the user model.
     """
-    fixtures = ['user']
+    fixtures = ['user', 'tournament', 'golfer', 'tournament_golfer', 'pick']
 
     def setUp(self) -> None:
         self.test_user: User = User.objects.get(username='OneNDoneDev')
         return super().setUp()
     
-    def test_create_user(self):
+    def test_create_user(self) -> None:
         """Tests for creating a normal system user.
         """
         test_username = 'OneNDonePlayer'
@@ -70,7 +70,7 @@ class TestUserModel(TestCase):
                         password=test_password
                     )
 
-        # test creating a user with all credentials
+        # test creating a user with all fields
         test_user_complete: User = User.objects.create_user(
                     username='CompleteUser',
                     email='completeuser@email.com',
@@ -82,3 +82,12 @@ class TestUserModel(TestCase):
         self.assertEqual(test_user_complete.email, 'completeuser@email.com')
         self.assertEqual(test_user_complete.first_name, 'Complete')
         self.assertEqual(test_user_complete.last_name, 'User')
+
+    def test_pick_history_by_year(self):
+        """Test the pick_history by year method in the user model.
+        """
+        # test the method for a year with no history
+        self.assertEqual(len(self.test_user.pick_history_by_year(1)), 0)
+
+        # test the method for a year with known history
+        self.assertEqual(len(self.test_user.pick_history_by_year(2023)), 1)

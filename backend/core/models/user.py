@@ -1,7 +1,7 @@
-from typing import Any
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 from safedelete.models import SafeDeleteModel
+from safedelete.queryset import SafeDeleteQueryset
 from safedelete import SOFT_DELETE_CASCADE
 
 class UserManager(BaseUserManager):
@@ -70,3 +70,8 @@ class User(AbstractUser, SafeDeleteModel):
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
+
+    def pick_history_by_year(self, year: int) -> SafeDeleteQueryset:
+        """Get a user's pick history for a specific year.
+        """
+        return self.pick_history.filter(tournament_golfer__tournament__year=year).all()
