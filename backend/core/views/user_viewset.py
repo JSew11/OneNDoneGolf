@@ -29,7 +29,7 @@ class UserViewSet (ModelViewSet):
             status=status.HTTP_200_OK,
         )
 
-    def retrieve(self, request: Request, user_id: str, *args, **kwargs) -> Response:
+    def retrieve(self, request: Request, user_id: int, *args, **kwargs) -> Response:
         """Get the details of the user with the given user_id.
         """
         try:
@@ -52,7 +52,7 @@ class UserViewSet (ModelViewSet):
                 status=status.HTTP_404_NOT_FOUND,
             )
     
-    def partial_update(self, request: Request, user_id: str, *args, **kwargs) -> Response:
+    def partial_update(self, request: Request, user_id: int, *args, **kwargs) -> Response:
         """Edit the details of the user with the give user_id.
         """
         request_user: User = request.user
