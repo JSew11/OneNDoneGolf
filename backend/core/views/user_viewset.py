@@ -48,7 +48,9 @@ class UserViewSet (ModelViewSet):
             )
         except User.DoesNotExist:
             return Response(
-                data={'status': f'User with id \'{user_id}\' not found'},
+                data={
+                    'message': f'User with id \'{user_id}\' not found'
+                },
                 status=status.HTTP_404_NOT_FOUND,
             )
     
@@ -62,7 +64,7 @@ class UserViewSet (ModelViewSet):
                 if not request.data:
                     return Response(
                         data={
-                            'status':'no fields were given to update',
+                            'message':'no fields were given to update',
                         },
                         status=status.HTTP_400_BAD_REQUEST,
                     )
@@ -87,6 +89,8 @@ class UserViewSet (ModelViewSet):
             )
         except User.DoesNotExist:
             return Response(
-                data={'status': f'User with id \'{user_id}\' not found'},
+                data={
+                    'message': f'User with id \'{user_id}\' not found'
+                },
                 status=status.HTTP_404_NOT_FOUND,
             )
