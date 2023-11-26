@@ -26,5 +26,7 @@ services:
       - DB_HOST=${DB_HOST}
       - DB_PORT=${DB_PORT}
       - SECRET_KEY=${SECRET_KEY}
+      - GOLF_API_BASE_URL=${GOLF_DATA_API_BASE_URL}
+      - GOLF_API_KEY=${GOLF_DATA_API_KEY}
     depends_on:
       - db
