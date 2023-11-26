@@ -24,6 +24,9 @@ DB_PORT=5432
 SECRET_KEY=# this can be anything you want
 
 API_BASE_URL="http://localhost:8000/api" # development api url
+
+GOLF_DATA_API_BASE_URL="https://api.sportsdata.io/golf/v2" # sportsdataio golf api
+GOLF_DATA_API_KEY=# get this from lead devs when setting up
 ```
 
 ### Running the App

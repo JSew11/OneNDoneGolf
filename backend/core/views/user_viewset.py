@@ -29,7 +29,7 @@ class UserViewSet (ModelViewSet):
             status=status.HTTP_200_OK,
         )
 
-    def retrieve(self, request: Request, user_id: str, *args, **kwargs) -> Response:
+    def retrieve(self, request: Request, user_id: int, *args, **kwargs) -> Response:
         """Get the details of the user with the given user_id.
         """
         try:
@@ -48,11 +48,13 @@ class UserViewSet (ModelViewSet):
             )
         except User.DoesNotExist:
             return Response(
-                data={'status': f'User with id \'{user_id}\' not found'},
+                data={
+                    'message': f'User with id \'{user_id}\' not found'
+                },
                 status=status.HTTP_404_NOT_FOUND,
             )
     
-    def partial_update(self, request: Request, user_id: str, *args, **kwargs) -> Response:
+    def partial_update(self, request: Request, user_id: int, *args, **kwargs) -> Response:
         """Edit the details of the user with the give user_id.
         """
         request_user: User = request.user
@@ -62,7 +64,7 @@ class UserViewSet (ModelViewSet):
                 if not request.data:
                     return Response(
                         data={
-                            'status':'no fields were given to update',
+                            'message':'no fields were given to update',
                         },
                         status=status.HTTP_400_BAD_REQUEST,
                     )
@@ -87,6 +89,8 @@ class UserViewSet (ModelViewSet):
             )
         except User.DoesNotExist:
             return Response(
-                data={'status': f'User with id \'{user_id}\' not found'},
+                data={
+                    'message': f'User with id \'{user_id}\' not found'
+                },
                 status=status.HTTP_404_NOT_FOUND,
             )

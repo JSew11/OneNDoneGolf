@@ -14,4 +14,5 @@ urlpatterns = [
     path('login/refresh/', RefreshTokenView.as_view(), name='token_refresh'),
     path('register/', UserRegistrationViewSet.as_view(), name='register'),
     path('logout/', LogoutUserView.as_view(), name='logout'),
+    path('users/', include('core.urls.user_urls')),
 ]

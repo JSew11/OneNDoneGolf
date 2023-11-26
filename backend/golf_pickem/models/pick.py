@@ -60,4 +60,4 @@ class Pick(SafeDeleteModel):
 
     # related models
     user = ForeignKey(User, on_delete=CASCADE, related_name='pick_history')
-    tournament_golfer = ForeignKey(TournamentGolfer, on_delete=CASCADE, related_name='picked_by_history')
+    tournament_golfer = ForeignKey(TournamentGolfer, on_delete=CASCADE, related_name='picked_by')
