@@ -1,6 +1,6 @@
 from django.urls import path
 
-from ..views.user_viewset import UserListView, UserViewSet
+from ..views.user_views import UserListView, UserViewSet
 
 current_user_view = UserViewSet.as_view({
     'get': 'current_user',
