@@ -13,12 +13,17 @@ class TestPickApi(APITestCase):
     def setUp(self) -> None:
         self.client: APIClient = APIClient()
         self.test_user: User = User.objects.get(email='onendonedev@gmail.com')
-        self.client.force_authenticate(self.test_user)
         return super().setUp()
     
     def test_pick_list_endpoint(self):
         """Test the GET endpoint for getting a list of picks the API call.
         """
+        # test hitting the endpoint as an unauthorized user
+        response: Response = self.client.get(path='/api/golf-pickem/picks/')
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
+
+        self.client.force_authenticate(self.test_user)
+
         # test getting all picks for the user making the request
         response: Response = self.client.get(path='/api/golf-pickem/picks/')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
