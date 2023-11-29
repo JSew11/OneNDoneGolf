@@ -2,7 +2,7 @@ from datetime import datetime
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.request import Request
-from rest_framework import status, permissions
+from rest_framework import status
 
 from core.models.user import User
 from ..models.pick import Pick
@@ -31,3 +31,19 @@ class PickViewSet(ModelViewSet):
             data=serializer.data,
             status=status.HTTP_200_OK
         )
+    
+    def retrieve(self, request: Request, pick_id: int, *args, **kwargs) -> Response:
+        """Get an individual pick by its id.
+        """
+        try:
+            pick: Pick = Pick.objects.get(id=pick_id)
+            serializer: PickSerializer = self.serializer_class(pick)
+            return Response(
+                data=serializer.data,
+                status=status.HTTP_200_OK,
+            )
+        except Pick.DoesNotExist:
+            return Response(
+                data={'status': f'Pick with id \'{pick_id}\' not found'},
+                status=status.HTTP_404_NOT_FOUND, 
+            )

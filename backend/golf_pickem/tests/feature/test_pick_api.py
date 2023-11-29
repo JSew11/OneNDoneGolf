@@ -12,17 +12,18 @@ class TestPickApi(APITestCase):
 
     def setUp(self) -> None:
         self.client: APIClient = APIClient()
-        self.test_user: User = User.objects.get(email='onendonedev@gmail.com')
+        self.admin_user: User = User.objects.get(email='onendonedev@gmail.com')
+        self.test_pick: Pick = Pick.objects.get(id=1)
         return super().setUp()
     
     def test_pick_list_endpoint(self):
-        """Test the GET endpoint for getting a list of picks the API call.
+        """Test the GET endpoint for getting a list of picks.
         """
         # test hitting the endpoint as an unauthorized user
         response: Response = self.client.get(path='/api/golf-pickem/picks/')
         self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
 
-        self.client.force_authenticate(self.test_user)
+        self.client.force_authenticate(self.admin_user)
 
         # test getting all picks for the user making the request
         response: Response = self.client.get(path='/api/golf-pickem/picks/')
@@ -39,8 +40,22 @@ class TestPickApi(APITestCase):
 
         # test getting all picks made by a specific user
         filterData = {
-            'user': self.test_user.id
+            'user': self.admin_user.id
         }
         response: Response = self.client.get(path='/api/golf-pickem/picks/', data=filterData)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(1, len(response.data))
+
+    def test_retrieve_pick_endpoint(self):
+        """Test the GET endpoint for getting a specific pick by its id.
+        """
+        # test hitting the endpoint as an unauthorized user.
+        response: Response = self.client.get(path=f'/api/golf-pickem/picks/{self.test_pick.id}/')
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
+
+        self.client.force_authenticate(self.admin_user)
+
+        # test getting the test pick by its id
+        response: Response = self.client.get(path=f'/api/golf-pickem/picks/{self.test_pick.id}/')
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(self.test_pick.id, response.data['id'])
