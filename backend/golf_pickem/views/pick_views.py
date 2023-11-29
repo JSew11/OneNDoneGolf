@@ -15,6 +15,12 @@ class PickViewSet(ModelViewSet):
     serializer_class = PickSerializer
 
     def list(self, request: Request, *args, **kwargs) -> Response:
+        """Get a list of picks.
+
+        Filterable by:
+            - user (int id) => defaults to the user who made the request
+            - year (int)
+        """
         user: User = User.objects.get(id=request.data.get('user')) if request.data.get('user') else request.user
         if year := request.data.get('year'):
             data = user.pick_history_by_year(year=year)
