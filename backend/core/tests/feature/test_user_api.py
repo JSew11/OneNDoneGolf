@@ -36,6 +36,7 @@ class TestUserApi(APITestCase):
         """Test the GET endpoint for retrieving a user by its associated uuid.
         """
         self.client.force_authenticate(self.regular_user)
+
         # as the test user test accessing the test user with its uuid (should receive 200)
         response: Response = self.client.get(path=f'/api/users/{self.regular_user.id}/')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
@@ -46,6 +47,7 @@ class TestUserApi(APITestCase):
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
 
         self.client.force_authenticate(self.admin_user)
+        
         # as the admin user test accessing the admin user with its uuid (should receive 200)
         response: Response = self.client.get(path=f'/api/users/{self.admin_user.id}/')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
@@ -54,25 +56,24 @@ class TestUserApi(APITestCase):
     def test_partial_update_user_endpoint(self):
         """Test the PATCH endpoint for partially updating a user by its associated uuid.
         """
-        regular_user_updated_fields = {
-            'last_name': 'Usa'
-        }
-        admin_user_updated_fields = {
+        updated_fields = {
             'last_name': 'Usa'
         }
 
         self.client.force_authenticate(self.regular_user)
+
         # as the test user test updating the test user with its uuid (should receive 200)
-        response: Response = self.client.patch(path=f'/api/users/{self.regular_user.id}/', data=regular_user_updated_fields, format='json')
+        response: Response = self.client.patch(path=f'/api/users/{self.regular_user.id}/', data=updated_fields, format='json')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(regular_user_updated_fields['last_name'], response.data['last_name'])
+        self.assertEqual(updated_fields['last_name'], response.data['last_name'])
 
         # as the test user test updating the admin user with its uuid (should receive 403)
-        response: Response = self.client.patch(path=f'/api/users/{self.admin_user.id}/', data=admin_user_updated_fields, format='json')
+        response: Response = self.client.patch(path=f'/api/users/{self.admin_user.id}/', data=updated_fields, format='json')
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
 
         self.client.force_authenticate(self.admin_user)
-        # as the admin user test accessing the admin user with its uuid (should receive 200)
-        response: Response = self.client.get(path=f'/api/users/{self.regular_user.id}/', data=regular_user_updated_fields, format='json')
+
+        # as the admin user test updating the test user with its uuid (should receive 200)
+        response: Response = self.client.patch(path=f'/api/users/{self.regular_user.id}/', data=updated_fields, format='json')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(regular_user_updated_fields['last_name'], response.data['last_name'])
+        self.assertEqual(updated_fields['last_name'], response.data['last_name'])
