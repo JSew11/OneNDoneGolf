@@ -6,6 +6,7 @@ from rest_framework import status
 
 from core.models.user import User
 from ..models.pick import Pick
+from ..models.tournament_golfer import TournamentGolfer
 from ..serializers.pick_serializer import PickSerializer
 
 class PickViewSet(ModelViewSet):
@@ -31,6 +32,23 @@ class PickViewSet(ModelViewSet):
             data=serializer.data,
             status=status.HTTP_200_OK
         )
+    
+    def create(self, request: Request, *args, **kwargs) -> Response:
+        """Create a pick from the given tournament golfer and the user who made
+        the request.
+        """
+        try:
+            tournament_golfer: TournamentGolfer = TournamentGolfer.objects.get()
+            user: User = request.user
+            pick: Pick = Pick.objects.create(
+                user_id=user.id, 
+                tournament_golfer_id=tournament_golfer.id
+            )
+        except TournamentGolfer.DoesNotExist:
+            return Response(
+                data={'status': f'Tournament Golfer with id \'\' not found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
     
     def retrieve(self, request: Request, pick_id: int, *args, **kwargs) -> Response:
         """Get an individual pick by its id.

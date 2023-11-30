@@ -19,7 +19,7 @@ class PickManager(SafeDeleteManager):
     """
     _safedelete_visibility = DELETED_VISIBLE_BY_PK
 
-    def create(self, user_id: str, tournament_golfer_id: str, **kwargs: Any) -> Any:
+    def create(self, user_id: int, tournament_golfer_id: int, **kwargs: Any) -> Any:
         """Overwritten create method that enforces the rule that a golfer can only be picked once per year.
         """
         user: User = User.objects.get(id=user_id)
