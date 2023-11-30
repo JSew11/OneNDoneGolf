@@ -70,7 +70,6 @@ class TestPickApi(APITestCase):
         response: Response = self.client.post(path='/api/golf-pickem/picks/', data=data, format='json')
         self.assertEqual(status.HTTP_409_CONFLICT, response.status_code)
 
-
     def test_retrieve_pick_endpoint(self):
         """Test the GET endpoint for getting a specific pick by its id.
         """
