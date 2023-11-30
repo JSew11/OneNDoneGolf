@@ -4,6 +4,7 @@ from ..views.pick_views import PickViewSet
 
 pick_list_view = PickViewSet.as_view({
     'get': 'list',
+    'post': 'create',
 })
 
 pick_details_view = PickViewSet.as_view({

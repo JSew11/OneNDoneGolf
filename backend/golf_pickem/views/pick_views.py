@@ -38,16 +38,33 @@ class PickViewSet(ModelViewSet):
         the request.
         """
         try:
-            tournament_golfer: TournamentGolfer = TournamentGolfer.objects.get()
+            tournament_golfer: TournamentGolfer = TournamentGolfer.objects.get(id=request.data.get('tournament_golfer'))
             user: User = request.user
-            pick: Pick = Pick.objects.create(
-                user_id=user.id, 
-                tournament_golfer_id=tournament_golfer.id
-            )
+            data = {
+                'user': user.id,
+                'tournament_golfer': tournament_golfer.id
+            }
+            serializer: PickSerializer = self.serializer_class(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(
+                    data=serializer.data,
+                    status=status.HTTP_200_OK
+                )
+            else:
+                return Response(
+                    data=serializer.errors,
+                    status=status.HTTP_400_BAD_REQUEST
+                )
         except TournamentGolfer.DoesNotExist:
             return Response(
                 data={'status': f'Tournament Golfer with id \'\' not found'},
                 status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception:
+            return Response(
+                data={'status': 'Invalid Pick'},
+                status=status.HTTP_409_CONFLICT
             )
     
     def retrieve(self, request: Request, pick_id: int, *args, **kwargs) -> Response:
