@@ -71,7 +71,7 @@ class User(AbstractUser, SafeDeleteModel):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
 
-    def pick_history_by_year(self, year: int) -> SafeDeleteQueryset:
+    def pick_history_by_season(self, season_id: int) -> SafeDeleteQueryset:
         """Get a user's pick history for a specific year.
         """
-        return self.pick_history.filter(tournament_golfer__tournament__year=year).all()
+        # TODO - rewrite this to filter picks by season

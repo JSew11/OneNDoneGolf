@@ -1,35 +1,37 @@
+from django.core.exceptions import ValidationError
 from django.db.models import (
     UniqueConstraint,
     Q,
     BigAutoField,
     DateTimeField,
-    SmallIntegerField,
+    PositiveSmallIntegerField,
     PositiveIntegerField,
     ForeignKey,
-    CASCADE
+    CASCADE,
 )
 from safedelete.models import SafeDeleteModel
-from safedelete import SOFT_DELETE
+from safedelete import SOFT_DELETE_CASCADE
 
-from .golfer import Golfer
-from .tournament import Tournament
+from . import (
+    TournamentSeason,
+    GolferSeason
+)
 
 class TournamentGolfer(SafeDeleteModel):
-    """Model for a golfer participating in a tournament.
+    """Model for a golfer playing in a tournament (in a specific season).
     """
-
     deleted_by_cascade = None # removes this default field from the db table
-    _safedelete_policy = SOFT_DELETE
-
+    _safedelete_policy = SOFT_DELETE_CASCADE
+    
     class Meta:
         ordering = ['created']
-        verbose_name = 'Tournament Golfer'
-        verbose_name_plural = 'Tournament Golfers'
+        verbose_name = 'Tournament'
+        verbose_name_plural = 'Tournaments'
         constraints = [
             UniqueConstraint(
-                fields=['tournament', 'golfer'],
+                fields=['tournament_season', 'golfer_season'],
                 condition=Q(deleted__isnull=True),
-                name='unique_active_tournament_golfer'
+                name='unique_tournament_golfer'
             )
         ]
 
@@ -38,11 +40,18 @@ class TournamentGolfer(SafeDeleteModel):
     created = DateTimeField(auto_now_add=True)
     updated = DateTimeField(auto_now=True)
 
-    # tournament golfer info
-    place = SmallIntegerField()
-    prize_money_won = PositiveIntegerField()
+    # tournament_golfer info
+    position = PositiveSmallIntegerField(null=True)
+    prize_money = PositiveIntegerField(null=True)
 
     # related models
-    tournament = ForeignKey(Tournament, on_delete=CASCADE, related_name='golfers')
-    golfer = ForeignKey(Golfer, on_delete=CASCADE, related_name='tournaments')
-    
+    tournament_season = ForeignKey(TournamentSeason, on_delete=CASCADE, related_name='tournaments')
+    golfer_season = ForeignKey(GolferSeason, on_delete=CASCADE, related_name='field')
+
+    def clean(self) -> None:
+        """Checks to see that the tournament season and golfer season refer to 
+        the same season.
+        """
+        if self.tournament_season.season != self.golfer_season.season:
+            raise ValidationError('Seasons must be the same for TournamentSeason and GolferSeason')
+        return super().clean()
