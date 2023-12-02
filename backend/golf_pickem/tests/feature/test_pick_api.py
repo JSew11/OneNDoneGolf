@@ -40,11 +40,11 @@ class TestPickApi(APITestCase):
 
         # test getting all picks made by the user making the request (filtered by year)
         filterData = {
-            'year': 2023
+            'season_id': 1
         }
         response: Response = self.client.get(path='/api/golf-pickem/picks/', data=filterData)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(2, len(response.data))
+        self.assertEqual(0, len(response.data))
 
         # test getting all picks made by a specific user
         filterData = {

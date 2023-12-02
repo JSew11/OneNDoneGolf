@@ -5,7 +5,7 @@ from rest_framework.request import Request
 from rest_framework import status
 
 from core.models.user import User
-from ..models.pick import Pick
+from ..models import Season, Pick
 from ..serializers.pick_serializer import PickSerializer
 
 class PickViewSet(ModelViewSet):
@@ -22,8 +22,8 @@ class PickViewSet(ModelViewSet):
             - year (int)
         """
         user: User = User.objects.get(id=request.data.get('user')) if request.data.get('user') else request.user
-        if year := request.data.get('year'):
-            data = user.pick_history_by_season(year=year)
+        if season_id := request.query_params.get('season_id'):
+            data = user.pick_history_by_season(season_id=season_id)
         else:
             data = user.pick_history
         serializer: PickSerializer = self.serializer_class(data, many=True)
@@ -36,7 +36,8 @@ class PickViewSet(ModelViewSet):
         """Create a pick from the given tournament golfer and the user who made
         the request.
         """
-        # TODO - rewrite this
+        user: User = request.user
+
         return Response(
             data={'message': 'Endpoint in progress'},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR

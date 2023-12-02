@@ -96,5 +96,10 @@ class TestUserModel(TestCase):
     def test_pick_history_by_season(self):
         """Test the pick_history by season method in the user model.
         """
+        # test getting the pick history for a valid season id
         season_2_pick_history = self.test_user.pick_history_by_season(season_id=self.test_season.id)
         self.assertEqual(len(season_2_pick_history), 2)
+
+        # test getting the pick history for an invalid season id
+        invalid_season_pick_history = self.test_user.pick_history_by_season(season_id=100)
+        self.assertEqual(len(invalid_season_pick_history), 0)
