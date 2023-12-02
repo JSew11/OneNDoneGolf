@@ -1,11 +1,16 @@
-from datetime import datetime
+from django.db import IntegrityError
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework import status
 
 from core.models.user import User
-from ..models import Season, Pick
+from ..models import (
+    Season,
+    TournamentSeason,
+    GolferSeason,
+    Pick
+)
 from ..serializers.pick_serializer import PickSerializer
 
 class PickViewSet(ModelViewSet):
@@ -21,7 +26,7 @@ class PickViewSet(ModelViewSet):
             - user (int id) => defaults to the user who made the request
             - year (int)
         """
-        user: User = User.objects.get(id=request.data.get('user')) if request.data.get('user') else request.user
+        user: User = User.objects.get(id=request.query_params.get('user')) if request.query_params.get('user') else request.user
         if season_id := request.query_params.get('season_id'):
             data = user.pick_history_by_season(season_id=season_id)
         else:
@@ -36,13 +41,66 @@ class PickViewSet(ModelViewSet):
         """Create a pick from the given tournament golfer and the user who made
         the request.
         """
-        user: User = request.user
+        tournament_id = request.data.get('tournament_id')
+        golfer_id = request.data.get('golfer_id')
+        season_id = request.data.get('season_id')
+        # check for required fields
+        error_messages = []
+        if not tournament_id:
+            error_messages.append('Field \'tournament_id\' is required')
+        if not golfer_id:
+            error_messages.append('Field \'golfer_id\' is required')
+        if not season_id:
+            error_messages.append('Field \'season_id\' is required')
+        if len(error_messages) > 0:
+            return Response(
+                data={'errors': error_messages},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        # attempt to create the pick from the given data
+        try:
+            tournament_season: TournamentSeason = TournamentSeason.objects.get(tournament=tournament_id, season=season_id)
+            golfer_season: GolferSeason = GolferSeason.objects.get(golfer=golfer_id, season=season_id)
+            pick_data = {
+                'user': request.user.id,
+                'tournament_season': tournament_season.id,
+                'golfer_season': golfer_season.id
+            }
+            serializer: PickSerializer = self.serializer_class(data=pick_data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(
+                    data=serializer.data,
+                    status=status.HTTP_201_CREATED
+                )
+            else:
+                return Response(
+                    data=serializer.errors,
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        except TournamentSeason.DoesNotExist:
+            return Response(
+                data={'message': f'Tournament \'{tournament_id}\' not found in Season \'{season_id}\''},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        except GolferSeason.DoesNotExist:
+            return Response(
+                data={'message': f'Golfer \'{golfer_id}\' not found in Season \'{season_id}\''},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        except IntegrityError as error:
+            error_string = str(error)
+            if 'unique_user_tournament_season' in error_string:
+                return Response(
+                    data={'message': 'You have already picked in this tournament for this season'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            if 'unique_user_golfer_season' in error_string:
+                return Response(
+                    data={'message': 'You have already picked this golfer in this season'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
 
-        return Response(
-            data={'message': 'Endpoint in progress'},
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
-    
     def retrieve(self, request: Request, pick_id: int, *args, **kwargs) -> Response:
         """Get an individual pick by its id.
         """

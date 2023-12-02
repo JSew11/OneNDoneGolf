@@ -1,6 +1,5 @@
 from django.test import TestCase
 from django.db import IntegrityError
-from django.core.exceptions import ValidationError
 from pytest import raises
 
 from core.models.user import User

@@ -55,11 +55,62 @@ class TestPickApi(APITestCase):
         self.assertEqual(2, len(response.data))
 
     def test_create_pick_endpoint(self):
-        """Test the POST endpoint for creating a new pick using a given tournament
-        golfer.
+        """Test the POST endpoint for creating a new pick using a given tournament,
+        golfer, and season.
         """
-        # TODO - rewrite this once the endpoint is ready
-        assert False
+        # test hitting the endpoint as an unauthorized user
+        response: Response = self.client.post(path='/api/golf-pickem/picks/', data={})
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
+
+        self.client.force_authenticate(self.admin_user)
+
+        # test creating a pick without providiing the required fields
+        response: Response = self.client.post(path='/api/golf-pickem/picks/', data={})
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertIn('Field \'tournament_id\' is required', response.data['errors'])
+        self.assertIn('Field \'golfer_id\' is required', response.data['errors'])
+        self.assertIn('Field \'season_id\' is required', response.data['errors'])
+
+        # test creating a pick for an invalid tournament season
+        invalid_tournament_season_pick_data = {
+            'tournament_id': 100,
+            'golfer_id': 1,
+            'season_id': 2,
+        }
+        response: Response = self.client.post(path='/api/golf-pickem/picks/', data=invalid_tournament_season_pick_data)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertIn('Tournament', response.data['message'])
+        self.assertIn('Season', response.data['message'])
+
+        # test creating a pick for an invalid golfer season
+        invalid_golfer_season_pick_data = {
+            'tournament_id': 3,
+            'golfer_id': 100,
+            'season_id': 2,
+        }
+        response: Response = self.client.post(path='/api/golf-pickem/picks/', data=invalid_golfer_season_pick_data)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertIn('Golfer', response.data['message'])
+        self.assertIn('Season', response.data['message'])
+
+        # test creating a valid pick
+        valid_pick_data = {
+            'tournament_id': 3,
+            'golfer_id': 3,
+            'season_id': 2,
+        }
+        response: Response = self.client.post(path='/api/golf-pickem/picks/', data=valid_pick_data)
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
+
+        # test creating an invalid pick
+        invalid_pick_data = {
+            'tournament_id': 3,
+            'golfer_id': 2,
+            'season_id': 2,
+        }
+        response: Response = self.client.post(path='/api/golf-pickem/picks/', data=invalid_pick_data)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertEqual('You have already picked in this tournament for this season', response.data['message'])
 
     def test_retrieve_pick_endpoint(self):
         """Test the GET endpoint for getting a specific pick by its id.
