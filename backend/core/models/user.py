@@ -74,4 +74,7 @@ class User(AbstractUser, SafeDeleteModel):
     def pick_history_by_season(self, season_id: int) -> SafeDeleteQueryset:
         """Get a user's pick history for a specific year.
         """
-        # TODO - rewrite this to filter picks by season
+        return self.pick_history.filter(
+            tournament_season__season__id=season_id,
+            golfer_season__season__id=season_id
+        ).all()

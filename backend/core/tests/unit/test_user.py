@@ -20,7 +20,7 @@ class TestUserModel(TestCase):
     ]
 
     def setUp(self) -> None:
-        self.test_season: Season = Season.objects.get(id=1)
+        self.test_season: Season = Season.objects.get(id=2)
         self.test_user: User = User.objects.get(username='OneNDoneDev')
         return super().setUp()
     
@@ -96,5 +96,5 @@ class TestUserModel(TestCase):
     def test_pick_history_by_season(self):
         """Test the pick_history by season method in the user model.
         """
-        # TODO - rewrite this test
-        self.assertFalse(True)
+        season_2_pick_history = self.test_user.pick_history_by_season(season_id=self.test_season.id)
+        self.assertEqual(len(season_2_pick_history), 2)

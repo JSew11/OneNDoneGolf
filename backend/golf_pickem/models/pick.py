@@ -8,8 +8,7 @@ from django.db.models import (
     CASCADE,
 )
 from safedelete.models import SafeDeleteModel
-from safedelete.managers import SafeDeleteManager
-from safedelete import SOFT_DELETE, DELETED_VISIBLE_BY_PK
+from safedelete import SOFT_DELETE
 
 from core.models import User
 from . import (
@@ -20,7 +19,8 @@ from . import (
 class Pick(SafeDeleteModel):
     """Model for a user's pick.
 
-    A user can only pick a golfer once per year.
+    A user can only pick a golfer once per season.
+    A user can only make one pick per tournament per season.
     """
 
     deleted_by_cascade = None # removes this default field from the db table
@@ -52,11 +52,3 @@ class Pick(SafeDeleteModel):
     user = ForeignKey(User, on_delete=CASCADE, related_name='pick_history')
     tournament_season = ForeignKey(TournamentSeason, on_delete=CASCADE, related_name='picks')
     golfer_season = ForeignKey(GolferSeason, on_delete=CASCADE, related_name='picked_by_history')
-
-    def clean(self) -> None:
-        """Checks to see that the tournament season and golfer season refer to 
-        the same season.
-        """
-        if self.tournament_season.season != self.golfer_season.season:
-            raise ValidationError('Seasons must be the same for TournamentSeason and GolferSeason')
-        return super().clean()
