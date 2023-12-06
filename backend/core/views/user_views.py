@@ -55,7 +55,7 @@ class UserViewSet (ModelViewSet):
         )
     
     def partial_update(self, request: Request, user_id: int, *args, **kwargs) -> Response:
-        """Edit the details of the user with the give user_id.
+        """Edit the details of the user with the given user_id.
         """
         request_user: User = request.user
         if request_user.has_perm('core.change_user') or request_user.id == user_id:

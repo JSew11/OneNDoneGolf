@@ -123,3 +123,21 @@ class PickViewSet(ModelViewSet):
                 data={'status': f'Pick with id \'{pick_id}\' not found'},
                 status=status.HTTP_404_NOT_FOUND, 
             )
+
+    def partial_update(self, request: Request, pick_id: int, *args, **kwargs) -> Response:
+        """Update an individual pick by its id. Only allows a pick to be edited
+        by the owner of the pick.
+        """
+        if not request.data:
+            return Response(
+                data={'message': 'No fields were given to update'},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        try:
+            pick: Pick = Pick.objects.get(id=pick_id, user=request.user)
+            serializer: PickSerializer = self.serializer_class(pick)
+        except Pick.DoesNotExist:
+            return Response(
+                data={'status': f'Pick with id \'{pick_id}\' not found for the current user'},
+                status=status.HTTP_404_NOT_FOUND, 
+            )
