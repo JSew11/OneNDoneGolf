@@ -32,27 +32,27 @@ class UserViewSet (ModelViewSet):
     def retrieve(self, request: Request, user_id: int, *args, **kwargs) -> Response:
         """Get the details of the user with the given user_id.
         """
-        try:
-            user_to_return: User = User.objects.get(id=user_id)
-            if request.user.has_perm('core.view_user') or request.user.id == user_to_return.id:
+        if request.user.has_perm('core.view_user') or request.user.id == user_id:
+            try:
+                user_to_return: User = User.objects.get(id=user_id)
                 serializer = UserSerializer(user_to_return)
                 return Response(
                     data=serializer.data,
                     status=status.HTTP_200_OK
                 )
-            return Response(
-                data={
-                    'message': 'You do not have access to this object.',
-                },
-                status=status.HTTP_403_FORBIDDEN
-            )
-        except User.DoesNotExist:
-            return Response(
-                data={
-                    'message': f'User with id \'{user_id}\' not found'
-                },
-                status=status.HTTP_404_NOT_FOUND,
-            )
+            except User.DoesNotExist:
+                return Response(
+                    data={
+                        'message': f'User with id \'{user_id}\' not found'
+                    },
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+        return Response(
+            data={
+                'message': 'You do not have access to this object.',
+            },
+            status=status.HTTP_403_FORBIDDEN
+        )
     
     def partial_update(self, request: Request, user_id: int, *args, **kwargs) -> Response:
         """Edit the details of the user with the give user_id.
