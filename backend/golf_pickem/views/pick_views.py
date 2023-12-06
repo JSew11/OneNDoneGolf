@@ -26,20 +26,27 @@ class PickViewSet(ModelViewSet):
             - user (int id) => defaults to the user who made the request
             - year (int)
         """
-        user: User = User.objects.get(id=request.query_params.get('user')) if request.query_params.get('user') else request.user
-        if season_id := request.query_params.get('season_id'):
-            data = user.pick_history_by_season(season_id=season_id)
-        else:
-            data = user.pick_history
-        serializer: PickSerializer = self.serializer_class(data, many=True)
-        return Response(
-            data=serializer.data,
-            status=status.HTTP_200_OK
-        )
+        try:
+            user_id =  request.data.get('user')
+            user: User = User.objects.get(user_id) if user_id else request.user
+            if season_id := request.query_params.get('season_id'):
+                data = user.pick_history_by_season(season_id=season_id)
+            else:
+                data = user.pick_history
+            serializer: PickSerializer = self.serializer_class(data, many=True)
+            return Response(
+                data=serializer.data,
+                status=status.HTTP_200_OK
+            )
+        except User.DoesNotExist:
+            return Response(
+                data={'message': f'User with id \'{user_id}\' not found'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
     
     def create(self, request: Request, *args, **kwargs) -> Response:
         """Create a pick from the given tournament golfer and the user who made
-        the request.
+        the request. Users CANNOT make picks for any user other than themselves.
         """
         tournament_id = request.data.get('tournament_id')
         golfer_id = request.data.get('golfer_id')
