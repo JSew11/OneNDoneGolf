@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db import IntegrityError
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
@@ -126,18 +127,54 @@ class PickViewSet(ModelViewSet):
 
     def partial_update(self, request: Request, pick_id: int, *args, **kwargs) -> Response:
         """Update an individual pick by its id. Only allows a pick to be edited
-        by the owner of the pick.
+        by the owner of the pick. Pick updates can only change the golfer being
+        picked for the tournament.
         """
-        if not request.data:
+        golfer_id = request.data.get('golfer_id')
+        # check for required fields
+        error_messages = []
+        if not golfer_id:
+            error_messages.append('Field \'golfer_id\' is required')
+        if len(error_messages) > 0:
             return Response(
-                data={'message': 'No fields were given to update'},
-                status=status.HTTP_400_BAD_REQUEST,
+                data={'errors': error_messages},
+                status=status.HTTP_400_BAD_REQUEST
             )
+        # attempt to update the pick object's associated golfer season
         try:
             pick: Pick = Pick.objects.get(id=pick_id, user=request.user)
-            serializer: PickSerializer = self.serializer_class(pick)
+            season: Season = pick.tournament_season.season
+            golfer_season: GolferSeason = GolferSeason.objects.get(golfer=golfer_id, season=season.id)
+            updated_data = {
+                'golfer_season': golfer_season.id,
+                'updated': datetime.now()
+            }
+            serializer: PickSerializer = self.serializer_class(pick, data=updated_data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(
+                    data=serializer.data,
+                    status=status.HTTP_200_OK
+                )
+            else:
+                return Response(
+                    data=serializer.errors,
+                    status=status.HTTP_400_BAD_REQUEST
+                )
         except Pick.DoesNotExist:
             return Response(
                 data={'status': f'Pick with id \'{pick_id}\' not found for the current user'},
                 status=status.HTTP_404_NOT_FOUND, 
             )
+        except GolferSeason.DoesNotExist:
+            return Response(
+                data={'message': f'Golfer \'{golfer_id}\' not found in Season \'{season.id}\''},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        except IntegrityError as error:
+            error_string = str(error)
+            if 'unique_user_golfer_season' in error_string:
+                return Response(
+                    data={'message': 'You have already picked this golfer in this season'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )

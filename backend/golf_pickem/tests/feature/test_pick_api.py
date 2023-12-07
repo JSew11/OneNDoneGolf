@@ -3,7 +3,10 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from core.models.user import User
-from golf_pickem.models.pick import Pick
+from golf_pickem.models import (
+    Golfer,
+    Pick
+)
 
 class TestPickApi(APITestCase):
     """Tests for the pick api endpoints.
@@ -21,7 +24,9 @@ class TestPickApi(APITestCase):
     def setUp(self) -> None:
         self.client: APIClient = APIClient()
         self.admin_user: User = User.objects.get(email='onendonedev@gmail.com')
-        self.test_pick: Pick = Pick.objects.get(id=1)
+        self.test_pick_1: Pick = Pick.objects.get(id=1)
+        self.test_pick_2: Pick = Pick.objects.get(id=2)
+        self.test_golfer_3: Golfer = Golfer.objects.get(id=3)
         return super().setUp()
     
     def test_pick_list_endpoint(self):
@@ -64,7 +69,7 @@ class TestPickApi(APITestCase):
 
         self.client.force_authenticate(self.admin_user)
 
-        # test creating a pick without providiing the required fields
+        # test creating a pick without providing the required fields
         response: Response = self.client.post(path='/api/golf-pickem/picks/', data={})
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
         self.assertIn('Field \'tournament_id\' is required', response.data['errors'])
@@ -115,13 +120,52 @@ class TestPickApi(APITestCase):
     def test_retrieve_pick_endpoint(self):
         """Test the GET endpoint for getting a specific pick by its id.
         """
-        # test hitting the endpoint as an unauthorized user.
-        response: Response = self.client.get(path=f'/api/golf-pickem/picks/{self.test_pick.id}/')
+        # test hitting the endpoint as an unauthorized user
+        response: Response = self.client.get(path=f'/api/golf-pickem/picks/{self.test_pick_1.id}/')
         self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
 
         self.client.force_authenticate(self.admin_user)
 
         # test getting the test pick by its id
-        response: Response = self.client.get(path=f'/api/golf-pickem/picks/{self.test_pick.id}/')
+        response: Response = self.client.get(path=f'/api/golf-pickem/picks/{self.test_pick_1.id}/')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(self.test_pick.id, response.data['id'])
+        self.assertEqual(self.test_pick_1.id, response.data['id'])
+    
+    def test_partial_update_endpoint(self):
+        """Test the PATCH update for updating the golfer a pick is selecting.
+        """
+        # test hitting the endpoint as an unauthorized user
+        response: Response = self.client.patch(path=f'/api/golf-pickem/picks/{self.test_pick_2.id}/')
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
+
+        self.client.force_authenticate(self.admin_user)
+
+        # test updating a pick without providiing the required 'golfer_id' field
+        response: Response = self.client.patch(path=f'/api/golf-pickem/picks/{self.test_pick_2.id}/', data={})
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertIn('Field \'golfer_id\' is required', response.data['errors'])
+
+        # test updating a pick with an invalid golfer season
+        invalid_golfer_season_pick_data = {
+            'golfer_id': 100,
+        }
+        response: Response = self.client.patch(path=f'/api/golf-pickem/picks/{self.test_pick_2.id}/', data=invalid_golfer_season_pick_data)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertIn('Golfer', response.data['message'])
+        self.assertIn('Season', response.data['message'])
+
+        # test updating a pick with valid data
+        valid_update_data = {
+            'golfer_id': 3
+        }
+        response: Response = self.client.patch(path=f'/api/golf-pickem/picks/{self.test_pick_2.id}/', data=valid_update_data)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(6, response.data['golfer_season']) # make sure the correct golfer_season object is found
+
+        # test updating a pick with a golfer the user has already selected this season
+        previously_picked_golfer_data = {
+            'golfer_id': 1
+        }
+        response: Response = self.client.patch(path=f'/api/golf-pickem/picks/{self.test_pick_2.id}/', data=previously_picked_golfer_data)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertEqual('You have already picked this golfer in this season', response.data['message'])
