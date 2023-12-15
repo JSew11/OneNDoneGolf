@@ -10,6 +10,7 @@ pick_list_view = PickViewSet.as_view({
 pick_details_view = PickViewSet.as_view({
     'get': 'retrieve',
     'patch': 'partial_update',
+    'delete': 'destroy',
 })
 
 urlpatterns = [

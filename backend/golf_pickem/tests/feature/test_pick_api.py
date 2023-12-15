@@ -169,3 +169,20 @@ class TestPickApi(APITestCase):
         response: Response = self.client.patch(path=f'/api/golf-pickem/picks/{self.test_pick_2.id}/', data=previously_picked_golfer_data)
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
         self.assertEqual('You have already picked this golfer in this season', response.data['message'])
+    
+    def test_destroy_pick_endpoint(self):
+        """Test the DELETE endpoint for deleting a pick by its id.
+        """
+        # test hitting the endpoint as an unauthorized user
+        response: Response = self.client.delete(path=f'/api/golf-pickem/picks/{self.test_pick_2.id}/')
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
+
+        self.client.force_authenticate(self.admin_user)
+
+        # test deleting a pick that does not exist
+        response: Response = self.client.delete(path=f'/api/golf-pickem/picks/{999}/')
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+
+        # test deleting a pick that does exist
+        response: Response = self.client.delete(path=f'/api/golf-pickem/picks/{self.test_pick_2.id}/')
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)

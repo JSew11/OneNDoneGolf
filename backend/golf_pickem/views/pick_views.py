@@ -178,3 +178,19 @@ class PickViewSet(ModelViewSet):
                     data={'message': 'You have already picked this golfer in this season'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
+    
+    def destroy(self, request: Request, pick_id: int, *args, **kwargs) -> Response:
+        """Delete the player with the given id.
+        """
+        try:
+            pick: Pick = Pick.objects.get(id=pick_id)
+            pick.delete()
+            return Response(
+                data={'message': 'Pick deleted successfully'},
+                status=status.HTTP_204_NO_CONTENT
+            )
+        except Pick.DoesNotExist:
+            return Response(
+                data={'message': f'Pick with id \'{pick_id}\' not found for the current user'},
+                status=status.HTTP_404_NOT_FOUND
+            )
