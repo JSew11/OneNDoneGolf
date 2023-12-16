@@ -9,4 +9,4 @@ class GolferSerializer(ModelSerializer):
     class Meta:
         model = Golfer
         exclude = ['created', 'updated', 'deleted']
-        read_only_fields = ['id', 'player_id']
+        read_only_fields = ['id']
