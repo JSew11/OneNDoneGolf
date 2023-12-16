@@ -47,11 +47,3 @@ class TournamentGolfer(SafeDeleteModel):
     # related models
     tournament_season = ForeignKey(TournamentSeason, on_delete=CASCADE, related_name='tournaments')
     golfer_season = ForeignKey(GolferSeason, on_delete=CASCADE, related_name='field')
-
-    def clean(self) -> None:
-        """Checks to see that the tournament season and golfer season refer to 
-        the same season.
-        """
-        if self.tournament_season.season != self.golfer_season.season:
-            raise ValidationError('Seasons must be the same for TournamentSeason and GolferSeason')
-        return super().clean()
