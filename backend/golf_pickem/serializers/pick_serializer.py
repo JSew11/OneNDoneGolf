@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 
-from ..models.pick import Pick
+from ..models import Pick
 
 class PickSerializer(ModelSerializer):
     """Serializer for the pick model.

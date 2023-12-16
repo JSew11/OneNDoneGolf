@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 
-from ..models.golfer import Golfer
+from ..models import Golfer
 
 class GolferSerializer(ModelSerializer):
     """Serializer for the golfer model.
