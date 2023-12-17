@@ -27,7 +27,16 @@ class TestSeasonsApi(APITestCase):
     def test_seasons_list_endpoint(self):
         """Test the GET endpoint for getting the list of seasons.
         """
-        self.assertTrue(False)
+        # test hitting the endpoint as an unauthorized user
+        response: Response = self.client.get(path='/api/golf-pickem/seasons/')
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
+        
+        self.client.force_authenticate(self.admin_user)
+
+        # test getting the list of seasons
+        response: Response = self.client.get(path='/api/golf-pickem/seasons/')
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(2, len(response.data))
     
     def test_create_season_endpoint(self):
         """Test the POST endpoint for creating a season.
@@ -42,6 +51,7 @@ class TestSeasonsApi(APITestCase):
     def test_partial_update_season_endpoint(self):
         """Test the PATCH endpoint for updating a season by its id.
         """
+        self.assertTrue(False)
     
     def test_destroy_season_endpoint(self):
         """Test the DELETE endpoint for deleting a season by its id.

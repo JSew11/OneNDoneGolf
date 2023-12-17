@@ -15,5 +15,5 @@ season_details_views = SeasonViewSet.as_view({
 
 urlpatterns = [
     path('', season_list_views, name='seasons_list'),
-    path('<int: season_id>/', season_details_views, name='season_details'),
+    path('<int:season_id>/', season_details_views, name='season_details'),
 ]

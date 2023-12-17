@@ -1,6 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.request import Request
+from rest_framework import status
 
 from ..models import (
     Season
@@ -16,7 +17,12 @@ class SeasonViewSet(ModelViewSet):
     def list(self, request: Request, *args, **kwargs) -> Response:
         """Get a list of seasons.
         """
-        return super().list(request, *args, **kwargs)
+        seasons = Season.objects.all()
+        serializer: SeasonSerializer = self.serializer_class(seasons, many=True)
+        return Response(
+            data=serializer.data,
+            status=status.HTTP_200_OK,
+        )
     
     def create(self, request: Request, *args, **kwargs) -> Response:
         """Create a season using the given information.
