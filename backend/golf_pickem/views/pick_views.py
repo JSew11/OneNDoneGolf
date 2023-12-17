@@ -12,7 +12,7 @@ from ..models import (
     GolferSeason,
     Pick
 )
-from ..serializers.pick_serializer import PickSerializer
+from ..serializers import PickSerializer
 
 class PickViewSet(ModelViewSet):
     """Viewset for the pick model. Supports all functionality for making, 
@@ -25,7 +25,7 @@ class PickViewSet(ModelViewSet):
 
         Filterable by:
             - user (int id) => defaults to the user who made the request
-            - year (int)
+            - season (int id)
         """
         try:
             user_id =  request.data.get('user')
