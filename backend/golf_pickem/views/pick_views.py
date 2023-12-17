@@ -15,8 +15,8 @@ from ..models import (
 from ..serializers import PickSerializer
 
 class PickViewSet(ModelViewSet):
-    """Viewset for the pick model. Supports all functionality for making, 
-    editing, viewing and deleting picks.
+    """Viewset for the pick model. Supports all functionality for creating, 
+    viewing (individually and in a list), updating, and deleting picks.
     """
     serializer_class = PickSerializer
 
