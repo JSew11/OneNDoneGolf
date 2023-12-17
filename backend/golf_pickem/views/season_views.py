@@ -27,7 +27,17 @@ class SeasonViewSet(ModelViewSet):
     def create(self, request: Request, *args, **kwargs) -> Response:
         """Create a season using the given information.
         """
-        return super().create(request, *args, **kwargs)
+        serializer: SeasonSerializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                data=serializer.data,
+                status=status.HTTP_201_CREATED,
+            )
+        return Response(
+            data=serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST,
+        )
     
     def retrieve(self, request: Request, season_id: int, *args, **kwargs) -> Response:
         """Get the season with the given id.

@@ -41,7 +41,24 @@ class TestSeasonsApi(APITestCase):
     def test_create_season_endpoint(self):
         """Test the POST endpoint for creating a season.
         """
-        self.assertTrue(False)
+        # test hitting the endpoint as an unauthorized user
+        response: Response = self.client.post(path='/api/golf-pickem/seasons/')
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
+
+        self.client.force_authenticate(self.admin_user)
+        
+        # test creating a new season with no data
+        response: Response = self.client.post(path='/api/golf-pickem/seasons/', data={})
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+
+        # test creating a valid new season
+        new_season_data = {
+            'year': 2002,
+            'name': 'Test Golf League',
+            'alias': 'TGL'
+        }
+        response: Response = self.client.post(path='/api/golf-pickem/seasons/', data=new_season_data)
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
     
     def test_retrieve_season_endpoint(self):
         """Test the GET endpoint for retrieving a season by its id.
