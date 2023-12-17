@@ -131,7 +131,7 @@ class TestPickApi(APITestCase):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(self.test_pick_1.id, response.data['id'])
     
-    def test_partial_update_endpoint(self):
+    def test_partial_update_pick_endpoint(self):
         """Test the PATCH update for updating the golfer a pick is selecting.
         """
         # test hitting the endpoint as an unauthorized user
