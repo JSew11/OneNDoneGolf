@@ -22,6 +22,7 @@ class TestSeasonsApi(APITestCase):
     def setUp(self) -> None:
         self.client: APIClient = APIClient()
         self.admin_user: User = User.objects.get(email='onendonedev@gmail.com')
+        self.test_season: Season = Season.objects.get(id=1)
         return super().setUp()
     
     def test_seasons_list_endpoint(self):
@@ -63,7 +64,16 @@ class TestSeasonsApi(APITestCase):
     def test_retrieve_season_endpoint(self):
         """Test the GET endpoint for retrieving a season by its id.
         """
-        self.assertTrue(False)
+        # test hitting the endpoint as an unauthorized user
+        response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/')
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
+
+        self.client.force_authenticate(self.admin_user)
+
+        # test getting the test pick by its id
+        response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/')
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(self.test_season.id, response.data['id'])
     
     def test_partial_update_season_endpoint(self):
         """Test the PATCH endpoint for updating a season by its id.

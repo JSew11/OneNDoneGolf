@@ -42,7 +42,18 @@ class SeasonViewSet(ModelViewSet):
     def retrieve(self, request: Request, season_id: int, *args, **kwargs) -> Response:
         """Get the season with the given id.
         """
-        return super().retrieve(request *args, **kwargs)
+        try:
+            season: Season = Season.objects.get(id=season_id)
+            serializer: SeasonSerializer = self.serializer_class(season)
+            return Response(
+                data=serializer.data,
+                status=status.HTTP_200_OK,
+            )
+        except Season.DoesNotExist:
+            return Response(
+                data={'status': f'Pick with id \'{season_id}\' not found'},
+                status=status.HTTP_404_NOT_FOUND, 
+            )
     
     def partial_update(self, request: Request, season_id: int, *args, **kwargs) -> Response:
         """Update an individual season by its id.
