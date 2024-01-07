@@ -12,7 +12,9 @@ class SeasonViewSet(ModelViewSet):
     """Viewset for the season model. Supports all functionality for creating,
     viewing (individually and in a list), updating, and deleting seasons.
     """
+    queryset = Season.objects.all()
     serializer_class = SeasonSerializer
+    permission_classes = [permissions.DjangoModelPermissions]
 
     def list(self, request: Request, *args, **kwargs) -> Response:
         """Get a list of seasons.
