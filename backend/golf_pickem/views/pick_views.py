@@ -183,7 +183,7 @@ class PickViewSet(ModelViewSet):
         """Delete the player with the given id.
         """
         try:
-            pick: Pick = Pick.objects.get(id=pick_id)
+            pick: Pick = Pick.objects.get(id=pick_id, user=request.user)
             pick.delete()
             return Response(
                 data={'message': 'Pick deleted successfully'},
