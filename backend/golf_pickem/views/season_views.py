@@ -1,3 +1,4 @@
+from datetime import datetime
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.request import Request
@@ -58,9 +59,38 @@ class SeasonViewSet(ModelViewSet):
     def partial_update(self, request: Request, season_id: int, *args, **kwargs) -> Response:
         """Update an individual season by its id.
         """
-        return super().partial_update(request, *args, **kwargs)
+        try:
+            season: Season = Season.objects.get(id=season_id)
+            serializer: SeasonSerializer = self.serializer_class(season, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(
+                    data=serializer.data,
+                    status=status.HTTP_200_OK,
+                )
+            else:
+                return Response(
+                    data=serializer.errors,
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        except Season.DoesNotExist:
+            return Response(
+                data={'status': f'Pick with id \'{season_id}\' not found'},
+                status=status.HTTP_404_NOT_FOUND, 
+            )
     
     def destroy(self, request: Request, season_id: int, *args, **kwargs) -> Response:
         """Delete the season with the given id.
         """
-        return super().destroy(request, *args, **kwargs)
+        try:
+            season: Season = Season.objects.get(id=season_id)
+            season.delete()
+            return Response(
+                data={'message': 'Season deleted successfully'},
+                status=status.HTTP_204_NO_CONTENT
+            )
+        except Season.DoesNotExist:
+            return Response(
+                data={'status': f'Pick with id \'{season_id}\' not found'},
+                status=status.HTTP_404_NOT_FOUND, 
+            )
