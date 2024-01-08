@@ -4,9 +4,13 @@ from rest_framework.request import Request
 from rest_framework import status, permissions
 
 from ..models import (
-    Season
+    Season,
+    GolferSeason
 )
-from ..serializers import SeasonSerializer
+from ..serializers import (
+    SeasonSerializer,
+    GolferSeasonSerialier
+)
 
 class SeasonViewSet(ModelViewSet):
     """Viewset for the season model. Supports all functionality for creating,
@@ -53,7 +57,7 @@ class SeasonViewSet(ModelViewSet):
             )
         except Season.DoesNotExist:
             return Response(
-                data={'status': f'Pick with id \'{season_id}\' not found'},
+                data={'status': f'Season with id \'{season_id}\' not found'},
                 status=status.HTTP_404_NOT_FOUND, 
             )
     
@@ -76,7 +80,7 @@ class SeasonViewSet(ModelViewSet):
                 )
         except Season.DoesNotExist:
             return Response(
-                data={'status': f'Pick with id \'{season_id}\' not found'},
+                data={'status': f'Season with id \'{season_id}\' not found'},
                 status=status.HTTP_404_NOT_FOUND, 
             )
     
@@ -92,6 +96,47 @@ class SeasonViewSet(ModelViewSet):
             )
         except Season.DoesNotExist:
             return Response(
-                data={'status': f'Pick with id \'{season_id}\' not found'},
+                data={'status': f'Season with id \'{season_id}\' not found'},
+                status=status.HTTP_404_NOT_FOUND, 
+            )
+
+class SeasonGolfersViewset(ModelViewSet):
+    """Viewset for the golfers participating in a season. Supports viewing either
+    as a list or individually.
+    """
+    queryset = GolferSeason.objects.all()
+    serializer_class = GolferSeasonSerialier
+    permission_classes = [permissions.DjangoModelPermissions]
+
+    def list(self, request: Request, season_id: int, *args, **kwargs) -> Response:
+        """List the golfers who participated in the season with the given id.
+        """
+        try:
+            season: Season = Season.objects.get(id=season_id)
+            serializer: GolferSeasonSerialier = self.serializer_class(season.golfers, many=True)
+            return Response(
+                data=serializer.data,
+                status=status.HTTP_200_OK,
+            )
+        except Season.DoesNotExist:
+            return Response(
+                data={'status': f'Season with id \'{season_id}\' not found'},
+                status=status.HTTP_404_NOT_FOUND, 
+            )
+    
+    def retrieve(self, request: Request, season_id: int, golfer_id: int, *args, **kwargs) -> Response:
+        """Get an individual golfer with the given id who participated in the season
+        with the given id.
+        """
+        try:
+            golfer_season = GolferSeason.objects.get(golfer=golfer_id, season=season_id)
+            serializer: GolferSeasonSerialier = self.serializer_class(golfer_season)
+            return Response(
+                data=serializer.data,
+                status=status.HTTP_200_OK
+            )
+        except GolferSeason.DoesNotExist:
+            return Response(
+                data={'status': f'Golfer with id \'{golfer_id}\' not found as a participant of Season with id \'{season_id}\''},
                 status=status.HTTP_404_NOT_FOUND, 
             )

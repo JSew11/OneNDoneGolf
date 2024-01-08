@@ -4,19 +4,16 @@ from rest_framework import status
 
 from core.models import User
 from golf_pickem.models import (
-    Season
+    Season,
+    Golfer,
 )
 
-class TestSeasonsApi(APITestCase):
-    """Tests for the seasons api endpoints.
+class TestSeasonViewSet(APITestCase):
+    """Tests for the season viewset endpoints.
     """
     fixtures = [
         'user',
         'season',
-        'tournament',
-        'tournament_season',
-        'golfer',
-        'golfer_season',
     ]
 
     def setUp(self) -> None:
@@ -121,3 +118,51 @@ class TestSeasonsApi(APITestCase):
         # test deleting a pick that does exist
         response: Response = self.client.delete(path=f'/api/golf-pickem/seasons/{self.test_season.id}/')
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
+
+class TestSeasonGolfersViewSet(APITestCase):
+    """Tests for the season golfers viewset endpoints.
+    """
+    fixtures = [
+        'user',
+        'season',
+        'golfer',
+        'golfer_season'
+    ]
+
+    def setUp(self) -> None:
+        self.client: APIClient = APIClient()
+        self.admin_user: User = User.objects.get(email='onendonedev@gmail.com')
+        self.test_season: Season = Season.objects.get(id=1)
+        self.test_golfer: Golfer = Golfer.objects.get(id=1)
+        return super().setUp()
+    
+    def test_season_golfers_list_endpoint(self):
+        """Test the GET endpoint for getting the list of golfers participating in
+        a given season.
+        """
+        # test hitting the endpoint as an unauthorized user
+        response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/golfers/')
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
+        
+        self.client.force_authenticate(self.admin_user)
+
+        # test getting the list of season golfers
+        response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/golfers/')
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(3, len(response.data))
+    
+    def test_retrieve_season_golfer_endpoint(self):
+        """Test the GET endpoint for retrieving an individual golfer participating 
+        in a given season.
+        """
+        # test hitting the endpoint as an unauthorized user
+        response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/golfers/{self.test_golfer.id}/')
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
+        
+        self.client.force_authenticate(self.admin_user)
+
+        # test getting the season golfer by the season id and golfer id
+        response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/golfers/{self.test_golfer.id}/')
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(self.test_season.id, response.data['season'])
+        self.assertEqual(self.test_golfer.id, response.data['golfer'])
