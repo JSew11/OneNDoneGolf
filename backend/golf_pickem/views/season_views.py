@@ -5,11 +5,13 @@ from rest_framework import status, permissions
 
 from ..models import (
     Season,
-    GolferSeason
+    GolferSeason,
+    TournamentSeason,
 )
 from ..serializers import (
     SeasonSerializer,
-    GolferSeasonSerialier
+    GolferSeasonSerialier,
+    TournamentSeasonSerializer,
 )
 
 class SeasonViewSet(ModelViewSet):
@@ -138,5 +140,46 @@ class SeasonGolfersViewset(ModelViewSet):
         except GolferSeason.DoesNotExist:
             return Response(
                 data={'status': f'Golfer with id \'{golfer_id}\' not found as a participant of Season with id \'{season_id}\''},
+                status=status.HTTP_404_NOT_FOUND, 
+            )
+
+class SeasonTournamentsViewSet(ModelViewSet):
+    """Viewset for the tournaments in a season. Supports viewing either as a list
+    or individually.
+    """
+    queryset = TournamentSeason.objects.all()
+    serializer_class = TournamentSeasonSerializer
+    permission_classes = [permissions.DjangoModelPermissions]
+
+    def list(self, request: Request, season_id: int, *args, **kwargs) -> Response:
+        """List the tournaments that were a part of the season with the given id.
+        """
+        try:
+            season: Season = Season.objects.get(id=season_id)
+            serializer: TournamentSeasonSerializer = self.serializer_class(season.schedule, many=True)
+            return Response(
+                data=serializer.data,
+                status=status.HTTP_200_OK,
+            )
+        except Season.DoesNotExist:
+            return Response(
+                data={'status': f'Season with id \'{season_id}\' not found'},
+                status=status.HTTP_404_NOT_FOUND, 
+            )
+    
+    def retrieve(self, request: Request, season_id: int, tournament_id: int, *args, **kwargs) -> Response:
+        """Get an individual tournament with the given id who participated in the
+        season with the given id.
+        """
+        try:
+            tournament_season = TournamentSeason.objects.get(tournament=tournament_id, season=season_id)
+            serializer: TournamentSeasonSerializer = self.serializer_class(tournament_season)
+            return Response(
+                data=serializer.data,
+                status=status.HTTP_200_OK
+            )
+        except TournamentSeason.DoesNotExist:
+            return Response(
+                data={'status': f'Tournament with id \'{tournament_id}\' not found for Season with id \'{season_id}\''},
                 status=status.HTTP_404_NOT_FOUND, 
             )
