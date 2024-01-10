@@ -7,11 +7,13 @@ from ..models import (
     Season,
     GolferSeason,
     TournamentSeason,
+    TournamentGolfer,
 )
 from ..serializers import (
     SeasonSerializer,
     GolferSeasonSerialier,
     TournamentSeasonSerializer,
+    TournamentGolferSerializer,
 )
 
 class SeasonViewSet(ModelViewSet):
@@ -182,4 +184,29 @@ class SeasonTournamentsViewSet(ModelViewSet):
             return Response(
                 data={'status': f'Tournament with id \'{tournament_id}\' not found for Season with id \'{season_id}\''},
                 status=status.HTTP_404_NOT_FOUND, 
+            )
+
+class SeasonTournamentGolferViewSet(ModelViewSet):
+    """Viewset for the golfers who participate in specific tournaments throughout
+    a season. Supports viewing as either a list or individually.
+    """
+    queryset = TournamentGolfer.objects.all()
+    serializer_class = TournamentGolferSerializer
+    permission_classes = [permissions.DjangoModelPermissions]
+
+    def list(self, request: Request, season_id: int, tournament_id: int, *args, **kwargs) -> Response:
+        """List the golfers who participated in the tournament with the given id
+        during the season with the given id.
+        """
+        try:
+            tournament_season: TournamentSeason = TournamentSeason.objects.get(season=season_id, tournament=tournament_id)
+            serialzier: TournamentGolferSerializer = self.serializer_class(tournament_season)
+            return Response(
+                data=serialzier.data,
+                status=status.HTTP_200_OK
+            )
+        except TournamentSeason.DoesNotExist:
+            return Response(
+                data={'status': f'Tournament with id \'{tournament_id}\' not found for Season with the id \'{season_id}\''},
+                status=status.HTTP_404_NOT_FOUND
             )
