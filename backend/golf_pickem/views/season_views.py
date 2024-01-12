@@ -200,7 +200,7 @@ class SeasonTournamentGolferViewSet(ModelViewSet):
         """
         try:
             tournament_season: TournamentSeason = TournamentSeason.objects.get(season=season_id, tournament=tournament_id)
-            serialzier: TournamentGolferSerializer = self.serializer_class(tournament_season)
+            serialzier: TournamentGolferSerializer = self.serializer_class(tournament_season.field)
             return Response(
                 data=serialzier.data,
                 status=status.HTTP_200_OK
@@ -208,5 +208,34 @@ class SeasonTournamentGolferViewSet(ModelViewSet):
         except TournamentSeason.DoesNotExist:
             return Response(
                 data={'status': f'Tournament with id \'{tournament_id}\' not found for Season with the id \'{season_id}\''},
+                status=status.HTTP_404_NOT_FOUND
+            )
+    
+    def retrieve(self, request: Request, season_id: int, tournament_id: int, golfer_id: int, *args, **kwargs):
+        """Get an individual golfer with the given id who participated in the
+        tournament with the given id during the season with the given id.
+        """
+        try:
+            tournament_season: TournamentSeason = TournamentSeason.objects.get(season=season_id, tournament=tournament_id)
+            golfer_season: GolferSeason = GolferSeason.objects.get(season=season_id, golfer=golfer_id)
+            tournament_golfer: TournamentGolfer = TournamentGolfer.objects.get(tournament_season=tournament_season, golfer_season=golfer_season)
+            serializer: TournamentGolferSerializer = self.serializer_class(tournament_golfer)
+            return Response(
+                data=serializer.data,
+                status=status.HTTP_200_OK
+            )
+        except TournamentSeason.DoesNotExist:
+            return Response(
+                data={'status': f'Tournament with id \'{tournament_id}\' not found for Season with the id \'{season_id}\''},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except GolferSeason.DoesNotExist:
+            return Response(
+                data={'status': f'Golfer with id \'{golfer_id}\' not found as a participant of Season with id \'{season_id}\''},
+                status=status.HTTP_404_NOT_FOUND, 
+            )
+        except TournamentGolfer.DoesNotExist:
+            return Response(
+                data={'status': f'Golfer with id \'{golfer_id}\' did not participate in the Tournament with id \'{tournament_id}\' during the Season with id\'{season_id}\''},
                 status=status.HTTP_404_NOT_FOUND
             )
