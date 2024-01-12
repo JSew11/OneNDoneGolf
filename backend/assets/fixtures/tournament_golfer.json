@@ -4,12 +4,12 @@
     "pk": 1,
     "fields": {
         "deleted": null,
-        "created": "2023-09-15T22:44:33.362Z",
-        "updated": "2023-09-15T22:44:33.362Z",
-        "place": 1,
-        "prize_money_won": 15,
-        "golfer": 1,
-        "tournament": 1
+        "created": "2023-12-01T19:13:30.208Z",
+        "updated": "2023-12-01T19:13:30.208Z",
+        "position": null,
+        "prize_money": null,
+        "tournament_season": 1,
+        "golfer_season": 1
     }
 },
 {
@@ -17,26 +17,25 @@
     "pk": 2,
     "fields": {
         "deleted": null,
-        "created": "2023-09-15T22:44:33.362Z",
-        "updated": "2023-09-15T22:44:33.362Z",
-        "place": 2,
-        "prize_money_won": 0,
-        "golfer": 2,
-        "tournament": 1
+        "created": "2023-12-01T19:14:02.844Z",
+        "updated": "2023-12-01T19:14:02.844Z",
+        "position": null,
+        "prize_money": null,
+        "tournament_season": 3,
+        "golfer_season": 1
     }
 },
-
 {
     "model": "golf_pickem.tournamentgolfer",
     "pk": 3,
     "fields": {
         "deleted": null,
-        "created": "2023-09-15T22:44:33.362Z",
-        "updated": "2023-09-15T22:44:33.362Z",
-        "place": 1,
-        "prize_money_won": 15000,
-        "golfer": 1,
-        "tournament": 2
+        "created": "2023-12-01T19:14:06.126Z",
+        "updated": "2023-12-01T19:14:06.126Z",
+        "position": null,
+        "prize_money": null,
+        "tournament_season": 4,
+        "golfer_season": 1
     }
 },
 {
@@ -44,12 +43,194 @@
     "pk": 4,
     "fields": {
         "deleted": null,
-        "created": "2023-09-15T22:44:33.362Z",
-        "updated": "2023-09-15T22:44:33.362Z",
-        "place": 2,
-        "prize_money_won": 5000,
-        "golfer": 2,
-        "tournament": 2
+        "created": "2023-12-01T19:14:18.561Z",
+        "updated": "2023-12-01T19:14:18.561Z",
+        "position": null,
+        "prize_money": null,
+        "tournament_season": 1,
+        "golfer_season": 2
+    }
+},
+{
+    "model": "golf_pickem.tournamentgolfer",
+    "pk": 5,
+    "fields": {
+        "deleted": null,
+        "created": "2023-12-01T19:14:21.298Z",
+        "updated": "2023-12-01T19:14:21.298Z",
+        "position": null,
+        "prize_money": null,
+        "tournament_season": 3,
+        "golfer_season": 2
+    }
+},
+{
+    "model": "golf_pickem.tournamentgolfer",
+    "pk": 6,
+    "fields": {
+        "deleted": null,
+        "created": "2023-12-01T19:14:23.100Z",
+        "updated": "2023-12-01T19:14:23.100Z",
+        "position": null,
+        "prize_money": null,
+        "tournament_season": 4,
+        "golfer_season": 2
+    }
+},
+{
+    "model": "golf_pickem.tournamentgolfer",
+    "pk": 7,
+    "fields": {
+        "deleted": null,
+        "created": "2023-12-01T19:14:29.210Z",
+        "updated": "2023-12-01T19:14:29.210Z",
+        "position": null,
+        "prize_money": null,
+        "tournament_season": 1,
+        "golfer_season": 3
+    }
+},
+{
+    "model": "golf_pickem.tournamentgolfer",
+    "pk": 8,
+    "fields": {
+        "deleted": null,
+        "created": "2023-12-01T19:14:31.532Z",
+        "updated": "2023-12-01T19:14:31.532Z",
+        "position": null,
+        "prize_money": null,
+        "tournament_season": 3,
+        "golfer_season": 3
+    }
+},
+{
+    "model": "golf_pickem.tournamentgolfer",
+    "pk": 9,
+    "fields": {
+        "deleted": null,
+        "created": "2023-12-01T19:14:33.933Z",
+        "updated": "2023-12-01T19:14:33.933Z",
+        "position": null,
+        "prize_money": null,
+        "tournament_season": 4,
+        "golfer_season": 3
+    }
+},
+{
+    "model": "golf_pickem.tournamentgolfer",
+    "pk": 10,
+    "fields": {
+        "deleted": null,
+        "created": "2023-12-01T19:15:06.115Z",
+        "updated": "2023-12-01T19:15:06.115Z",
+        "position": 3,
+        "prize_money": 0,
+        "tournament_season": 2,
+        "golfer_season": 4
+    }
+},
+{
+    "model": "golf_pickem.tournamentgolfer",
+    "pk": 11,
+    "fields": {
+        "deleted": null,
+        "created": "2023-12-01T19:15:28.545Z",
+        "updated": "2023-12-01T19:15:28.545Z",
+        "position": 3,
+        "prize_money": 0,
+        "tournament_season": 5,
+        "golfer_season": 4
+    }
+},
+{
+    "model": "golf_pickem.tournamentgolfer",
+    "pk": 12,
+    "fields": {
+        "deleted": null,
+        "created": "2023-12-01T19:15:42.328Z",
+        "updated": "2023-12-01T19:15:42.328Z",
+        "position": 2,
+        "prize_money": 50000,
+        "tournament_season": 6,
+        "golfer_season": 4
+    }
+},
+{
+    "model": "golf_pickem.tournamentgolfer",
+    "pk": 13,
+    "fields": {
+        "deleted": null,
+        "created": "2023-12-01T19:16:06.258Z",
+        "updated": "2023-12-01T19:16:06.258Z",
+        "position": 1,
+        "prize_money": 15000,
+        "tournament_season": 2,
+        "golfer_season": 5
+    }
+},
+{
+    "model": "golf_pickem.tournamentgolfer",
+    "pk": 14,
+    "fields": {
+        "deleted": null,
+        "created": "2023-12-01T19:16:34.809Z",
+        "updated": "2023-12-01T19:16:34.809Z",
+        "position": 2,
+        "prize_money": 15000,
+        "tournament_season": 5,
+        "golfer_season": 5
+    }
+},
+{
+    "model": "golf_pickem.tournamentgolfer",
+    "pk": 15,
+    "fields": {
+        "deleted": null,
+        "created": "2023-12-01T19:18:28.152Z",
+        "updated": "2023-12-01T19:18:28.152Z",
+        "position": 3,
+        "prize_money": 25000,
+        "tournament_season": 6,
+        "golfer_season": 5
+    }
+},
+{
+    "model": "golf_pickem.tournamentgolfer",
+    "pk": 16,
+    "fields": {
+        "deleted": null,
+        "created": "2023-12-01T19:19:14.678Z",
+        "updated": "2023-12-01T19:19:14.678Z",
+        "position": 2,
+        "prize_money": 0,
+        "tournament_season": 2,
+        "golfer_season": 6
+    }
+},
+{
+    "model": "golf_pickem.tournamentgolfer",
+    "pk": 17,
+    "fields": {
+        "deleted": null,
+        "created": "2023-12-01T19:19:30.953Z",
+        "updated": "2023-12-01T19:19:30.953Z",
+        "position": 1,
+        "prize_money": 60000,
+        "tournament_season": 5,
+        "golfer_season": 6
+    }
+},
+{
+    "model": "golf_pickem.tournamentgolfer",
+    "pk": 18,
+    "fields": {
+        "deleted": null,
+        "created": "2023-12-01T19:20:03.341Z",
+        "updated": "2023-12-01T19:20:03.341Z",
+        "position": 1,
+        "prize_money": 125000,
+        "tournament_season": 6,
+        "golfer_season": 6
     }
 }
 ]

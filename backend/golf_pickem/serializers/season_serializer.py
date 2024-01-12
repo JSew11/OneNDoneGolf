@@ -1,12 +1,12 @@
 from rest_framework.serializers import ModelSerializer
 
-from ..models import Pick
+from ..models import Season
 
-class PickSerializer(ModelSerializer):
-    """Serializer for the pick model.
+class SeasonSerializer(ModelSerializer):
+    """Serializer for the season model.
     """
 
     class Meta:
-        model = Pick
+        model = Season
         exclude = ['created', 'updated', 'deleted']
         read_only_fields = ['id']

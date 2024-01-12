@@ -3,14 +3,24 @@ from django.db.utils import IntegrityError
 from django.db.transaction import atomic
 from pytest import raises
 
-from core.models.user import User
+from core.models import User
+from golf_pickem.models import Season
 
 class TestUserModel(TestCase):
     """Tests for the user model.
     """
-    fixtures = ['user', 'tournament', 'golfer', 'tournament_golfer', 'pick']
+    fixtures = [
+        'user',
+        'season',
+        'tournament',
+        'tournament_season',
+        'golfer',
+        'golfer_season',
+        'pick'
+    ]
 
     def setUp(self) -> None:
+        self.test_season: Season = Season.objects.get(id=2)
         self.test_user: User = User.objects.get(username='OneNDoneDev')
         return super().setUp()
     
@@ -83,11 +93,13 @@ class TestUserModel(TestCase):
         self.assertEqual(test_user_complete.first_name, 'Complete')
         self.assertEqual(test_user_complete.last_name, 'User')
 
-    def test_pick_history_by_year(self):
-        """Test the pick_history by year method in the user model.
+    def test_pick_history_by_season(self):
+        """Test the pick_history by season method in the user model.
         """
-        # test the method for a year with no history
-        self.assertEqual(len(self.test_user.pick_history_by_year(1)), 0)
+        # test getting the pick history for a valid season id
+        season_2_pick_history = self.test_user.pick_history_by_season(season_id=self.test_season.id)
+        self.assertEqual(len(season_2_pick_history), 2)
 
-        # test the method for a year with known history
-        self.assertEqual(len(self.test_user.pick_history_by_year(2023)), 1)
+        # test getting the pick history for an invalid season id
+        invalid_season_pick_history = self.test_user.pick_history_by_season(season_id=100)
+        self.assertEqual(len(invalid_season_pick_history), 0)

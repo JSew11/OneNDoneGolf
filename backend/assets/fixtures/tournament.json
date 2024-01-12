@@ -4,13 +4,11 @@
     "pk": 1,
     "fields": {
         "deleted": null,
-        "created": "2023-09-15T22:44:33.362Z",
-        "updated": "2023-09-15T22:44:33.362Z",
-        "name": "Test Tournament",
-        "course": "Shady Links",
-        "location": "USA",
-        "purse": 15,
-        "year": 2023
+        "created": "2023-12-01T18:50:15.856Z",
+        "updated": "2023-12-01T18:50:15.856Z",
+        "name": "Season Opener",
+        "course": "Nice and Easy Links",
+        "location": "Spokane, WA USA"
     }
 },
 {
@@ -18,13 +16,23 @@
     "pk": 2,
     "fields": {
         "deleted": null,
-        "created": "2023-09-15T22:44:33.362Z",
-        "updated": "2023-09-15T22:44:33.362Z",
-        "name": "Test Tournament 2",
-        "course": "Fancy Course",
-        "location": "GBA",
-        "purse": 20000,
-        "year": 2023
+        "created": "2023-12-01T18:51:03.158Z",
+        "updated": "2023-12-01T18:51:03.158Z",
+        "name": "Midway Challenge",
+        "course": "Pretty Tough Valley",
+        "location": "Los Angeles, CA USA"
+    }
+},
+{
+    "model": "golf_pickem.tournament",
+    "pk": 3,
+    "fields": {
+        "deleted": null,
+        "created": "2023-12-01T18:51:32.966Z",
+        "updated": "2023-12-01T18:51:32.966Z",
+        "name": "Championship",
+        "course": "Insanely Tough Country Club",
+        "location": "Manchester, NH USA"
     }
 }
 ]

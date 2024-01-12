@@ -1,13 +1,12 @@
-from rest_framework.serializers import ModelSerializer, PrimaryKeyRelatedField
+from rest_framework.serializers import ModelSerializer
 
-from ..models.golfer import Golfer
+from ..models import Golfer
 
 class GolferSerializer(ModelSerializer):
     """Serializer for the golfer model.
     """
-    tournaments = PrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
         model = Golfer
         exclude = ['created', 'updated', 'deleted']
-        read_only_fields = ['id', 'player_id']
+        read_only_fields = ['id']

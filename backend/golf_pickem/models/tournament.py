@@ -1,10 +1,7 @@
 from django.db.models import (
-    UniqueConstraint,
-    Q,
     BigAutoField,
     DateTimeField,
     CharField,
-    PositiveIntegerField
 )
 from safedelete.models import SafeDeleteModel
 from safedelete import SOFT_DELETE_CASCADE
@@ -19,13 +16,6 @@ class Tournament(SafeDeleteModel):
         ordering = ['created']
         verbose_name = 'Tournament'
         verbose_name_plural = 'Tournaments'
-        constraints = [
-            UniqueConstraint(
-                fields=['name', 'year'],
-                condition=Q(deleted__isnull=True),
-                name='unique_active_name_year'
-            )
-        ]
 
     # database info
     id = BigAutoField(primary_key=True, editable=False)
@@ -36,5 +26,3 @@ class Tournament(SafeDeleteModel):
     name = CharField(max_length=255)
     course = CharField(max_length=255)
     location = CharField(max_length=255)
-    purse = PositiveIntegerField()
-    year = PositiveIntegerField()

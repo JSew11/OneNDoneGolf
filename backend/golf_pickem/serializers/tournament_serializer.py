@@ -1,11 +1,10 @@
-from rest_framework.serializers import ModelSerializer, PrimaryKeyRelatedField
+from rest_framework.serializers import ModelSerializer
 
-from ..models.tournament import Tournament
+from ..models import Tournament
 
 class TournamentSerializer(ModelSerializer):
     """Serializer for the tournament model.
     """
-    golfers = PrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
         model = Tournament

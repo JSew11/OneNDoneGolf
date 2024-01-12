@@ -1,12 +1,12 @@
 from rest_framework.serializers import ModelSerializer
 
-from ..models import Pick
+from ..models import GolferSeason
 
-class PickSerializer(ModelSerializer):
-    """Serializer for the pick model.
+class GolferSeasonSerialier(ModelSerializer):
+    """Serializer for the golfer season model.
     """
 
     class Meta:
-        model = Pick
+        model = GolferSeason
         exclude = ['created', 'updated', 'deleted']
         read_only_fields = ['id']
