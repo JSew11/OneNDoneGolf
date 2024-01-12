@@ -200,7 +200,7 @@ class SeasonTournamentGolferViewSet(ModelViewSet):
         """
         try:
             tournament_season: TournamentSeason = TournamentSeason.objects.get(season=season_id, tournament=tournament_id)
-            serialzier: TournamentGolferSerializer = self.serializer_class(tournament_season.field)
+            serialzier: TournamentGolferSerializer = self.serializer_class(tournament_season.field, many=True)
             return Response(
                 data=serialzier.data,
                 status=status.HTTP_200_OK

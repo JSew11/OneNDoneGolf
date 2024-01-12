@@ -44,5 +44,5 @@ class TournamentGolfer(SafeDeleteModel):
     prize_money = PositiveIntegerField(null=True)
 
     # related models
-    tournament_season = ForeignKey(TournamentSeason, on_delete=CASCADE, related_name='tournaments')
-    golfer_season = ForeignKey(GolferSeason, on_delete=CASCADE, related_name='field')
+    tournament_season = ForeignKey(TournamentSeason, on_delete=CASCADE, related_name='field')
+    golfer_season = ForeignKey(GolferSeason, on_delete=CASCADE, related_name='tournaments')
