@@ -30,3 +30,15 @@ services:
       - GOLF_API_KEY=${GOLF_DATA_API_KEY}
     depends_on:
       - db
+    
+  client-web:
+    build: ./client-web
+    command: npm run dev
+    volumes:
+      - .:/code
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=${API_BASE_URL}
+    depends_on:
+      - backend
