@@ -33,3 +33,6 @@ GOLF_DATA_API_KEY=# get this from lead devs when setting up
 1. Navigate to the project root
 1. In your terminal, run the command `docker compose up -d` to start the app (to tear down, run `docker compose down`)  
 1. If you have made local changes (outside of the Docker container) and wish to restart the app with them applied, run the command `docker compose restart`
+
+### Viewing the App
+* To view the local development app (after it has started) go to [http://localhost:3000](http://localhost:3000)
