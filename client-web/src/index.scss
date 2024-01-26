@@ -1,0 +1,25 @@
+$theme-colors: (
+   'primary': #38761d,
+   'secondary': #b6d7a8
+);
+
+@import '../node_modules/bootstrap/scss/bootstrap.scss';
+
+body {
+    margin: 0;
+    font-family: 'Arial';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+  
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+        monospace;
+}
+
+.site-logo {
+    font-family: 'Playfair Display';
+    font-weight: bold;
+    color: #1c3b0e;
+    cursor: pointer;
+}

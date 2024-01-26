@@ -39,7 +39,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - REACT_APP_API_URL=${API_BASE_URL}
-      - REACT_APP_NAME=${APP_NAME}
+      - VITE_BACKEND_URL=${API_BASE_URL}
+      - VITE_APP_NAME=${APP_NAME}
     depends_on:
       - backend
