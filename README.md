@@ -23,6 +23,7 @@ DB_PORT=5432
 
 SECRET_KEY=# this can be anything you want
 
+APP_NAME="One N' Done Country Club"
 API_BASE_URL="http://localhost:8000/api" # development api url
 
 GOLF_DATA_API_BASE_URL="https://api.sportsdata.io/golf/v2" # sportsdataio golf api
