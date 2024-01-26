@@ -1,5 +1,5 @@
 # One 'n Done Golf
-Golf Pick'em site where users compete to select the best golfer on a tournament by tournament basis. Built using Django and PostgreSQL.
+Golf Pick'em site where users compete to select the best golfer on a tournament by tournament basis. Built using Django, PostgreSQL, and React (Vite).
 
 ## Dev Environment Setup
 
