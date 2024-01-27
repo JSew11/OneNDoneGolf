@@ -42,7 +42,7 @@ const Header = () => {
           <Grid item xs={4} className='m-0 p-0 text-end'>
             {
               isLoggedIn ?
-              <Button color='secondary' variant='contained'>Profile Placeholder</Button> :
+              <Button color='primary' variant='outlined'>Profile Placeholder</Button> :
               <LoginModal />
             }
           </Grid>

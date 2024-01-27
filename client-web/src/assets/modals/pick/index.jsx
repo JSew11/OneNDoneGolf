@@ -5,14 +5,14 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 
-const PickModal = () => {
+const PickModal = ({ isLoggedIn }) => {
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
     setOpen(true);
   };
 
-  const handleClose = (event, reason) => {
+  const handleClose = () => {
     setOpen(false);
   };
 
@@ -23,8 +23,12 @@ const PickModal = () => {
         variant='contained'
         color='secondary'
         onClick={handleOpen}
+        disabled={!isLoggedIn}
+        sx={{
+          fontSize: '1.5em'
+        }}
       >
-        Make Your Pick
+        { !isLoggedIn && 'Log In to ' } Make Your Pick
       </Button>
       <Dialog
         open={open}

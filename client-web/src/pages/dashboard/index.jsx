@@ -18,31 +18,23 @@ const Dashboard = () => {
   }, [isLoggedIn]);
 
   return (
-    isLoggedIn ? <UserDashboard /> : <GenericDashboard />
-  );
-}
-
-const UserDashboard = () => {
-  return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container justifyContent='center' alignItems='center' className='py-4'>
         <Grid item xs={8}>
-          <PickModal />
+          <PickModal isLoggedIn={isLoggedIn}/>
         </Grid>
       </Grid>
       <Grid container justifyContent='center' alignItems='center'>
         <Grid item xs={10}>
-          <QuickStandingsTable />
+          { 
+            isLoggedIn ?
+            <QuickStandingsTable /> :
+            <h1 className='text-center'>Not Logged In</h1>
+          }
         </Grid>
       </Grid>
     </Box>
   );
-};
-
-const GenericDashboard = () => {
-  return (
-    <h1 className='text-center'>Not Logged In</h1>
-  );
-};
+}
 
 export default Dashboard;
