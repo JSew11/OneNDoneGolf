@@ -5,6 +5,7 @@ import Grid from '@mui/material/Grid';
 
 import PickModal from 'src/assets/modals/pick';
 import QuickStandingsTable from 'src/pages/dashboard/quickStandingsTable';
+import GameInformation from 'src/pages/dashboard/gameInformation';
 
 const Dashboard = () => {
   const { isLoggedIn } = useSelector(state => state.auth);
@@ -29,7 +30,7 @@ const Dashboard = () => {
           { 
             isLoggedIn ?
             <QuickStandingsTable /> :
-            <h1 className='text-center'>Not Logged In</h1>
+            <GameInformation />
           }
         </Grid>
       </Grid>
