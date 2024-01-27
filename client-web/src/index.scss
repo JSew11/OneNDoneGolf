@@ -1,9 +1,9 @@
+@import '../node_modules/bootstrap/scss/bootstrap.scss';
+
 $theme-colors: (
    'primary': #38761d,
    'secondary': #b6d7a8
 );
-
-@import '../node_modules/bootstrap/scss/bootstrap.scss';
 
 body {
     margin: 0;
@@ -22,4 +22,8 @@ code {
     font-weight: bold;
     color: #1c3b0e;
     cursor: pointer;
+}
+
+.playfair-display {
+    font-family: 'Playfair Display';
 }
