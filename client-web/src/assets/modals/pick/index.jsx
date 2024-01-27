@@ -16,6 +16,10 @@ const PickModal = ({ isLoggedIn }) => {
     setOpen(false);
   };
 
+  const handleSubmit = () => {
+    console.log('Need to write this still!');
+  }
+
   return (
     <>
       <Button
@@ -40,7 +44,7 @@ const PickModal = ({ isLoggedIn }) => {
         </DialogContent>
         <DialogActions>
           <Button variant='contained' color='error' onClick={handleClose}>Cancel</Button>
-          <Button variant='contained' color='primary' type='submit'>Submit your Pick</Button>
+          <Button variant='contained' color='primary' type='submit' onClick={handleSubmit}>Submit</Button>
         </DialogActions>
       </Dialog>
     </>
