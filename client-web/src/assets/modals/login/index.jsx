@@ -44,7 +44,7 @@ export default function LoginModal() {
 
   return (
     <div>
-      <Button variant='contained' onClick={handleOpen}>Log In</Button>
+      <Button variant='contained' onClick={handleOpen} sx={{ fontSize: '1em' }}>Log In</Button>
       <Dialog
         open={open}
         onClose={handleClose}
