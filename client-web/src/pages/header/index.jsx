@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, Outlet } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 import { styled } from '@mui/material/styles';
 import { 
   Box,
@@ -37,11 +38,17 @@ const UserDropdownItem = styled(MenuItem)(({theme}) => ({
 const Header = () => {
   const APP_NAME = import.meta.env.VITE_APP_NAME;
 
-  const [userName, setUserName] = useState('Username Placeholder');
+  const [username, setUsername] = useState('');
 
   const navigate = useNavigate();
 
-  const { isLoggedIn } = useSelector(state => state.auth);
+  const { isLoggedIn, access } = useSelector(state => state.auth);
+
+  useEffect(() => {
+    if (access !== null) {
+      setUsername(jwtDecode(access)['username']);
+    }
+  }, [access]);
 
   return (
     <>
@@ -53,7 +60,7 @@ const Header = () => {
           <Grid item xs={4} className='text-end'>
             {
               isLoggedIn ?
-              <UserDropdown userName={userName}/> :
+              <UserDropdown userName={username}/> :
               <LoginModal />
             }
           </Grid>
