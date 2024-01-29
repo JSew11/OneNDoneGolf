@@ -1,3 +1,2 @@
 from .auth_serializers import LoginUserSerializer, RegisterUserSerializer, LogoutUserSerializer, RefreshTokenSerializer
-from .token_serializers import CustomTokenSerializer
 from .user_serializer import UserSerializer

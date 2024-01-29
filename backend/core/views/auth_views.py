@@ -11,8 +11,7 @@ from ..serializers import (
     LoginUserSerializer,
     RegisterUserSerializer,
     LogoutUserSerializer,
-    RefreshTokenSerializer,
-    CustomTokenSerializer
+    RefreshTokenSerializer
 )
 
 class LoginUserView (TokenObtainPairView):
@@ -56,7 +55,7 @@ class UserRegistrationViewSet(ListCreateAPIView):
         serializer: RegisterUserSerializer = RegisterUserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            refresh = CustomTokenSerializer.get_token(user)
+            refresh = LoginUserSerializer.get_token(user)
             access = AccessToken().for_user(user)
             return Response(
                 data={
