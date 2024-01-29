@@ -18,7 +18,8 @@ class LoginUserSerializer(TokenObtainPairSerializer):
         """
         token = super().get_token(user)
 
-        token[self.username_field] = user.get_username()
+        token['firstName'] = user.first_name
+        token['lastName'] = user.last_name
 
         return token
 
@@ -48,7 +49,6 @@ class RegisterUserSerializer(ModelSerializer):
         """
         user_data = {
             'password': validated_data.pop('password'),
-            'username': validated_data.pop('username'),
             'email': validated_data.pop('email'),
         }
 

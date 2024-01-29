@@ -31,7 +31,7 @@ class TestAuthApi(APITestCase):
         """
         # test logging in via the api endpoint
         response: Response = self.client.post('/api/login/', {
-            'username': self.test_user.username,
+            'email': self.test_user.email,
             'password': self.test_user_password,
         }, format='json')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
@@ -49,7 +49,6 @@ class TestAuthApi(APITestCase):
         """
         # test creating a valid user using the user registration api endpoint
         user_data = {
-            'username': 'TestUser123',
             'first_name': 'Test',
             'last_name': 'User',
             'email': 'test.user@email.com',

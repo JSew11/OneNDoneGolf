@@ -18,7 +18,7 @@ import { login } from 'src/state/token/actions.jsx';
 
 export default function LoginModal() {
   const [open, setOpen] = useState(false);
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -26,7 +26,7 @@ export default function LoginModal() {
   const dispatch = useDispatch();
 
   const handleOpen = () => {
-    setUsername('');
+    setEmail('');
     setPassword('');
     setErrorMessage('');
     setOpen(true);
@@ -52,7 +52,7 @@ export default function LoginModal() {
           component: 'form',
           onSubmit: async (event) => {
             event.preventDefault();
-            dispatch(login(username, password)).then(
+            dispatch(login(email, password)).then(
               (result) => {
                 if (result.response && result.response.status !== 200) {
                   setErrorMessage(result.response.data.detail);
@@ -65,13 +65,13 @@ export default function LoginModal() {
         <DialogTitle>Log In</DialogTitle>
         <DialogContent>
           <FormControl required variant='outlined' fullWidth className='my-2'>
-            <InputLabel htmlFor='username'>Username</InputLabel>
+            <InputLabel htmlFor='email'>Email</InputLabel>
             <OutlinedInput
-              id='username'
-              label='Username'
-              type='text'
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              id='email'
+              label='Email'
+              type='email'
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </FormControl>
           <FormControl required variant='outlined' fullWidth>

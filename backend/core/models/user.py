@@ -9,29 +9,26 @@ class UserManager(BaseUserManager):
     """
     use_in_migrations = True
 
-    def _create_user(self, username, email, password, **extra_fields):
+    def _create_user(self, email, password, **extra_fields):
         """Create and save a User with the given email and password.
         """
         if not email:
             raise ValueError('No email provided - this field is required.')
-        if not username:
-            raise ValueError('No username provided - this field is required.')
         if not password:
             raise ValueError('No password provided - this field is required.')
         email = self.normalize_email(email)
-        user: User = self.model(username=username, email=email, **extra_fields)
+        user: User = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self.db)
         return user
     
     def create_user(self, **kwargs):
         """Create and save a regular User with the given credentials."""
-        username = kwargs.pop('username', None)
         email = kwargs.pop('email', None)
         password = kwargs.pop('password', None)
         kwargs.setdefault('is_staff', False)
         kwargs.setdefault('is_superuser', False)
-        return self._create_user(username=username, email=email, password=password, **kwargs)
+        return self._create_user(email=email, password=password, **kwargs)
 
     def create_superuser(self, username, email, password, **extra_fields):
         """Create and save a SuperUser with the given credentials."""
@@ -51,7 +48,9 @@ class User(AbstractUser, SafeDeleteModel):
     """
     deleted_by_cascade = None # removes this default field from the db table
     _safedelete_policy = SOFT_DELETE_CASCADE
-    REQUIRED_FIELDS = ['email', 'first_name', 'last_name', 'password']
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'password']
+    USERNAME_FIELD = 'email'
+    username = None # removing this so it won't be used
 
     objects: UserManager = UserManager()
 
@@ -66,7 +65,6 @@ class User(AbstractUser, SafeDeleteModel):
     updated = models.DateTimeField(auto_now=True)
 
     # user info
-    username = models.CharField(unique=True, max_length=25)
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)

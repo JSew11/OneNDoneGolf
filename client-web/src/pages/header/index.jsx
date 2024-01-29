@@ -38,7 +38,7 @@ const UserDropdownItem = styled(MenuItem)(({theme}) => ({
 const Header = () => {
   const APP_NAME = import.meta.env.VITE_APP_NAME;
 
-  const [username, setUsername] = useState('');
+  const [userFirstName, setUserFirstName] = useState('');
 
   const navigate = useNavigate();
 
@@ -46,7 +46,7 @@ const Header = () => {
 
   useEffect(() => {
     if (access !== null) {
-      setUsername(jwtDecode(access)['username']);
+      setUserFirstName(jwtDecode(access)['firstName']);
     }
   }, [access]);
 
@@ -60,7 +60,7 @@ const Header = () => {
           <Grid item xs={4} className='text-end'>
             {
               isLoggedIn ?
-              <UserDropdown userName={username}/> :
+              <UserDropdown userFirstName={userFirstName}/> :
               <LoginModal />
             }
           </Grid>
@@ -102,7 +102,7 @@ const UserDropdownMenu = styled((props) => (
   },
 }));
 
-const UserDropdown = ({ userName }) => {
+const UserDropdown = ({ userFirstName }) => {
   const [userDropdownAnchorEl, setUserDropdownAnchorEl] = useState(null);
   const isUserDropdownOpen = Boolean(userDropdownAnchorEl);
 
@@ -138,7 +138,7 @@ const UserDropdown = ({ userName }) => {
         sx={{ fontSize: '1em' }}
         endIcon={<KeyboardArrowDown />}
       >
-        {userName}
+        {userFirstName}
       </Button>
       <UserDropdownMenu
         id='user-menu'

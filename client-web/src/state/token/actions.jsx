@@ -30,8 +30,8 @@ export const register = (userRegistrationData) => (dispatch) => {
   );
 };
 
-export const login = (username, password) => (dispatch) => {
-  return AuthApi.login(username, password).then(
+export const login = (email, password) => (dispatch) => {
+  return AuthApi.login(email, password).then(
     (response) => {
       if (response.data?.access) {
         dispatch({

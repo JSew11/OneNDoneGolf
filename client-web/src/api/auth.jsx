@@ -19,9 +19,9 @@ const register = async (userRegistrationData) => {
   );
 };
 
-const login = async (username, password) => {
+const login = async (email, password) => {
   return await publicAxios.post(LOGIN_URL, {
-    username: username,
+    email: email,
     password: password,
   })
   .then(
