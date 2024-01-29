@@ -34,41 +34,5 @@
         "tournament": 3,
         "season": 1
     }
-},
-{
-    "model": "golf_pickem.tournamentseason",
-    "pk": 4,
-    "fields": {
-        "deleted": null,
-        "created": "2023-12-01T19:00:56.408Z",
-        "updated": "2023-12-01T19:00:56.408Z",
-        "purse": 15000,
-        "tournament": 1,
-        "season": 2
-    }
-},
-{
-    "model": "golf_pickem.tournamentseason",
-    "pk": 5,
-    "fields": {
-        "deleted": null,
-        "created": "2023-12-01T19:01:37.957Z",
-        "updated": "2023-12-01T19:01:37.957Z",
-        "purse": 75000,
-        "tournament": 2,
-        "season": 2
-    }
-},
-{
-    "model": "golf_pickem.tournamentseason",
-    "pk": 6,
-    "fields": {
-        "deleted": null,
-        "created": "2023-12-01T19:01:44.550Z",
-        "updated": "2023-12-01T19:01:44.550Z",
-        "purse": 200000,
-        "tournament": 3,
-        "season": 2
-    }
 }
 ]

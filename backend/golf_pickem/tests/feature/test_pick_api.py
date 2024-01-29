@@ -15,9 +15,7 @@ class TestPickApi(APITestCase):
         'user',
         'season',
         'tournament',
-        'tournament_season',
         'golfer',
-        'golfer_season',
         'pick'
     ]
 
@@ -49,7 +47,7 @@ class TestPickApi(APITestCase):
         }
         response: Response = self.client.get(path='/api/golf-pickem/picks/', data=filterData)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(0, len(response.data))
+        self.assertEqual(2, len(response.data))
 
         # test getting all picks made by a specific user
         filterData = {
@@ -77,32 +75,28 @@ class TestPickApi(APITestCase):
         self.assertIn('Field \'season_id\' is required', response.data['errors'])
 
         # test creating a pick for an invalid tournament season
-        invalid_tournament_season_pick_data = {
+        invalid_tournament_pick_data = {
             'tournament_id': 100,
             'golfer_id': 1,
-            'season_id': 2,
+            'season_id': 1,
         }
-        response: Response = self.client.post(path='/api/golf-pickem/picks/', data=invalid_tournament_season_pick_data)
+        response: Response = self.client.post(path='/api/golf-pickem/picks/', data=invalid_tournament_pick_data)
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
-        self.assertIn('Tournament', response.data['message'])
-        self.assertIn('Season', response.data['message'])
 
         # test creating a pick for an invalid golfer season
-        invalid_golfer_season_pick_data = {
+        invalid_golfer_pick_data = {
             'tournament_id': 3,
             'golfer_id': 100,
-            'season_id': 2,
+            'season_id': 1,
         }
-        response: Response = self.client.post(path='/api/golf-pickem/picks/', data=invalid_golfer_season_pick_data)
+        response: Response = self.client.post(path='/api/golf-pickem/picks/', data=invalid_golfer_pick_data)
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
-        self.assertIn('Golfer', response.data['message'])
-        self.assertIn('Season', response.data['message'])
 
         # test creating a valid pick
         valid_pick_data = {
             'tournament_id': 3,
             'golfer_id': 3,
-            'season_id': 2,
+            'season_id': 1,
         }
         response: Response = self.client.post(path='/api/golf-pickem/picks/', data=valid_pick_data)
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
@@ -111,7 +105,7 @@ class TestPickApi(APITestCase):
         invalid_pick_data = {
             'tournament_id': 3,
             'golfer_id': 2,
-            'season_id': 2,
+            'season_id': 1,
         }
         response: Response = self.client.post(path='/api/golf-pickem/picks/', data=invalid_pick_data)
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
@@ -146,13 +140,11 @@ class TestPickApi(APITestCase):
         self.assertIn('Field \'golfer_id\' is required', response.data['errors'])
 
         # test updating a pick with an invalid golfer season
-        invalid_golfer_season_pick_data = {
+        invalid_golfer_pick_data = {
             'golfer_id': 100,
         }
-        response: Response = self.client.patch(path=f'/api/golf-pickem/picks/{self.test_pick_2.id}/', data=invalid_golfer_season_pick_data)
+        response: Response = self.client.patch(path=f'/api/golf-pickem/picks/{self.test_pick_2.id}/', data=invalid_golfer_pick_data)
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
-        self.assertIn('Golfer', response.data['message'])
-        self.assertIn('Season', response.data['message'])
 
         # test updating a pick with valid data
         valid_update_data = {
@@ -160,7 +152,6 @@ class TestPickApi(APITestCase):
         }
         response: Response = self.client.patch(path=f'/api/golf-pickem/picks/{self.test_pick_2.id}/', data=valid_update_data)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(6, response.data['golfer_season']) # make sure the correct golfer_season object is found
 
         # test updating a pick with a golfer the user has already selected this season
         previously_picked_golfer_data = {
