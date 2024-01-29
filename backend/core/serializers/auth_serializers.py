@@ -2,13 +2,25 @@ from django.contrib.auth import get_user_model
 from rest_framework.serializers import ModelSerializer
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenBlacklistSerializer, TokenRefreshSerializer
 from rest_framework_simplejwt.exceptions import InvalidToken
+from rest_framework_simplejwt.tokens import Token
 
 from ..models.user import User
 
-class LoginUserSerializer (TokenObtainPairSerializer):
+class LoginUserSerializer(TokenObtainPairSerializer):
     """Serializer to log a user into the system.
     """
-    username_field = get_user_model().USERNAME_FIELD
+    username_field = User.USERNAME_FIELD
+
+    @classmethod
+    def get_token(self, user: User) -> Token:
+        """Method for getting the token for the given user. Overwritten to add
+        custom claims.
+        """
+        token = super().get_token(user)
+
+        token[self.username_field] = user.get_username()
+
+        return token
 
 class LogoutUserSerializer(TokenBlacklistSerializer):
     """Custom logout serializer to get refresh token from cookies.

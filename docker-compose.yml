@@ -30,3 +30,16 @@ services:
       - GOLF_API_KEY=${GOLF_DATA_API_KEY}
     depends_on:
       - db
+    
+  client-web:
+    build: ./client-web
+    command: npm run dev
+    volumes:
+      - .:/code
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_BACKEND_URL=${API_BASE_URL}
+      - VITE_APP_NAME=${APP_NAME}
+    depends_on:
+      - backend
