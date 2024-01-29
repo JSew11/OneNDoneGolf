@@ -2,13 +2,18 @@ from django.conf import settings
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenBlacklistView, TokenRefreshView
-from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
+from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework import status, permissions
 
 from ..models.user import User
-from ..serializers.auth_serializers import LoginUserSerializer, RegisterUserSerializer, LogoutUserSerializer, RefreshTokenSerializer
+from ..serializers import (
+    LoginUserSerializer,
+    RegisterUserSerializer,
+    LogoutUserSerializer,
+    RefreshTokenSerializer,
+    CustomTokenSerializer
+)
 
 class LoginUserView (TokenObtainPairView):
     """Custom login endpoint to use email instead of username.
@@ -51,7 +56,7 @@ class UserRegistrationViewSet(ListCreateAPIView):
         serializer: RegisterUserSerializer = RegisterUserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
-            refresh = TokenObtainPairSerializer.get_token(user)
+            refresh = CustomTokenSerializer.get_token(user)
             access = AccessToken().for_user(user)
             return Response(
                 data={
