@@ -10,6 +10,7 @@ const SECONDARY_COLOR_MAIN = '#b6d7a8';
 const SECONDARY_COLOR_DARK = '#7f9675';
 const SECONDARY_COLOR_CONTRAST = '#000000';
 
+const SITE_BACKGROUND_COLOR = '#f0f0f0';
 const DISABLED_CONTRAST_COLOR = '#999999';
 
 export const appTheme = createTheme({
@@ -22,6 +23,10 @@ export const appTheme = createTheme({
     },
   },
   palette: {
+    background: {
+      default: SITE_BACKGROUND_COLOR,
+      paper: '#ffffff'
+    },
     primary: {
       light: PRIMARY_COLOR_LIGHT,
       main: PRIMARY_COLOR_MAIN,
