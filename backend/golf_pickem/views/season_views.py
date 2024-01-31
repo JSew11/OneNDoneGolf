@@ -196,7 +196,7 @@ class SeasonTournamentsViewSet(ModelViewSet):
         """
         try:
             tournament_season: TournamentSeason = TournamentSeason.objects.get(season=season_id, tournament=tournament_id)
-            available_golfer_ids = tournament_season.available_golfer_ids(request.user, season_id)
+            available_golfer_ids = tournament_season.available_golfer_ids(request.user)
             available_golfers = Golfer.objects.filter(id__in=available_golfer_ids)
             return Response(
                 data=GolferSerializer(available_golfers, many=True).data,
