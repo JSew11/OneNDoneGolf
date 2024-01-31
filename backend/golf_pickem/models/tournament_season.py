@@ -10,8 +10,11 @@ from django.db.models import (
 from safedelete.models import SafeDeleteModel
 from safedelete import SOFT_DELETE_CASCADE
 
-from .tournament import Tournament
-from .season import Season
+from core.models import User
+from . import (
+    Tournament,
+    Season,
+)
 
 class TournamentSeason(SafeDeleteModel):
     """Model for a tournament taking part in a season.
@@ -42,3 +45,10 @@ class TournamentSeason(SafeDeleteModel):
     # related models
     tournament = ForeignKey(Tournament, on_delete=CASCADE, related_name='seasons')
     season = ForeignKey(Season, on_delete=CASCADE, related_name='schedule')
+
+    def available_golfer_ids(self, user: User, season_id: int):
+        """Get the list of golfers who can be picked by the given user.
+        """
+        picked_golfer_ids = set([obj['golfer_id'] for obj in user.pick_history_by_season(season_id=season_id).values('golfer_id').all()])
+        field_golfer_ids = [tournament_golfer.golfer_season.golfer.id for tournament_golfer in self.field.all()]
+        return [golfer_id for golfer_id in field_golfer_ids if golfer_id not in picked_golfer_ids]
