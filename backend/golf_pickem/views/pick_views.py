@@ -176,36 +176,3 @@ class PickViewSet(ModelViewSet):
                 data={'message': f'Pick with id \'{pick_id}\' not found for the current user'},
                 status=status.HTTP_404_NOT_FOUND
             )
-
-@api_view(['POST'])
-def available_golfers(request: Request) -> Response:
-    """Get a list of the golfers who have not yet been selected for the given
-    season.
-    """
-    season_id = request.data.get('season_id')
-    tournament_id = request.data.get('tournament_id')
-    # check for required fields
-    error_messages = []
-    if not season_id:
-        error_messages.append('Field \'season_id\' is required')
-    if not tournament_id:
-        error_messages.append('Field \'tournament_id\' is required')
-    if len(error_messages) > 0:
-        return Response(
-            data={'errors': error_messages},
-            status=status.HTTP_400_BAD_REQUEST
-        )
-    
-    try:
-        tournament_season: TournamentSeason = TournamentSeason.objects.get(season=season_id, tournament=tournament_id)
-        available_golfer_ids = tournament_season.available_golfer_ids(request.user, season_id)
-        available_golfers = Golfer.objects.filter(id__in=available_golfer_ids)
-        return Response(
-            data=GolferSerializer(available_golfers, many=True).data,
-            status=status.HTTP_200_OK
-        )
-    except TournamentSeason.DoesNotExist:
-        return Response(
-            data={'message': f'Tournament with id \'{tournament_id}\' not found for the Season with id \'{season_id}\''},
-            status=status.HTTP_400_BAD_REQUEST,
-        )

@@ -184,23 +184,3 @@ class TestPickApi(APITestCase):
         # test deleting a pick that does exist
         response: Response = self.client.delete(path=f'/api/golf-pickem/picks/{self.test_pick_2.id}/')
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
-    
-    def test_available_golfers_endpoint(self):
-        """Test the GET endpoint for getting a list of available golfers.
-        """
-        current_tournament_data = {
-            'season_id': self.test_season.id,
-            'tournament_id': self.test_tournament_3.id
-        }
-
-        # test hitting the endpoint as an unauthorized user
-        response: Response = self.client.post(path=f'/api/golf-pickem/picks/available-golfers/', data=current_tournament_data)
-        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
-
-        self.client.force_authenticate(self.admin_user)
-
-        # test getting the list of available golfers
-        response: Response = self.client.post(path=f'/api/golf-pickem/picks/available-golfers/', data=current_tournament_data)
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(1, len(response.data))
-        self.assertEqual(3, response.data[0]['id'])

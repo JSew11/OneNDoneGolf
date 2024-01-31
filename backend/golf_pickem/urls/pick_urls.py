@@ -1,6 +1,6 @@
 from django.urls import path
 
-from ..views import PickViewSet, available_golfers
+from ..views import PickViewSet
 
 picks_list_views = PickViewSet.as_view({
     'get': 'list',
@@ -16,5 +16,4 @@ pick_details_views = PickViewSet.as_view({
 urlpatterns = [
     path('', picks_list_views, name='picks_list'),
     path('<int:pick_id>/', pick_details_views, name='pick_details'),
-    path('available-golfers/', available_golfers, name='available_golfers'),
 ]

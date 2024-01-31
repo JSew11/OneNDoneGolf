@@ -1,16 +1,19 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.request import Request
+from rest_framework.decorators import action
 from rest_framework import status, permissions
 
 from ..models import (
     Season,
+    Golfer,
     GolferSeason,
     TournamentSeason,
     TournamentGolfer,
 )
 from ..serializers import (
     SeasonSerializer,
+    GolferSerializer,
     GolferSeasonSerialier,
     TournamentSeasonSerializer,
     TournamentGolferSerializer,
@@ -184,6 +187,25 @@ class SeasonTournamentsViewSet(ModelViewSet):
             return Response(
                 data={'status': f'Tournament with id \'{tournament_id}\' not found for Season with id \'{season_id}\''},
                 status=status.HTTP_404_NOT_FOUND, 
+            )
+    
+    @action(detail=False, methods=['GET'])
+    def available_golfers_list(self, request: Request, season_id: int, tournament_id: int) -> Response:
+        """Get a list of the golfers who have not yet been selected for the
+        season tournament with the given season and tournament ids.
+        """
+        try:
+            tournament_season: TournamentSeason = TournamentSeason.objects.get(season=season_id, tournament=tournament_id)
+            available_golfer_ids = tournament_season.available_golfer_ids(request.user, season_id)
+            available_golfers = Golfer.objects.filter(id__in=available_golfer_ids)
+            return Response(
+                data=GolferSerializer(available_golfers, many=True).data,
+                status=status.HTTP_200_OK
+            )
+        except TournamentSeason.DoesNotExist:
+            return Response(
+                data={'message': f'Tournament with id \'{tournament_id}\' not found for the Season with id \'{season_id}\''},
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
 class SeasonTournamentGolferViewSet(ModelViewSet):

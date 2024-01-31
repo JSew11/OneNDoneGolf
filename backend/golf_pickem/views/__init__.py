@@ -1,2 +1,2 @@
 from .season_views import SeasonViewSet, SeasonGolfersViewset, SeasonTournamentsViewSet, SeasonTournamentGolferViewSet
-from .pick_views import PickViewSet, available_golfers
+from .pick_views import PickViewSet

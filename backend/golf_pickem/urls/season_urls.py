@@ -34,6 +34,10 @@ season_tournaments_detail_views = SeasonTournamentsViewSet.as_view({
     'get': 'retrieve'
 })
 
+available_golfers_list_view = SeasonTournamentsViewSet.as_view({
+    'get': 'available_golfers_list'
+})
+
 season_tournament_golfer_list_views = SeasonTournamentGolferViewSet.as_view({
     'get': 'list'
 })
@@ -49,6 +53,7 @@ urlpatterns = [
     path('<int:season_id>/golfers/<int:golfer_id>/', season_golfers_detail_views, name='season_golfer_details'),
     path('<int:season_id>/tournaments/', season_tournaments_list_views, name='season_tournaments_list'),
     path('<int:season_id>/tournaments/<int:tournament_id>/', season_tournaments_detail_views, name='season_tournament_details'),
+    path('<int:season_id>/tournaments/<int:tournament_id>/available-golfers/', available_golfers_list_view, name='available_golfers_list'),
     path('<int:season_id>/tournaments/<int:tournament_id>/golfers/', season_tournament_golfer_list_views, name='season_tournament_golfers_list'),
     path('<int:season_id>/tournaments/<int:tournament_id>/golfers/<int:golfer_id>/', season_tournament_golfer_detail_views, name='season_tournament_golfer_details'),
 ]
