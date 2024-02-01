@@ -5,7 +5,7 @@ import {
   LOGIN_FAIL,
   LOGOUT,
   REFRESH_TOKEN,
-} from 'src/utils/constants/actionTypes';
+} from 'src/assets/constants/actionTypes';
 
 const token = sessionStorage.getItem('token');
 
