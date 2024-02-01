@@ -1,12 +1,14 @@
 import { publicAxios } from 'src/api/axios.jsx';
 
-const REGISTER_URL = 'register/';
-const LOGIN_URL = 'login/';
-const LOGOUT_URL = 'logout/';
-const REFRESH_TOKEN_URL = 'login/refresh/';
+import {
+  REGISTER_API_URL,
+  LOGIN_API_URL,
+  LOGOUT_API_URL,
+  REFRESH_TOKEN_API_URL
+} from 'src/assets/constants/apiUrls';
 
 const register = async (userRegistrationData) => {
-  return await publicAxios.post(REGISTER_URL, userRegistrationData)
+  return await publicAxios.post(REGISTER_API_URL, userRegistrationData)
   .then(
     (response) => {
       if (response.data.access) {
@@ -20,7 +22,7 @@ const register = async (userRegistrationData) => {
 };
 
 const login = async (email, password) => {
-  return await publicAxios.post(LOGIN_URL, {
+  return await publicAxios.post(LOGIN_API_URL, {
     email: email,
     password: password,
   })
@@ -36,7 +38,7 @@ const login = async (email, password) => {
 };
 
 const logout = async () => {
-  return await publicAxios.post(LOGOUT_URL)
+  return await publicAxios.post(LOGOUT_API_URL)
   .then(
     (response) => {
       sessionStorage.removeItem('token');
@@ -46,7 +48,7 @@ const logout = async () => {
 };
 
 const refreshToken = async () => {
-  return await publicAxios.post(REFRESH_TOKEN_URL)
+  return await publicAxios.post(REFRESH_TOKEN_API_URL)
   .then(
     (response) => {
       if (response.data.access) {

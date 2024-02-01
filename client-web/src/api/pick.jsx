@@ -1,6 +1,6 @@
 import { privateAxios } from 'src/api/axios.jsx';
 
-const PICK_API_BASE_URL = 'picks/';
+import { PICK_API_BASE_URL } from 'src/assets/constants/apiUrls';
 
 const list = async () => {
     return await privateAxios.get(PICK_API_BASE_URL);

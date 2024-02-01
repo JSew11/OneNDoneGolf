@@ -1,6 +1,6 @@
 import { privateAxios } from 'src/api/axios.jsx';
 
-const SEASON_API_BASE_URL = 'seasons/';
+import { SEASON_API_BASE_URL } from 'src/assets/constants/apiUrls';
 
 const list = async () => {
     return await privateAxios.get(SEASON_API_BASE_URL);
