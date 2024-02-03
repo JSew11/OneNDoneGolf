@@ -41,6 +41,8 @@ class TournamentSeason(SafeDeleteModel):
 
     # tournament season info
     purse = PositiveIntegerField()
+    start_date = DateTimeField(blank=True, null=True)
+    end_date = DateTimeField(blank=True, null=True)
 
     # related models
     tournament = ForeignKey(Tournament, on_delete=CASCADE, related_name='seasons')
