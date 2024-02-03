@@ -9,12 +9,13 @@ import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
-const PickModal = () => {
+const PickModal = ({ seasonId }) => {
   const [open, setOpen] = useState(false);
   const [selectedGolferId, setSelectedGolferId] = useState(0);
 
   const handleOpen = () => {
     setOpen(true);
+    console.log(seasonId);
   };
 
   const handleClose = () => {

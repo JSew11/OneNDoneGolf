@@ -5,5 +5,6 @@ export const LOGOUT_API_URL = 'logout/';
 export const REFRESH_TOKEN_API_URL = 'login/refresh/';
 
 // golf pickem api urls
-export const SEASON_API_BASE_URL = 'seasons/';
-export const PICK_API_BASE_URL = 'picks/';
+export const GOLF_PICKEM_API_BASE_URL = 'golf-pickem/';
+export const SEASON_API_BASE_URL = GOLF_PICKEM_API_BASE_URL + 'seasons/';
+export const PICK_API_BASE_URL = GOLF_PICKEM_API_BASE_URL + 'picks/';

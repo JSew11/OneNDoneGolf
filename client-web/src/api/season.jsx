@@ -22,8 +22,8 @@ const destroy = async (seasonId) => {
     return await privateAxios.delete(SEASON_API_BASE_URL + seasonId);
 }
 
-const activeSeason = async () => {
-    
+const active = async () => {
+    return await privateAxios.get(SEASON_API_BASE_URL + 'active/')
 }
 
 const SeasonsApi = {
@@ -31,7 +31,8 @@ const SeasonsApi = {
     create,
     retrieve,
     partialUpdate,
-    destroy
+    destroy,
+    active,
 };
 
 export default SeasonsApi;
