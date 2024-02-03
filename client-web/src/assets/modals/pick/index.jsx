@@ -12,13 +12,13 @@ import MenuItem from '@mui/material/MenuItem';
 import TournamentSeasonsApi from 'src/api/tournamentSeason';
 import PicksApi from 'src/api/pick';
 
-const PickModal = ({ seasonId, tournamentId }) => {
+const PickModal = ({ season, tournament }) => {
   const [open, setOpen] = useState(false);
   const [availableGolfers, setAvailableGolfers] = useState([]);
   const [selectedGolferId, setSelectedGolferId] = useState('');
 
   const handleOpen = () => {
-    TournamentSeasonsApi.availableGolfers(seasonId, tournamentId).then(
+    TournamentSeasonsApi.availableGolfers(season.id, tournament.id).then(
       (response) => setAvailableGolfers(response.data)
     );
 
@@ -34,7 +34,7 @@ const PickModal = ({ seasonId, tournamentId }) => {
   };
 
   const handleSubmit = () => {
-    PicksApi.create(seasonId, tournamentId, selectedGolferId).then(
+    PicksApi.create(season.id, tournament.id, selectedGolferId).then(
       (response) => console.log(response)
     );
   }
@@ -64,7 +64,7 @@ const PickModal = ({ seasonId, tournamentId }) => {
           }
         }}
       >
-        <DialogTitle>Make your Pick</DialogTitle>
+        <DialogTitle>Pick your Golfer for the {tournament.name}</DialogTitle>
         <DialogContent>
           <FormControl required fullWidth variant='outlined' className='my-2'>
             <InputLabel htmlFor='golfer-select'>Golfer</InputLabel>
