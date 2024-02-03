@@ -17,13 +17,12 @@ const Dashboard = () => {
       SeasonsApi.active().then(
         (response) => {
           if (response.status === 200) {
+            console.log(response.data);
             setActiveSeason(response.data);
           }
         },
         (error) => error
       );
-    } else {
-      // TODO: call API to get generic dashboard data
     }
   }, [isLoggedIn]);
 
