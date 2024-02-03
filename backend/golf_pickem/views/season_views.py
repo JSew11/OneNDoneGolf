@@ -146,6 +146,11 @@ class SeasonViewSet(ModelViewSet):
                 data={'status': f'Season with id \'{season_id}\' not found'},
                 status=status.HTTP_404_NOT_FOUND, 
             )
+        except Tournament.DoesNotExist:
+            return Response(
+                data={'status': f'Could not find the next tournament for Season with id \'{season_id}\' '},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
 class SeasonGolfersViewset(ModelViewSet):
     """Viewset for the golfers participating in a season. Supports viewing either

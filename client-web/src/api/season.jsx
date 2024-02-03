@@ -23,7 +23,11 @@ const destroy = async (seasonId) => {
 }
 
 const active = async () => {
-    return await privateAxios.get(SEASON_API_BASE_URL + 'active/')
+    return await privateAxios.get(SEASON_API_BASE_URL + 'active/');
+}
+
+const nextTournament = async (seasonId) => {
+    return await privateAxios.get(SEASON_API_BASE_URL + seasonId + '/next-tournament/');
 }
 
 const SeasonsApi = {
@@ -33,6 +37,7 @@ const SeasonsApi = {
     partialUpdate,
     destroy,
     active,
+    nextTournament,
 };
 
 export default SeasonsApi;

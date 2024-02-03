@@ -9,13 +9,19 @@ import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
-const PickModal = ({ seasonId }) => {
+import SeasonsApi from 'src/api/season';
+
+const PickModal = ({ seasonId, tournamentId=null }) => {
   const [open, setOpen] = useState(false);
   const [selectedGolferId, setSelectedGolferId] = useState(0);
 
   const handleOpen = () => {
+    if (!tournamentId) {
+      SeasonsApi.nextTournament(seasonId).then(
+        (response) => console.log(response)
+      );
+    }
     setOpen(true);
-    console.log(seasonId);
   };
 
   const handleClose = () => {

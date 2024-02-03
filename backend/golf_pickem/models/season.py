@@ -35,4 +35,6 @@ class Season(SafeDeleteModel):
         """Get the next tournament in the season's schedule.
         """
         date = datetime.now() if after_date is None else after_date
-        return self.schedule.filter(start_date__gt=date).order_by('start_date').first().id
+        tournament_season = self.schedule.filter(start_date__gt=date).order_by('start_date').first()
+        if tournament_season:
+            return tournament_season.tournament.id
