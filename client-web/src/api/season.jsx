@@ -22,6 +22,10 @@ const destroy = async (seasonId) => {
     return await privateAxios.delete(SEASON_API_BASE_URL + seasonId);
 }
 
+const activeSeason = async () => {
+    
+}
+
 const SeasonsApi = {
     list,
     create,

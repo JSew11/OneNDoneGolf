@@ -87,13 +87,6 @@ class TestSeasonViewSet(APITestCase):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(self.test_season.id, response.data['id'])
 
-        # test updating the test season with an invalid year
-        invalid_year_data = {
-            'year': -12
-        }
-        response: Response = self.client.patch(path=f'/api/golf-pickem/seasons/{self.test_season.id}/', data=invalid_year_data)
-        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
-
         # test updating the season successfully
         updated_season_data = {
             'name': 'Fake Golf League',
@@ -118,6 +111,27 @@ class TestSeasonViewSet(APITestCase):
 
         # test deleting a pick that does exist
         response: Response = self.client.delete(path=f'/api/golf-pickem/seasons/{self.test_season.id}/')
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
+    
+    def test_active_season_endpoint(self):
+        """Test the GET endpoint for getting the active season's details.
+        """
+        # test hitting the endpoint as an unauthorized user
+        response: Response = self.client.get(path=f'/api/golf-pickem/seasons/active/')
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
+
+        self.client.force_authenticate(self.admin_user)
+        
+        # test getting the active season
+        response: Response = self.client.get(path=f'/api/golf-pickem/seasons/active/')
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(self.test_season.id, response.data['id'])
+        self.assertTrue(response.data['active'])
+        
+        # test getting the active season when there are no active seasons
+        self.test_season.active = False
+        self.test_season.save()
+        response: Response = self.client.get(path=f'/api/golf-pickem/seasons/active/')
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
 
 class TestSeasonGolfersViewSet(APITestCase):

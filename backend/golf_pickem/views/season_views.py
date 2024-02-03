@@ -106,6 +106,22 @@ class SeasonViewSet(ModelViewSet):
                 data={'status': f'Season with id \'{season_id}\' not found'},
                 status=status.HTTP_404_NOT_FOUND, 
             )
+    
+    @action(detail=True, methods=['GET'])
+    def active_season(self, request: Request) -> Response:
+        """Get the active season's details.
+        """
+        active_season: Season = Season.objects.filter(active=True).order_by('start_date').first()
+        if active_season is None:
+            return Response(
+                data={'status': 'There is no current active season'},
+                status=status.HTTP_204_NO_CONTENT,
+            )
+        serializer: SeasonSerializer = self.serializer_class(active_season)
+        return Response(
+            data=serializer.data,
+            status=status.HTTP_200_OK
+        )
 
 class SeasonGolfersViewset(ModelViewSet):
     """Viewset for the golfers participating in a season. Supports viewing either

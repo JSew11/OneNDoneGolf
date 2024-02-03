@@ -8,7 +8,7 @@
         "updated": "2023-12-01T18:59:15.436Z",
         "name": "Test Golf League",
         "alias": "TGL",
-        "year": 2000,
+        "active": true,
         "start_date": null,
         "end_date": null
     }
