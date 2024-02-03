@@ -1,9 +1,11 @@
 import { privateAxios } from 'src/api/axios.jsx';
 
-import { PICK_API_BASE_URL } from 'src/assets/constants/apiUrls';
+import { GOLF_PICKEM_API_BASE_URL, PICK_API_BASE_URL } from 'src/assets/constants/apiUrls';
+
+const BASE_URL = GOLF_PICKEM_API_BASE_URL + PICK_API_BASE_URL
 
 const list = async () => {
-    return await privateAxios.get(PICK_API_BASE_URL);
+    return await privateAxios.get(BASE_URL);
 };
 
 const create = async (seasonId, tournamentId, golferId) => {
@@ -12,25 +14,25 @@ const create = async (seasonId, tournamentId, golferId) => {
         tournament_id: tournamentId,
         golfer_id: golferId,
     };
-    return await privateAxios.post(PICK_API_BASE_URL, newPickData);
+    return await privateAxios.post(BASE_URL, newPickData);
 };
 
 const retrieve = async (pickId) => {
-    return await privateAxios.get(PICK_API_BASE_URL + pickId + '/');
+    return await privateAxios.get(BASE_URL + pickId + '/');
 };
 
 const changeGolfer = async (pickId, newGolferId) => {
     const updatedPickData = {
         golfer_id: newGolferId
     };
-    return await privateAxios.patch(PICK_API_BASE_URL + pickId + '/', updatedPickData);
+    return await privateAxios.patch(BASE_URL + pickId + '/', updatedPickData);
 };
 
 const destroy = async (pickId) => {
-    return await privateAxios.delete(PICK_API_BASE_URL + pickId);
-}
+    return await privateAxios.delete(BASE_URL + pickId);
+};
 
-const SeasonsApi = {
+const PicksApi = {
     list,
     create,
     retrieve,
@@ -38,4 +40,4 @@ const SeasonsApi = {
     destroy
 };
 
-export default SeasonsApi;
+export default PicksApi;

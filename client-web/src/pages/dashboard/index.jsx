@@ -9,7 +9,8 @@ import QuickStandingsTable from 'src/pages/dashboard/quickStandingsTable';
 import GameInformation from 'src/pages/dashboard/gameInformation';
 
 const Dashboard = () => {
-  const [activeSeason, setActiveSeason] = useState({});
+  const [activeSeason, setActiveSeason] = useState(null);
+  const [nextTournament, setNextTournament] = useState(null);
   const { isLoggedIn } = useSelector(state => state.auth);
 
   useEffect(() => {
@@ -17,7 +18,6 @@ const Dashboard = () => {
       SeasonsApi.active().then(
         (response) => {
           if (response.status === 200) {
-            console.log(response.data);
             setActiveSeason(response.data);
           }
         },
@@ -26,12 +26,25 @@ const Dashboard = () => {
     }
   }, [isLoggedIn]);
 
+  useEffect(() => {
+    if (activeSeason !== null) {
+      SeasonsApi.nextTournament(activeSeason.id).then(
+        (response) => {
+          if (response.status === 200) {
+            setNextTournament(response.data);
+          }
+        },
+        (error) => error
+      );
+    }
+  }, [activeSeason])
+
   return (
     <Box sx={{ flexGrow: 1 }}>
-      { isLoggedIn && 
+      { isLoggedIn && activeSeason && nextTournament && 
         <Grid container justifyContent='center' alignItems='center' className='py-4'>
           <Grid item xs={8}>
-            <PickModal seasonId={activeSeason.id}/>
+            <PickModal seasonId={activeSeason.id} tournamentId={nextTournament.id}/>
           </Grid>
         </Grid>
       }

@@ -9,18 +9,19 @@ import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
-import SeasonsApi from 'src/api/season';
+import TournamentSeasonsApi from 'src/api/tournamentSeason';
+import PicksApi from 'src/api/pick';
 
-const PickModal = ({ seasonId, tournamentId=null }) => {
+const PickModal = ({ seasonId, tournamentId }) => {
   const [open, setOpen] = useState(false);
-  const [selectedGolferId, setSelectedGolferId] = useState(0);
+  const [availableGolfers, setAvailableGolfers] = useState([]);
+  const [selectedGolferId, setSelectedGolferId] = useState('');
 
   const handleOpen = () => {
-    if (!tournamentId) {
-      SeasonsApi.nextTournament(seasonId).then(
-        (response) => console.log(response)
-      );
-    }
+    TournamentSeasonsApi.availableGolfers(seasonId, tournamentId).then(
+      (response) => setAvailableGolfers(response.data)
+    );
+
     setOpen(true);
   };
 
@@ -33,7 +34,9 @@ const PickModal = ({ seasonId, tournamentId=null }) => {
   };
 
   const handleSubmit = () => {
-    console.log('Need to write this still!');
+    PicksApi.create(seasonId, tournamentId, selectedGolferId).then(
+      (response) => console.log(response)
+    );
   }
 
   return (
@@ -71,8 +74,9 @@ const PickModal = ({ seasonId, tournamentId=null }) => {
               label='Golfer'
               onChange={handleGolferSelectChange}
             >
-              {/* TODO: loop thru available golfers and show menu items here */}
-              <MenuItem value={0}>NEED TO DO THIS</MenuItem>
+              {availableGolfers.map((golfer, index) => {
+                return <MenuItem key={index} value={golfer.id}>{golfer.first_name} {golfer.last_name}</MenuItem>
+              })}
             </Select>
           </FormControl>
         </DialogContent>
