@@ -20,11 +20,13 @@ const Dashboard = () => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <Grid container justifyContent='center' alignItems='center' className='py-4'>
-        <Grid item xs={8}>
-          <PickModal isLoggedIn={isLoggedIn}/>
+      { isLoggedIn && 
+        <Grid container justifyContent='center' alignItems='center' className='py-4'>
+          <Grid item xs={8}>
+            <PickModal />
+          </Grid>
         </Grid>
-      </Grid>
+      }
       <Grid container justifyContent='center' alignItems='center'>
         <Grid item xs={10}>
           { 

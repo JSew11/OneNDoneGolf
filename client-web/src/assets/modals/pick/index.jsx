@@ -9,7 +9,7 @@ import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
-const PickModal = ({ isLoggedIn }) => {
+const PickModal = () => {
   const [open, setOpen] = useState(false);
   const [selectedGolferId, setSelectedGolferId] = useState(0);
 
@@ -36,12 +36,11 @@ const PickModal = ({ isLoggedIn }) => {
         variant='contained'
         color='secondary'
         onClick={handleOpen}
-        disabled={!isLoggedIn}
         sx={{
           fontSize: '1.5em'
         }}
       >
-        { !isLoggedIn && 'Log In to ' } Make Your Pick
+        Make Your Pick
       </Button>
       <Dialog
         fullWidth
