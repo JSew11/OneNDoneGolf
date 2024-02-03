@@ -1,3 +1,4 @@
+from datetime import datetime
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.request import Request
@@ -8,6 +9,7 @@ from ..models import (
     Season,
     Golfer,
     GolferSeason,
+    Tournament,
     TournamentSeason,
     TournamentGolfer,
 )
@@ -15,6 +17,7 @@ from ..serializers import (
     SeasonSerializer,
     GolferSerializer,
     GolferSeasonSerialier,
+    TournamentSerializer,
     TournamentSeasonSerializer,
     TournamentGolferSerializer,
 )
@@ -122,6 +125,27 @@ class SeasonViewSet(ModelViewSet):
             data=serializer.data,
             status=status.HTTP_200_OK
         )
+    
+    @action(detail=True, methods=['GET'])
+    def next_tournament(self, request: Request, season_id: int) -> Response:
+        """Get the next tournament in the given season's schedule.
+        """
+        after_date = None
+        if after_date_str := request.data.get('after_date', None):
+            after_date = datetime.strptime(after_date_str, '%Y-%m-%d')
+        try:
+            season: Season = Season.objects.get(id=season_id)
+            tournament: Tournament = Tournament.objects.get(id=season.next_tournament_id(after_date=after_date))
+            serializer: TournamentSerializer = TournamentSerializer(tournament)
+            return Response(
+                data=serializer.data,
+                status=status.HTTP_200_OK,
+            )
+        except Season.DoesNotExist:
+            return Response(
+                data={'status': f'Season with id \'{season_id}\' not found'},
+                status=status.HTTP_404_NOT_FOUND, 
+            )
 
 class SeasonGolfersViewset(ModelViewSet):
     """Viewset for the golfers participating in a season. Supports viewing either

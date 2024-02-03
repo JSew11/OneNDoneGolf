@@ -1,3 +1,4 @@
+from datetime import datetime
 from rest_framework.test import APITestCase, APIClient
 from rest_framework.response import Response
 from rest_framework import status
@@ -15,12 +16,15 @@ class TestSeasonViewSet(APITestCase):
     fixtures = [
         'user',
         'season',
+        'tournament',
+        'tournament_season',
     ]
 
     def setUp(self) -> None:
         self.client: APIClient = APIClient()
         self.admin_user: User = User.objects.get(email='onendonedev@gmail.com')
         self.test_season: Season = Season.objects.get(id=1)
+        self.test_tournament_3: Tournament = Tournament.objects.get(id=3)
         return super().setUp()
     
     def test_seasons_list_endpoint(self):
@@ -133,6 +137,25 @@ class TestSeasonViewSet(APITestCase):
         self.test_season.save()
         response: Response = self.client.get(path=f'/api/golf-pickem/seasons/active/')
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
+    
+    def test_next_tournament_endpoint(self):
+        """Test the GET endpoint for getting the next tournament for the given
+        season.
+        """
+        after_date_data = {
+            'after_date': datetime(2024, 2, 1).strftime('%Y-%m-%d')
+        }
+
+        # test hitting the endpoint as an unauthorized user
+        response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/next-tournament/', data=after_date_data)
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
+
+        self.client.force_authenticate(self.admin_user)
+
+        # test getting the next tournament for the test season
+        response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/next-tournament/', data=after_date_data)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(self.test_tournament_3.id, response.data['id'])
 
 class TestSeasonGolfersViewSet(APITestCase):
     """Tests for the season golfers viewset endpoints.

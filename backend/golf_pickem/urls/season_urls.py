@@ -18,8 +18,12 @@ season_details_views = SeasonViewSet.as_view({
     'delete': 'destroy',
 })
 
-active_season_views = SeasonViewSet.as_view({
+active_season_view = SeasonViewSet.as_view({
     'get': 'active_season',
+})
+
+next_tournament_view = SeasonViewSet.as_view({
+    'get': 'next_tournament',
 })
 
 season_golfers_list_views = SeasonGolfersViewset.as_view({
@@ -52,8 +56,9 @@ season_tournament_golfer_detail_views = SeasonTournamentGolferViewSet.as_view({
 
 urlpatterns = [
     path('', season_list_views, name='seasons_list'),
-    path('active/', active_season_views, name='active_season'),
+    path('active/', active_season_view, name='active_season'),
     path('<int:season_id>/', season_details_views, name='season_details'),
+    path('<int:season_id>/next-tournament/', next_tournament_view, name='next_tournament'),
     path('<int:season_id>/golfers/', season_golfers_list_views, name='season_golfers_list'),
     path('<int:season_id>/golfers/<int:golfer_id>/', season_golfers_detail_views, name='season_golfer_details'),
     path('<int:season_id>/tournaments/', season_tournaments_list_views, name='season_tournaments_list'),
