@@ -4,6 +4,7 @@ from core.models import User
 from golf_pickem.models import (
     Season,
     TournamentSeason,
+    Pick,
 )
 
 class TestTournamentSeasonModel(TestCase):
@@ -25,6 +26,7 @@ class TestTournamentSeasonModel(TestCase):
         self.test_season: Season = Season.objects.get(id=1)
         self.test_tournament_season_1: TournamentSeason = TournamentSeason.objects.get(id=1)
         self.test_tournament_season_3: TournamentSeason = TournamentSeason.objects.get(id=3)
+        self.test_pick: Pick = Pick.objects.get(id=1)
         return super().setUp()
     
     def test_available_golfer_ids(self):
@@ -41,11 +43,11 @@ class TestTournamentSeasonModel(TestCase):
         self.assertIn(1, available_golfer_ids)
         self.assertIn(3, available_golfer_ids)
     
-    def test_user_already_picked(self):
-        """Test the user_already_picked method of the tournament_season model.
+    def test_user_pick(self):
+        """Test the user_pick method of the tournament_season model.
         """
         # test the functionality for a tournament that has not yet been picked in
-        self.assertFalse(self.test_tournament_season_3.user_already_picked(self.test_user))
+        self.assertIsNone(self.test_tournament_season_3.user_pick(self.test_user))
 
         # test the functionality for a tournament that has already been picked in
-        self.assertTrue(self.test_tournament_season_1.user_already_picked(self.test_user))
+        self.assertEqual(self.test_pick.id, self.test_tournament_season_1.user_pick(self.test_user).id)

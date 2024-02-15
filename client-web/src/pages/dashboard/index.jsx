@@ -11,6 +11,7 @@ import GameInformation from 'src/pages/dashboard/gameInformation';
 const Dashboard = () => {
   const [activeSeason, setActiveSeason] = useState(null);
   const [nextTournament, setNextTournament] = useState(null);
+  const [userAlreadyPicked, setUserAlreadyPicked] = useState(false);
   const { isLoggedIn } = useSelector(state => state.auth);
 
   useEffect(() => {
@@ -31,7 +32,8 @@ const Dashboard = () => {
       SeasonsApi.nextTournament(activeSeason.id).then(
         (response) => {
           if (response.status === 200) {
-            setNextTournament(response.data);
+            setNextTournament(response.data['tournament']);
+            setUserAlreadyPicked(response.data['user_already_picked']);
           }
         },
         (error) => error
@@ -44,7 +46,7 @@ const Dashboard = () => {
       { isLoggedIn && activeSeason && nextTournament && 
         <Grid container justifyContent='center' alignItems='center' className='py-4'>
           <Grid item xs={8}>
-            <PickModal season={activeSeason} tournament={nextTournament}/>
+            <PickModal season={activeSeason} tournament={nextTournament} userAlreadyPicked={userAlreadyPicked}/>
           </Grid>
         </Grid>
       }

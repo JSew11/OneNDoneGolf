@@ -12,7 +12,7 @@ import MenuItem from '@mui/material/MenuItem';
 import TournamentSeasonsApi from 'src/api/tournamentSeason';
 import PicksApi from 'src/api/pick';
 
-const PickModal = ({ season, tournament }) => {
+const PickModal = ({ season, tournament, userAlreadyPicked }) => {
   const [open, setOpen] = useState(false);
   const [availableGolfers, setAvailableGolfers] = useState([]);
   const [selectedGolferId, setSelectedGolferId] = useState('');
@@ -34,9 +34,13 @@ const PickModal = ({ season, tournament }) => {
   };
 
   const handleSubmit = () => {
-    PicksApi.create(season.id, tournament.id, selectedGolferId).then(
-      (response) => console.log(response)
-    );
+    if (userAlreadyPicked) {
+
+    } else {
+      PicksApi.create(season.id, tournament.id, selectedGolferId).then(
+        (response) => console.log(response)
+      );
+    }
   }
 
   return (
@@ -50,7 +54,10 @@ const PickModal = ({ season, tournament }) => {
           fontSize: '1.5em'
         }}
       >
-        Make Your Pick
+        { userAlreadyPicked ? 
+          'Change Your Pick' :
+          'Make Your Pick'
+        }
       </Button>
       <Dialog
         fullWidth
