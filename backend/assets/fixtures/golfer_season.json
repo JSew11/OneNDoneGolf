@@ -31,5 +31,16 @@
         "golfer": 3,
         "season": 1
     }
+},
+{
+    "model": "golf_pickem.golferseason",
+    "pk": 4,
+    "fields": {
+        "deleted": null,
+        "created": "2023-12-01T19:03:23.678Z",
+        "updated": "2023-12-01T19:03:23.678Z",
+        "golfer": 4,
+        "season": 1
+    }
 }
 ]
