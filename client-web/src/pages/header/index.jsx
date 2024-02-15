@@ -68,7 +68,7 @@ const Header = () => {
         <Grid container>
           <AppBar position='static' color='primary' className='mx-0 px-1' elevation={0}>
             <Toolbar variant='dense' className='m-0 p-0'>
-              <NavBarLink href='#'>Link Placeholder</NavBarLink>
+              <NavBarLink href='/nonexistent-page'>Link Placeholder</NavBarLink>
             </Toolbar>
           </AppBar>
         </Grid>
