@@ -12,14 +12,20 @@ import MenuItem from '@mui/material/MenuItem';
 import TournamentSeasonsApi from 'src/api/tournamentSeason';
 import PicksApi from 'src/api/pick';
 
-const PickModal = ({ season, tournament, userAlreadyPicked }) => {
+const PickModal = ({ season, tournament, pick }) => {
   const [open, setOpen] = useState(false);
   const [availableGolfers, setAvailableGolfers] = useState([]);
   const [selectedGolferId, setSelectedGolferId] = useState('');
 
   const handleOpen = () => {
     TournamentSeasonsApi.availableGolfers(season.id, tournament.id).then(
-      (response) => setAvailableGolfers(response.data)
+      (response) => {
+        setAvailableGolfers(response.data);
+
+        if (pick) {
+          setSelectedGolferId(pick['golfer']);
+        }
+      }
     );
 
     setOpen(true);
@@ -34,12 +40,10 @@ const PickModal = ({ season, tournament, userAlreadyPicked }) => {
   };
 
   const handleSubmit = () => {
-    if (userAlreadyPicked) {
-
+    if (pick) {
+      PicksApi.changeGolfer(pick.id, selectedGolferId)
     } else {
-      PicksApi.create(season.id, tournament.id, selectedGolferId).then(
-        (response) => console.log(response)
-      );
+      PicksApi.create(season.id, tournament.id, selectedGolferId);
     }
   }
 
@@ -54,7 +58,7 @@ const PickModal = ({ season, tournament, userAlreadyPicked }) => {
           fontSize: '1.5em'
         }}
       >
-        { userAlreadyPicked ? 
+        { pick ? 
           'Change Your Pick' :
           'Make Your Pick'
         }
