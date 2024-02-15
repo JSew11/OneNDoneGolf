@@ -52,7 +52,7 @@ class TournamentSeason(SafeDeleteModel):
         """Get the list of golfers who can be picked by the given user.
         """
         pick_history = user.pick_history_by_season(season_id=self.season.id)
-        picked_golfer_ids = set([obj['golfer_id'] for obj in pick_history.values('golfer_id').all()])
+        picked_golfer_ids = [obj['golfer_id'] for obj in pick_history.values('golfer_id').all()]
         field_golfer_ids = [tournament_golfer.golfer_season.golfer.id for tournament_golfer in self.field.all()]
         available_golfer_ids = [golfer_id for golfer_id in field_golfer_ids if golfer_id not in picked_golfer_ids]
         user_pick = self.user_pick(user)
@@ -65,6 +65,6 @@ class TournamentSeason(SafeDeleteModel):
         the user has not yet picked.
         """
         pick_history = user.pick_history_by_season(season_id=self.season.id)
-        if self.tournament.id in set([obj['tournament_id'] for obj in pick_history.values('tournament_id').all()]):
+        if self.tournament.id in [obj['tournament_id'] for obj in pick_history.values('tournament_id').all()]:
             return pick_history.get(tournament_id=self.tournament.id)
         return None

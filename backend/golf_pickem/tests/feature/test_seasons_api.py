@@ -188,7 +188,7 @@ class TestSeasonGolfersViewSet(APITestCase):
         # test getting the list of season golfers
         response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/golfers/')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(3, len(response.data))
+        self.assertEqual(4, len(response.data))
     
     def test_retrieve_season_golfer_endpoint(self):
         """Test the GET endpoint for retrieving an individual golfer participating 
@@ -271,8 +271,9 @@ class TestSeasonTournamentsViewSet(APITestCase):
         # test getting the list of available golfers
         response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/tournaments/{self.test_tournament_3.id}/available-golfers/')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(1, len(response.data))
+        self.assertEqual(2, len(response.data))
         self.assertEqual(3, response.data[0]['id'])
+        self.assertEqual(4, response.data[1]['id'])
 
 class TestSeasonTournamentGolfersViewSet(APITestCase):
     """Tests for the season tournament golfers viewset endpoints.
@@ -308,7 +309,7 @@ class TestSeasonTournamentGolfersViewSet(APITestCase):
         # test getting the list of tournament golfers
         response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/tournaments/{self.test_tournament.id}/golfers/')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(3, len(response.data))
+        self.assertEqual(4, len(response.data))
     
     def test_retrieve_season_tournament_golfer_endpoint(self):
         """Test the GET endpoint for retrieving an individual golfer for a given
