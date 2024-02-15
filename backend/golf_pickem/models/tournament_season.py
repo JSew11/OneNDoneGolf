@@ -55,6 +55,13 @@ class TournamentSeason(SafeDeleteModel):
         picked_golfer_ids = set([obj['golfer_id'] for obj in pick_history.values('golfer_id').all()])
         field_golfer_ids = [tournament_golfer.golfer_season.golfer.id for tournament_golfer in self.field.all()]
         available_golfer_ids = [golfer_id for golfer_id in field_golfer_ids if golfer_id not in picked_golfer_ids]
-        if self.tournament.id in set([obj['tournament_id'] for obj in pick_history.values('tournament_id').all()]):
+        if self.user_already_picked(user):
             available_golfer_ids.append(pick_history.get(tournament_id=self.tournament.id).golfer_id)
         return available_golfer_ids
+    
+    def user_already_picked(self, user: User) -> bool:
+        """Returns true if the given user has already made a pick for this
+        tournament and false if not.
+        """
+        pick_history = user.pick_history_by_season(season_id=self.season.id)
+        return self.tournament.id in set([obj['tournament_id'] for obj in pick_history.values('tournament_id').all()])

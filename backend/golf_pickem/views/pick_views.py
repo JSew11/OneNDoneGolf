@@ -28,8 +28,8 @@ class PickViewSet(ModelViewSet):
             - season (int id)
         """
         try:
-            user_id =  request.data.get('user')
-            user: User = User.objects.get(user_id) if user_id else request.user
+            user_id = request.query_params.get('user_id')
+            user: User = User.objects.get(id=user_id) if user_id else request.user
             if season_id := request.query_params.get('season_id'):
                 data = user.pick_history_by_season(season_id=season_id)
             else:

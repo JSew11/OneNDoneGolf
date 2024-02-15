@@ -27,6 +27,7 @@ class TestPickApi(APITestCase):
     def setUp(self) -> None:
         self.client: APIClient = APIClient()
         self.admin_user: User = User.objects.get(email='onendonedev@gmail.com')
+        self.regular_user: User = User.objects.get(email='regular.user@email.com')
         self.test_pick_1: Pick = Pick.objects.get(id=1)
         self.test_pick_2: Pick = Pick.objects.get(id=2)
         self.test_season: Season = Season.objects.get(id=1)
@@ -58,11 +59,11 @@ class TestPickApi(APITestCase):
 
         # test getting all picks made by a specific user
         filterData = {
-            'user': self.admin_user.id
+            'user_id': self.regular_user.id
         }
         response: Response = self.client.get(path='/api/golf-pickem/picks/', data=filterData)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(2, len(response.data))
+        self.assertEqual(0, len(response.data))
 
     def test_create_pick_endpoint(self):
         """Test the POST endpoint for creating a new pick using a given tournament,

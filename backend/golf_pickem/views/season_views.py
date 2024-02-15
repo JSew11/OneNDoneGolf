@@ -130,15 +130,19 @@ class SeasonViewSet(ModelViewSet):
     def next_tournament(self, request: Request, season_id: int) -> Response:
         """Get the next tournament in the given season's schedule.
         """
-        after_date = None
-        if after_date_str := request.data.get('after_date', None):
-            after_date = datetime.strptime(after_date_str, '%Y-%m-%d')
+        after_date = request.query_params.get('after_date', None)
+        if after_date is not None:
+            after_date = datetime.strptime(after_date, '%Y-%m-%d')
         try:
             season: Season = Season.objects.get(id=season_id)
             tournament: Tournament = Tournament.objects.get(id=season.next_tournament_id(after_date=after_date))
+            tournament_season: TournamentSeason = TournamentSeason.objects.get(tournament=tournament.id, season=season.id)
             serializer: TournamentSerializer = TournamentSerializer(tournament)
             return Response(
-                data=serializer.data,
+                data={
+                    'tournament': serializer.data,
+                    'user_already_picked': tournament_season.user_already_picked(request.user)
+                },
                 status=status.HTTP_200_OK,
             )
         except Season.DoesNotExist:
