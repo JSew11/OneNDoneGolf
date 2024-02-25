@@ -18,8 +18,7 @@ class LoginUserSerializer(TokenObtainPairSerializer):
         """
         token = super().get_token(user)
 
-        token['firstName'] = user.first_name
-        token['lastName'] = user.last_name
+        token['username'] = user.username
 
         return token
 
