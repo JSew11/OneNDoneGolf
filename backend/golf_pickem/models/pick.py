@@ -1,4 +1,3 @@
-from django.core.exceptions import ValidationError
 from django.db.models import (
     UniqueConstraint,
     Q,
@@ -12,8 +11,9 @@ from safedelete import SOFT_DELETE
 
 from core.models import User
 from . import (
-    TournamentSeason,
-    GolferSeason
+    Season,
+    Tournament,
+    Golfer
 )
 
 class Pick(SafeDeleteModel):
@@ -32,12 +32,12 @@ class Pick(SafeDeleteModel):
         verbose_name_plural = 'Picks'
         constraints = [
             UniqueConstraint(
-                fields=['user', 'tournament_season'],
+                fields=['user', 'tournament', 'season'],
                 condition=Q(deleted__isnull=True),
                 name='unique_user_tournament_season'
             ),
             UniqueConstraint(
-                fields=['user', 'golfer_season'],
+                fields=['user', 'golfer', 'season'],
                 condition=Q(deleted__isnull=True),
                 name='unique_user_golfer_season'
             )
@@ -50,5 +50,6 @@ class Pick(SafeDeleteModel):
 
     # related models
     user = ForeignKey(User, on_delete=CASCADE, related_name='pick_history')
-    tournament_season = ForeignKey(TournamentSeason, on_delete=CASCADE, related_name='picks')
-    golfer_season = ForeignKey(GolferSeason, on_delete=CASCADE, related_name='picked_by_history')
+    season = ForeignKey(Season, on_delete=CASCADE, related_name='pick_history')
+    tournament = ForeignKey(Tournament, on_delete=CASCADE, related_name='picks')
+    golfer = ForeignKey(Golfer, on_delete=CASCADE, related_name='picked_by_history')

@@ -8,12 +8,30 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
 
-const PickModal = ({ isLoggedIn }) => {
+import TournamentSeasonsApi from 'src/api/tournamentSeason';
+import PicksApi from 'src/api/pick';
+
+const PickModal = ({ season, tournament, pick }) => {
   const [open, setOpen] = useState(false);
-  const [selectedGolferId, setSelectedGolferId] = useState(0);
+  const [field, setField] = useState([]);
+  const [currentPickGolferId, setCurrentPickGolferId] = useState('');
+  const [selectedGolferId, setSelectedGolferId] = useState('');
 
   const handleOpen = () => {
+    TournamentSeasonsApi.field(season.id, tournament.id).then(
+      (response) => {
+        setField(response.data);
+
+        if (pick) {
+          setCurrentPickGolferId(pick['golfer']);
+          setSelectedGolferId(pick['golfer']);
+        }
+      }
+    );
+
     setOpen(true);
   };
 
@@ -26,7 +44,11 @@ const PickModal = ({ isLoggedIn }) => {
   };
 
   const handleSubmit = () => {
-    console.log('Need to write this still!');
+    if (pick) {
+      PicksApi.changeGolfer(pick.id, selectedGolferId)
+    } else {
+      PicksApi.create(season.id, tournament.id, selectedGolferId);
+    }
   }
 
   return (
@@ -34,14 +56,19 @@ const PickModal = ({ isLoggedIn }) => {
       <Button
         fullWidth
         variant='contained'
-        color='secondary'
         onClick={handleOpen}
-        disabled={!isLoggedIn}
         sx={{
-          fontSize: '1.5em'
+          backgroundColor: 'royalblue',
+          fontSize: '1.5em',
+          ':hover': {
+            backgroundColor: '#2d499d'
+          },
         }}
       >
-        { !isLoggedIn && 'Log In to ' } Make Your Pick
+        { pick ? 
+          'Change Your Pick' :
+          'Make Your Pick'
+        }
       </Button>
       <Dialog
         fullWidth
@@ -55,7 +82,7 @@ const PickModal = ({ isLoggedIn }) => {
           }
         }}
       >
-        <DialogTitle>Make your Pick</DialogTitle>
+        <DialogTitle>Pick your Golfer for the {tournament.name}</DialogTitle>
         <DialogContent>
           <FormControl required fullWidth variant='outlined' className='my-2'>
             <InputLabel htmlFor='golfer-select'>Golfer</InputLabel>
@@ -65,8 +92,20 @@ const PickModal = ({ isLoggedIn }) => {
               label='Golfer'
               onChange={handleGolferSelectChange}
             >
-              {/* TODO: loop thru available golfers and show menu items here */}
-              <MenuItem value={0}>NEED TO DO THIS</MenuItem>
+              {field.map((golfer, index) => {
+                return <MenuItem 
+                          key={index}
+                          value={golfer.id}
+                          disabled={golfer.already_picked && currentPickGolferId !== golfer.id}
+                        >
+                          <Box sx={{flexGrow: 1}}>
+                            <Grid container>
+                              <Grid item xs={11} alignItems='self-start'>{golfer.first_name} {golfer.last_name}</Grid>
+                              <Grid item xs={1} alignItems='self-end'>{(golfer.id !== currentPickGolferId && golfer.tournament_picked_in) ? golfer.tournament_picked_in : ''}</Grid>
+                            </Grid>
+                          </Box>
+                        </MenuItem>
+              })}
             </Select>
           </FormControl>
         </DialogContent>

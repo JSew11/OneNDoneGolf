@@ -10,8 +10,11 @@ from django.db.models import (
 from safedelete.models import SafeDeleteModel
 from safedelete import SOFT_DELETE_CASCADE
 
-from .tournament import Tournament
-from .season import Season
+from core.models import User
+from . import (
+    Tournament,
+    Season,
+)
 
 class TournamentSeason(SafeDeleteModel):
     """Model for a tournament taking part in a season.
@@ -38,7 +41,18 @@ class TournamentSeason(SafeDeleteModel):
 
     # tournament season info
     purse = PositiveIntegerField()
+    start_date = DateTimeField(blank=True, null=True)
+    end_date = DateTimeField(blank=True, null=True)
 
     # related models
     tournament = ForeignKey(Tournament, on_delete=CASCADE, related_name='seasons')
     season = ForeignKey(Season, on_delete=CASCADE, related_name='schedule')
+    
+    def user_pick(self, user: User):
+        """Returns the given user's pick for the tournament season. Returns none if
+        the user has not yet picked.
+        """
+        pick_history = user.pick_history_by_season(season_id=self.season.id)
+        if self.tournament.id in [obj['tournament_id'] for obj in pick_history.values('tournament_id').all()]:
+            return pick_history.get(tournament_id=self.tournament.id)
+        return None

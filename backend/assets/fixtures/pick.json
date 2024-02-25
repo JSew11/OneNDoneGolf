@@ -7,8 +7,9 @@
         "created": "2023-12-01T19:22:40.040Z",
         "updated": "2023-12-01T19:22:40.040Z",
         "user": 1,
-        "tournament_season": 4,
-        "golfer_season": 4
+        "season": 1,
+        "tournament": 1,
+        "golfer": 1
     }
 },
 {
@@ -19,8 +20,9 @@
         "created": "2023-12-01T19:23:15.857Z",
         "updated": "2023-12-01T19:23:15.857Z",
         "user": 1,
-        "tournament_season": 5,
-        "golfer_season": 5
+        "season": 1,
+        "tournament": 2,
+        "golfer": 2
     }
 }
 ]

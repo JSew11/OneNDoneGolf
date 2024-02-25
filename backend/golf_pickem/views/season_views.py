@@ -1,19 +1,26 @@
+from datetime import datetime
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.request import Request
+from rest_framework.decorators import action
 from rest_framework import status, permissions
 
 from ..models import (
     Season,
+    Golfer,
     GolferSeason,
+    Tournament,
     TournamentSeason,
     TournamentGolfer,
 )
 from ..serializers import (
     SeasonSerializer,
+    GolferSerializer,
     GolferSeasonSerialier,
+    TournamentSerializer,
     TournamentSeasonSerializer,
     TournamentGolferSerializer,
+    PickSerializer
 )
 
 class SeasonViewSet(ModelViewSet):
@@ -103,6 +110,56 @@ class SeasonViewSet(ModelViewSet):
                 data={'status': f'Season with id \'{season_id}\' not found'},
                 status=status.HTTP_404_NOT_FOUND, 
             )
+    
+    @action(detail=True, methods=['GET'])
+    def active_season(self, request: Request) -> Response:
+        """Get the active season's details.
+        """
+        active_season: Season = Season.objects.filter(active=True).order_by('start_date').first()
+        if active_season is None:
+            return Response(
+                data={'status': 'There is no current active season'},
+                status=status.HTTP_204_NO_CONTENT,
+            )
+        serializer: SeasonSerializer = self.serializer_class(active_season)
+        return Response(
+            data=serializer.data,
+            status=status.HTTP_200_OK
+        )
+    
+    @action(detail=True, methods=['GET'])
+    def next_tournament(self, request: Request, season_id: int) -> Response:
+        """Get the next tournament in the given season's schedule.
+        """
+        after_date = request.query_params.get('after_date', None)
+        if after_date is not None:
+            after_date = datetime.strptime(after_date, '%Y-%m-%d')
+        try:
+            season: Season = Season.objects.get(id=season_id)
+            tournament: Tournament = Tournament.objects.get(id=season.next_tournament_id(after_date=after_date))
+            tournament_season: TournamentSeason = TournamentSeason.objects.get(tournament=tournament.id, season=season.id)
+            tournament_serializer: TournamentSerializer = TournamentSerializer(tournament)
+            next_tournament_pick = tournament_season.user_pick(request.user)
+            next_tournament_pick_data = None
+            if next_tournament_pick is not None:
+                next_tournament_pick_data = PickSerializer(next_tournament_pick).data
+            return Response(
+                data={
+                    'tournament': tournament_serializer.data,
+                    'user_pick': next_tournament_pick_data
+                },
+                status=status.HTTP_200_OK,
+            )
+        except Season.DoesNotExist:
+            return Response(
+                data={'status': f'Season with id \'{season_id}\' not found'},
+                status=status.HTTP_404_NOT_FOUND, 
+            )
+        except Tournament.DoesNotExist:
+            return Response(
+                data={'status': f'Could not find the next tournament for Season with id \'{season_id}\' '},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
 class SeasonGolfersViewset(ModelViewSet):
     """Viewset for the golfers participating in a season. Supports viewing either
@@ -184,6 +241,29 @@ class SeasonTournamentsViewSet(ModelViewSet):
             return Response(
                 data={'status': f'Tournament with id \'{tournament_id}\' not found for Season with id \'{season_id}\''},
                 status=status.HTTP_404_NOT_FOUND, 
+            )
+    
+    @action(detail=False, methods=['GET'])
+    def field(self, request: Request, season_id: int, tournament_id: int) -> Response:
+        """Get a list of the golfers who are participating in the tournament with 
+        the given id during the season with the given id.
+        """
+        try:
+            tournament_season: TournamentSeason = TournamentSeason.objects.get(season=season_id, tournament=tournament_id)
+            field = [tournament_golfer.golfer_season.golfer for tournament_golfer in tournament_season.field.all()]
+            serializer = GolferSerializer(
+                field,
+                context={'user': request.user, 'season_id': season_id},
+                many=True
+            )
+            return Response(
+                data=serializer.data,
+                status=status.HTTP_200_OK
+            )
+        except TournamentSeason.DoesNotExist:
+            return Response(
+                data={'message': f'Tournament with id \'{tournament_id}\' not found for the Season with id \'{season_id}\''},
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
 class SeasonTournamentGolferViewSet(ModelViewSet):

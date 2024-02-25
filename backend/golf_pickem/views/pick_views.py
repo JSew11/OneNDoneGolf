@@ -3,16 +3,16 @@ from django.db import IntegrityError
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.request import Request
+from rest_framework.decorators import api_view
 from rest_framework import status
 
 from core.models.user import User
 from ..models import (
-    Season,
+    Pick,
     TournamentSeason,
-    GolferSeason,
-    Pick
+    Golfer,
 )
-from ..serializers import PickSerializer
+from ..serializers import PickSerializer, GolferSerializer
 
 class PickViewSet(ModelViewSet):
     """Viewset for the pick model. Supports all functionality for creating, 
@@ -28,8 +28,8 @@ class PickViewSet(ModelViewSet):
             - season (int id)
         """
         try:
-            user_id =  request.data.get('user')
-            user: User = User.objects.get(user_id) if user_id else request.user
+            user_id = request.query_params.get('user_id')
+            user: User = User.objects.get(id=user_id) if user_id else request.user
             if season_id := request.query_params.get('season_id'):
                 data = user.pick_history_by_season(season_id=season_id)
             else:
@@ -67,12 +67,11 @@ class PickViewSet(ModelViewSet):
             )
         # attempt to create the pick from the given data
         try:
-            tournament_season: TournamentSeason = TournamentSeason.objects.get(tournament=tournament_id, season=season_id)
-            golfer_season: GolferSeason = GolferSeason.objects.get(golfer=golfer_id, season=season_id)
             pick_data = {
                 'user': request.user.id,
-                'tournament_season': tournament_season.id,
-                'golfer_season': golfer_season.id
+                'season': season_id,
+                'tournament': tournament_id,
+                'golfer': golfer_id
             }
             serializer: PickSerializer = self.serializer_class(data=pick_data)
             if serializer.is_valid():
@@ -86,16 +85,6 @@ class PickViewSet(ModelViewSet):
                     data=serializer.errors,
                     status=status.HTTP_400_BAD_REQUEST
                 )
-        except TournamentSeason.DoesNotExist:
-            return Response(
-                data={'message': f'Tournament \'{tournament_id}\' not found in Season \'{season_id}\''},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        except GolferSeason.DoesNotExist:
-            return Response(
-                data={'message': f'Golfer \'{golfer_id}\' not found in Season \'{season_id}\''},
-                status=status.HTTP_400_BAD_REQUEST
-            )
         except IntegrityError as error:
             error_string = str(error)
             if 'unique_user_tournament_season' in error_string:
@@ -143,10 +132,8 @@ class PickViewSet(ModelViewSet):
         # attempt to update the pick object's associated golfer season
         try:
             pick: Pick = Pick.objects.get(id=pick_id, user=request.user)
-            season: Season = pick.tournament_season.season
-            golfer_season: GolferSeason = GolferSeason.objects.get(golfer=golfer_id, season=season.id)
             updated_data = {
-                'golfer_season': golfer_season.id,
+                'golfer': golfer_id,
                 'updated': datetime.now()
             }
             serializer: PickSerializer = self.serializer_class(pick, data=updated_data, partial=True)
@@ -165,11 +152,6 @@ class PickViewSet(ModelViewSet):
             return Response(
                 data={'status': f'Pick with id \'{pick_id}\' not found for the current user'},
                 status=status.HTTP_404_NOT_FOUND, 
-            )
-        except GolferSeason.DoesNotExist:
-            return Response(
-                data={'message': f'Golfer \'{golfer_id}\' not found in Season \'{season.id}\''},
-                status=status.HTTP_400_BAD_REQUEST
             )
         except IntegrityError as error:
             error_string = str(error)

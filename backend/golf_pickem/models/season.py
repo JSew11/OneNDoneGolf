@@ -1,9 +1,9 @@
 from datetime import datetime
 from django.db.models import (
     BigAutoField,
-    PositiveSmallIntegerField,
     DateTimeField,
     CharField,
+    BooleanField
 )
 from safedelete.models import SafeDeleteModel
 from safedelete import SOFT_DELETE_CASCADE
@@ -27,18 +27,14 @@ class Season(SafeDeleteModel):
     # season info
     name = CharField(max_length=255)
     alias = CharField(max_length=255)
-    year = PositiveSmallIntegerField()
+    active = BooleanField(default=False)
     start_date = DateTimeField(blank=True, null=True)
     end_date = DateTimeField(blank=True, null=True)
 
-    @property
-    def status(self) -> str:
-        """Gets the status of the season based on the start and end dates.
+    def next_tournament_id(self, after_date: datetime = None) -> int:
+        """Get the next tournament in the season's schedule.
         """
-        current_date = datetime.now().date()
-        if current_date < self.start_date:
-            return 'upcoming'
-        elif current_date < self.end_date:
-            return 'in progress'
-        else:
-            return 'finished'
+        date = datetime.now() if after_date is None else after_date
+        tournament_season = self.schedule.filter(start_date__gt=date).order_by('start_date').first()
+        if tournament_season:
+            return tournament_season.tournament.id

@@ -5,7 +5,7 @@ import {
   LOGIN_FAIL,
   LOGOUT,
   REFRESH_TOKEN,
-} from 'src/utils/constants/actionTypes';
+} from 'src/assets/constants/actionTypes';
 import AuthApi from 'src/api/auth';
 
 export const register = (userRegistrationData) => (dispatch) => {

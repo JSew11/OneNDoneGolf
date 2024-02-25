@@ -8,21 +8,7 @@
         "updated": "2023-12-01T18:59:15.436Z",
         "name": "Test Golf League",
         "alias": "TGL",
-        "year": 2000,
-        "start_date": null,
-        "end_date": null
-    }
-},
-{
-    "model": "golf_pickem.season",
-    "pk": 2,
-    "fields": {
-        "deleted": null,
-        "created": "2023-12-01T18:59:22.305Z",
-        "updated": "2023-12-01T18:59:22.305Z",
-        "name": "Test Golf League",
-        "alias": "TGL",
-        "year": 2001,
+        "active": true,
         "start_date": null,
         "end_date": null
     }

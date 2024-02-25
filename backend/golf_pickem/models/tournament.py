@@ -24,5 +24,6 @@ class Tournament(SafeDeleteModel):
 
     # tournament info
     name = CharField(max_length=255)
+    alias = CharField(max_length=4, blank=True, null=True)
     course = CharField(max_length=255)
     location = CharField(max_length=255)

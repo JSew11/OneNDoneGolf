@@ -1,3 +1,4 @@
+from datetime import datetime
 from rest_framework.test import APITestCase, APIClient
 from rest_framework.response import Response
 from rest_framework import status
@@ -15,12 +16,15 @@ class TestSeasonViewSet(APITestCase):
     fixtures = [
         'user',
         'season',
+        'tournament',
+        'tournament_season',
     ]
 
     def setUp(self) -> None:
         self.client: APIClient = APIClient()
         self.admin_user: User = User.objects.get(email='onendonedev@gmail.com')
         self.test_season: Season = Season.objects.get(id=1)
+        self.test_tournament_3: Tournament = Tournament.objects.get(id=3)
         return super().setUp()
     
     def test_seasons_list_endpoint(self):
@@ -35,7 +39,7 @@ class TestSeasonViewSet(APITestCase):
         # test getting the list of seasons
         response: Response = self.client.get(path='/api/golf-pickem/seasons/')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(2, len(response.data))
+        self.assertEqual(1, len(response.data))
     
     def test_create_season_endpoint(self):
         """Test the POST endpoint for creating a season.
@@ -87,13 +91,6 @@ class TestSeasonViewSet(APITestCase):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(self.test_season.id, response.data['id'])
 
-        # test updating the test season with an invalid year
-        invalid_year_data = {
-            'year': -12
-        }
-        response: Response = self.client.patch(path=f'/api/golf-pickem/seasons/{self.test_season.id}/', data=invalid_year_data)
-        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
-
         # test updating the season successfully
         updated_season_data = {
             'name': 'Fake Golf League',
@@ -119,6 +116,47 @@ class TestSeasonViewSet(APITestCase):
         # test deleting a pick that does exist
         response: Response = self.client.delete(path=f'/api/golf-pickem/seasons/{self.test_season.id}/')
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
+    
+    def test_active_season_endpoint(self):
+        """Test the GET endpoint for getting the active season's details.
+        """
+        # test hitting the endpoint as an unauthorized user
+        response: Response = self.client.get(path=f'/api/golf-pickem/seasons/active/')
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
+
+        self.client.force_authenticate(self.admin_user)
+        
+        # test getting the active season
+        response: Response = self.client.get(path=f'/api/golf-pickem/seasons/active/')
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(self.test_season.id, response.data['id'])
+        self.assertTrue(response.data['active'])
+        
+        # test getting the active season when there are no active seasons
+        self.test_season.active = False
+        self.test_season.save()
+        response: Response = self.client.get(path=f'/api/golf-pickem/seasons/active/')
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
+    
+    def test_next_tournament_endpoint(self):
+        """Test the GET endpoint for getting the next tournament for the given
+        season.
+        """
+        after_date_data = {
+            'after_date': datetime(2024, 2, 1).strftime('%Y-%m-%d')
+        }
+
+        # test hitting the endpoint as an unauthorized user
+        response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/next-tournament/', data=after_date_data)
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
+
+        self.client.force_authenticate(self.admin_user)
+
+        # test getting the next tournament for the test season
+        response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/next-tournament/', data=after_date_data)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(self.test_tournament_3.id, response.data['tournament']['id'])
+        self.assertIsNone(response.data['user_pick'])
 
 class TestSeasonGolfersViewSet(APITestCase):
     """Tests for the season golfers viewset endpoints.
@@ -150,7 +188,7 @@ class TestSeasonGolfersViewSet(APITestCase):
         # test getting the list of season golfers
         response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/golfers/')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(3, len(response.data))
+        self.assertEqual(4, len(response.data))
     
     def test_retrieve_season_golfer_endpoint(self):
         """Test the GET endpoint for retrieving an individual golfer participating 
@@ -175,14 +213,19 @@ class TestSeasonTournamentsViewSet(APITestCase):
         'user',
         'season',
         'tournament',
+        'golfer',
         'tournament_season',
+        'golfer_season',
+        'tournament_golfer',
+        'pick'
     ]
 
     def setUp(self) -> None:
         self.client: APIClient = APIClient()
         self.admin_user: User = User.objects.get(email='onendonedev@gmail.com')
         self.test_season: Season = Season.objects.get(id=1)
-        self.test_tournament: Tournament = Tournament.objects.get(id=1)
+        self.test_tournament_1: Tournament = Tournament.objects.get(id=1)
+        self.test_tournament_3: Tournament = Tournament.objects.get(id=3)
         return super().setUp()
     
     def test_season_tournaments_list_endpoint(self):
@@ -205,16 +248,30 @@ class TestSeasonTournamentsViewSet(APITestCase):
         season.
         """
         # test hitting the endpoint as an unauthorized user
-        response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/tournaments/{self.test_tournament.id}/')
+        response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/tournaments/{self.test_tournament_1.id}/')
         self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
         
         self.client.force_authenticate(self.admin_user)
 
         # test getting the season tournament by the season id and tournament id
-        response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/tournaments/{self.test_tournament.id}/')
+        response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/tournaments/{self.test_tournament_1.id}/')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(self.test_season.id, response.data['season'])
-        self.assertEqual(self.test_tournament.id, response.data['tournament'])
+        self.assertEqual(self.test_tournament_1.id, response.data['tournament']) 
+
+    def test_field_endpoint(self):
+        """Test the GET endpoint for getting a list of available golfers.
+        """
+        # test hitting the endpoint as an unauthorized user
+        response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/tournaments/{self.test_tournament_3.id}/field/')
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
+
+        self.client.force_authenticate(self.admin_user)
+
+        # test getting the list of available golfers
+        response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/tournaments/{self.test_tournament_3.id}/field/')
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(4, len(response.data))
 
 class TestSeasonTournamentGolfersViewSet(APITestCase):
     """Tests for the season tournament golfers viewset endpoints.
@@ -250,7 +307,7 @@ class TestSeasonTournamentGolfersViewSet(APITestCase):
         # test getting the list of tournament golfers
         response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/tournaments/{self.test_tournament.id}/golfers/')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(3, len(response.data))
+        self.assertEqual(4, len(response.data))
     
     def test_retrieve_season_tournament_golfer_endpoint(self):
         """Test the GET endpoint for retrieving an individual golfer for a given

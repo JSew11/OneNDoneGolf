@@ -9,9 +9,7 @@ import {
 
 const QuickStandingsTable = () => {
   return (
-    <Table stickyHeader size='small'
-      sx={{}}
-    >
+    <Table stickyHeader size='small' className='py-3'>
       <TableHead>
         <StyledTableRow>
           <StyledTitleCell colSpan='4'>Current Season Standings</StyledTitleCell>
