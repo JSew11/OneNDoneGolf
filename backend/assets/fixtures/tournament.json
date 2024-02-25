@@ -7,6 +7,7 @@
         "created": "2023-12-01T18:50:15.856Z",
         "updated": "2023-12-01T18:50:15.856Z",
         "name": "Season Opener",
+        "alias": "SOP",
         "course": "Nice and Easy Links",
         "location": "Spokane, WA USA"
     }
@@ -19,6 +20,7 @@
         "created": "2023-12-01T18:51:03.158Z",
         "updated": "2023-12-01T18:51:03.158Z",
         "name": "Midway Challenge",
+        "alias": "MID",
         "course": "Pretty Tough Valley",
         "location": "Los Angeles, CA USA"
     }
@@ -31,6 +33,7 @@
         "created": "2023-12-01T18:51:32.966Z",
         "updated": "2023-12-01T18:51:32.966Z",
         "name": "Championship",
+        "alias": "CHP",
         "course": "Insanely Tough Country Club",
         "location": "Manchester, NH USA"
     }

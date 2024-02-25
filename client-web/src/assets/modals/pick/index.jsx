@@ -8,6 +8,8 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
 
 import TournamentSeasonsApi from 'src/api/tournamentSeason';
 import PicksApi from 'src/api/pick';
@@ -96,7 +98,12 @@ const PickModal = ({ season, tournament, pick }) => {
                           value={golfer.id}
                           disabled={golfer.already_picked && currentPickGolferId !== golfer.id}
                         >
-                          {golfer.first_name} {golfer.last_name}
+                          <Box sx={{flexGrow: 1}}>
+                            <Grid container>
+                              <Grid item xs={11} alignItems='self-start'>{golfer.first_name} {golfer.last_name}</Grid>
+                              <Grid item xs={1} alignItems='self-end'>{(golfer.id !== currentPickGolferId && golfer.tournament_picked_in) ? golfer.tournament_picked_in : ''}</Grid>
+                            </Grid>
+                          </Box>
                         </MenuItem>
               })}
             </Select>
