@@ -93,7 +93,7 @@ class User(AbstractUser, SafeDeleteModel):
                                       default=VENMO)
     referred_by = models.CharField(max_length=32,
                                    choices=REFERRAL_CHOICES,
-                                   default=OTHER)
+                                   blank=True, null=True)
 
     def pick_history_by_season(self, season_id: int) -> SafeDeleteQueryset:
         """Get a user's pick history for a specific year.
