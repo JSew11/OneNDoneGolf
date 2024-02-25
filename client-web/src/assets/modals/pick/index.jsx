@@ -52,9 +52,9 @@ const PickModal = ({ season, tournament, pick }) => {
       <Button
         fullWidth
         variant='contained'
-        color='secondary'
         onClick={handleOpen}
         sx={{
+          backgroundColor: 'royalblue',
           fontSize: '1.5em'
         }}
       >
