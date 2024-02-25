@@ -4,20 +4,31 @@ from safedelete.models import SafeDeleteModel
 from safedelete.queryset import SafeDeleteQueryset
 from safedelete import SOFT_DELETE_CASCADE
 
+# payment method type
+VENMO = 'venmo'
+CASH_APP = 'cash_app'
+PAYPAL = 'paypal'
+ZELLE = 'zelle'
+
+# referral types
+OTHER = 'other'
+
 class UserManager(BaseUserManager):
     """Manager for user models.
     """
     use_in_migrations = True
 
-    def _create_user(self, email, password, **extra_fields):
+    def _create_user(self, email, username, password, **extra_fields):
         """Create and save a User with the given email and password.
         """
         if not email:
             raise ValueError('No email provided - this field is required.')
+        if not username:
+            raise ValueError('No user name provided - this field is required.')
         if not password:
             raise ValueError('No password provided - this field is required.')
         email = self.normalize_email(email)
-        user: User = self.model(email=email, **extra_fields)
+        user: User = self.model(email=email, username=username, **extra_fields)
         user.set_password(password)
         user.save(using=self.db)
         return user
@@ -25,10 +36,11 @@ class UserManager(BaseUserManager):
     def create_user(self, **kwargs):
         """Create and save a regular User with the given credentials."""
         email = kwargs.pop('email', None)
+        username = kwargs.pop('username', None)
         password = kwargs.pop('password', None)
         kwargs.setdefault('is_staff', False)
         kwargs.setdefault('is_superuser', False)
-        return self._create_user(email=email, password=password, **kwargs)
+        return self._create_user(email=email, username=username, password=password, **kwargs)
 
     def create_superuser(self, username, email, password, **extra_fields):
         """Create and save a SuperUser with the given credentials."""
@@ -48,9 +60,17 @@ class User(AbstractUser, SafeDeleteModel):
     """
     deleted_by_cascade = None # removes this default field from the db table
     _safedelete_policy = SOFT_DELETE_CASCADE
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'password']
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name', 'password', 'payment_method']
     USERNAME_FIELD = 'email'
-    username = None # removing this so it won't be used
+    PAYMENT_METHOD_CHOICES = (
+        (VENMO, 'Venmo'),
+        (CASH_APP, 'Cash App'),
+        (PAYPAL, 'PayPal'),
+        (ZELLE, 'Zelle'),
+    )
+    REFERRAL_CHOICES = (
+        (OTHER, 'Other'),
+    )
 
     objects: UserManager = UserManager()
 
@@ -68,6 +88,12 @@ class User(AbstractUser, SafeDeleteModel):
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
+    payment_method = models.CharField(max_length=16,
+                                      choices=PAYMENT_METHOD_CHOICES,
+                                      default=VENMO)
+    referred_by = models.CharField(max_length=32,
+                                   choices=REFERRAL_CHOICES,
+                                   blank=True, null=True)
 
     def pick_history_by_season(self, season_id: int) -> SafeDeleteQueryset:
         """Get a user's pick history for a specific year.
