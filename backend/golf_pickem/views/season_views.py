@@ -250,10 +250,14 @@ class SeasonTournamentsViewSet(ModelViewSet):
         """
         try:
             tournament_season: TournamentSeason = TournamentSeason.objects.get(season=season_id, tournament=tournament_id)
-            available_golfer_ids = tournament_season.available_golfer_ids(request.user)
-            available_golfers = Golfer.objects.filter(id__in=available_golfer_ids)
+            field = [tournament_golfer.golfer_season.golfer for tournament_golfer in tournament_season.field.all()]
+            serializer = GolferSerializer(
+                field,
+                context={'user': request.user, 'season_id': season_id},
+                many=True
+            )
             return Response(
-                data=GolferSerializer(available_golfers, many=True).data,
+                data=serializer.data,
                 status=status.HTTP_200_OK
             )
         except TournamentSeason.DoesNotExist:

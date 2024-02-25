@@ -15,6 +15,7 @@ import PicksApi from 'src/api/pick';
 const PickModal = ({ season, tournament, pick }) => {
   const [open, setOpen] = useState(false);
   const [availableGolfers, setAvailableGolfers] = useState([]);
+  const [currentPickGolferId, setCurrentPickGolferId] = useState('');
   const [selectedGolferId, setSelectedGolferId] = useState('');
 
   const handleOpen = () => {
@@ -23,6 +24,7 @@ const PickModal = ({ season, tournament, pick }) => {
         setAvailableGolfers(response.data);
 
         if (pick) {
+          setCurrentPickGolferId(pick['golfer']);
           setSelectedGolferId(pick['golfer']);
         }
       }
@@ -89,7 +91,13 @@ const PickModal = ({ season, tournament, pick }) => {
               onChange={handleGolferSelectChange}
             >
               {availableGolfers.map((golfer, index) => {
-                return <MenuItem key={index} value={golfer.id}>{golfer.first_name} {golfer.last_name}</MenuItem>
+                return <MenuItem 
+                          key={index}
+                          value={golfer.id}
+                          disabled={golfer.already_picked && currentPickGolferId !== golfer.id}
+                        >
+                          {golfer.first_name} {golfer.last_name}
+                        </MenuItem>
               })}
             </Select>
           </FormControl>
