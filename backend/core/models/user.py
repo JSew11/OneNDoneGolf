@@ -4,6 +4,15 @@ from safedelete.models import SafeDeleteModel
 from safedelete.queryset import SafeDeleteQueryset
 from safedelete import SOFT_DELETE_CASCADE
 
+# payment method type
+VENMO = 'venmo'
+CASH_APP = 'cash_app'
+PAYPAL = 'paypal'
+ZELLE = 'zelle'
+
+# referral types
+OTHER = 'other'
+
 class UserManager(BaseUserManager):
     """Manager for user models.
     """
@@ -51,8 +60,17 @@ class User(AbstractUser, SafeDeleteModel):
     """
     deleted_by_cascade = None # removes this default field from the db table
     _safedelete_policy = SOFT_DELETE_CASCADE
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name', 'password']
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name', 'password', 'payment_method']
     USERNAME_FIELD = 'email'
+    PAYMENT_METHOD_CHOICES = (
+        (VENMO, 'Venmo'),
+        (CASH_APP, 'Cash App'),
+        (PAYPAL, 'PayPal'),
+        (ZELLE, 'Zelle'),
+    )
+    REFERRAL_CHOICES = (
+        (OTHER, 'Other'),
+    )
 
     objects: UserManager = UserManager()
 
@@ -70,6 +88,12 @@ class User(AbstractUser, SafeDeleteModel):
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
+    payment_method = models.CharField(max_length=16,
+                                      choices=PAYMENT_METHOD_CHOICES,
+                                      default=VENMO)
+    referred_by = models.CharField(max_length=32,
+                                   choices=REFERRAL_CHOICES,
+                                   default=OTHER)
 
     def pick_history_by_season(self, season_id: int) -> SafeDeleteQueryset:
         """Get a user's pick history for a specific year.
