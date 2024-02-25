@@ -51,6 +51,7 @@ class TestAuthApi(APITestCase):
         user_data = {
             'first_name': 'Test',
             'last_name': 'User',
+            'username': 'TestUser',
             'email': 'test.user@email.com',
             'password': 'terriblePassword123'
         }

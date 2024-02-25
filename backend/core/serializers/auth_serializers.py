@@ -49,6 +49,7 @@ class RegisterUserSerializer(ModelSerializer):
         """
         user_data = {
             'password': validated_data.pop('password'),
+            'username': validated_data.pop('username'),
             'email': validated_data.pop('email'),
         }
 
