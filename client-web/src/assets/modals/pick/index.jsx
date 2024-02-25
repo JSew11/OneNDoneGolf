@@ -55,7 +55,10 @@ const PickModal = ({ season, tournament, pick }) => {
         onClick={handleOpen}
         sx={{
           backgroundColor: 'royalblue',
-          fontSize: '1.5em'
+          fontSize: '1.5em',
+          ':hover': {
+            backgroundColor: '#2d499d'
+          },
         }}
       >
         { pick ? 
