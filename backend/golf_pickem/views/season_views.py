@@ -244,9 +244,9 @@ class SeasonTournamentsViewSet(ModelViewSet):
             )
     
     @action(detail=False, methods=['GET'])
-    def available_golfers_list(self, request: Request, season_id: int, tournament_id: int) -> Response:
-        """Get a list of the golfers who have not yet been selected for the
-        season tournament with the given season and tournament ids.
+    def field(self, request: Request, season_id: int, tournament_id: int) -> Response:
+        """Get a list of the golfers who are participating in the tournament with 
+        the given id during the season with the given id.
         """
         try:
             tournament_season: TournamentSeason = TournamentSeason.objects.get(season=season_id, tournament=tournament_id)

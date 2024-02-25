@@ -259,21 +259,19 @@ class TestSeasonTournamentsViewSet(APITestCase):
         self.assertEqual(self.test_season.id, response.data['season'])
         self.assertEqual(self.test_tournament_1.id, response.data['tournament']) 
 
-    def test_available_golfers_endpoint(self):
+    def test_field_endpoint(self):
         """Test the GET endpoint for getting a list of available golfers.
         """
         # test hitting the endpoint as an unauthorized user
-        response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/tournaments/{self.test_tournament_3.id}/available-golfers/')
+        response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/tournaments/{self.test_tournament_3.id}/field/')
         self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
 
         self.client.force_authenticate(self.admin_user)
 
         # test getting the list of available golfers
-        response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/tournaments/{self.test_tournament_3.id}/available-golfers/')
+        response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/tournaments/{self.test_tournament_3.id}/field/')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(2, len(response.data))
-        self.assertEqual(3, response.data[0]['id'])
-        self.assertEqual(4, response.data[1]['id'])
+        self.assertEqual(4, len(response.data))
 
 class TestSeasonTournamentGolfersViewSet(APITestCase):
     """Tests for the season tournament golfers viewset endpoints.
