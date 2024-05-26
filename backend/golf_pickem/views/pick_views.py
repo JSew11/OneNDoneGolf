@@ -50,16 +50,21 @@ class PickViewSet(ModelViewSet):
         the request. Users CANNOT make picks for any user other than themselves.
         """
         tournament_id = request.data.get('tournament_id')
-        golfer_id = request.data.get('golfer_id')
+        primary_selection_id = request.data.get('primary_selection_golfer_id')
+        backup_selection_id = request.data.get('backup_selection_golfer_id')
         season_id = request.data.get('season_id')
         # check for required fields
         error_messages = []
         if not tournament_id:
             error_messages.append('Field \'tournament_id\' is required')
-        if not golfer_id:
-            error_messages.append('Field \'golfer_id\' is required')
+        if not primary_selection_id:
+            error_messages.append('Field \'primary_selection_golfer_id\' is required')
+        if not backup_selection_id:
+            error_messages.append('Field \'backup_selection_golfer_id\' is required')
         if not season_id:
             error_messages.append('Field \'season_id\' is required')
+        # TODO - validate the primary and backup picks (cannot have been previously 
+        # picked and cannot equal each other)
         if len(error_messages) > 0:
             return Response(
                 data={'errors': error_messages},
@@ -71,7 +76,8 @@ class PickViewSet(ModelViewSet):
                 'user': request.user.id,
                 'season': season_id,
                 'tournament': tournament_id,
-                'golfer': golfer_id
+                'primary_selection': primary_selection_id,
+                'backup_selection': backup_selection_id
             }
             serializer: PickSerializer = self.serializer_class(data=pick_data)
             if serializer.is_valid():
@@ -119,11 +125,14 @@ class PickViewSet(ModelViewSet):
         by the owner of the pick. Pick updates can only change the golfer being
         picked for the tournament.
         """
-        golfer_id = request.data.get('golfer_id')
+        primary_selection_id = request.data.get('primary_selection_golfer_id')
+        backup_selection_id = request.data.get('backup_selection_golfer_id')
         # check for required fields
         error_messages = []
-        if not golfer_id:
-            error_messages.append('Field \'golfer_id\' is required')
+        if not primary_selection_id:
+            error_messages.append('Field \'primary_selection_golfer_id\' is required')
+        if not backup_selection_id:
+            error_messages.append('Field \'backup_selection_golfer_id\' is required')
         if len(error_messages) > 0:
             return Response(
                 data={'errors': error_messages},
@@ -133,7 +142,8 @@ class PickViewSet(ModelViewSet):
         try:
             pick: Pick = Pick.objects.get(id=pick_id, user=request.user)
             updated_data = {
-                'golfer': golfer_id,
+                'primary_selection': primary_selection_id,
+                'backup_selection': backup_selection_id,
                 'updated': datetime.now()
             }
             serializer: PickSerializer = self.serializer_class(pick, data=updated_data, partial=True)
