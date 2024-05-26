@@ -22,7 +22,7 @@ class GolferSerializer(ModelSerializer):
         user: User = self.context.get('user')
         season_id: int = self.context.get('season_id')
         if user != None and season_id != None:
-            return obj in [pick.golfer for pick in user.pick_history_by_season(season_id=season_id)]
+            return obj in [pick.scored_golfer for pick in user.pick_history_by_season(season_id=season_id) if pick.scored_golfer != None]
         return None
     
     def get_tournament_picked_in(self, obj: Golfer):
@@ -33,6 +33,6 @@ class GolferSerializer(ModelSerializer):
         user: User = self.context.get('user')
         season_id: int = self.context.get('season_id')
         if user != None and season_id != None:
-            pick = user.pick_history_by_season(season_id=season_id).filter(golfer=obj.id).first()
+            pick = user.pick_history_by_season(season_id=season_id).filter(scored_golfer=obj.id).first()
             return pick.tournament.alias if pick else None
         return None

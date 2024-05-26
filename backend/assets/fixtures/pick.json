@@ -9,7 +9,9 @@
         "user": 1,
         "season": 1,
         "tournament": 1,
-        "golfer": 1
+        "scored_golfer": 1,
+        "primary_selection": 1,
+        "backup_selection": 2
     }
 },
 {
@@ -22,7 +24,9 @@
         "user": 1,
         "season": 1,
         "tournament": 2,
-        "golfer": 2
+        "scored_golfer": 2,
+        "primary_selection": 2,
+        "backup_selection": 3
     }
 }
 ]

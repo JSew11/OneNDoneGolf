@@ -37,7 +37,7 @@ class Pick(SafeDeleteModel):
                 name='unique_user_tournament_season'
             ),
             UniqueConstraint(
-                fields=['user', 'golfer', 'season'],
+                fields=['user', 'scored_golfer', 'season'],
                 condition=Q(deleted__isnull=True),
                 name='unique_user_golfer_season'
             )
@@ -52,4 +52,6 @@ class Pick(SafeDeleteModel):
     user = ForeignKey(User, on_delete=CASCADE, related_name='pick_history')
     season = ForeignKey(Season, on_delete=CASCADE, related_name='pick_history')
     tournament = ForeignKey(Tournament, on_delete=CASCADE, related_name='picks')
-    golfer = ForeignKey(Golfer, on_delete=CASCADE, related_name='picked_by_history')
+    scored_golfer = ForeignKey(Golfer, on_delete=CASCADE, related_name='picked_by_history', blank=True, null=True)
+    primary_selection = ForeignKey(Golfer, on_delete=CASCADE, related_name='primary_selections')
+    backup_selection = ForeignKey(Golfer, on_delete=CASCADE, related_name='backup_selections')
