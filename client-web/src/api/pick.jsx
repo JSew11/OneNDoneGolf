@@ -8,11 +8,12 @@ const list = async () => {
     return await privateAxios.get(BASE_URL);
 };
 
-const create = async (seasonId, tournamentId, golferId) => {
+const create = async (seasonId, tournamentId, primarySelectionGolferId, backupSelectionGolferId) => {
     const newPickData = {
         season_id: seasonId,
         tournament_id: tournamentId,
-        golfer_id: golferId,
+        primary_selection_golfer_id: primarySelectionGolferId,
+        backup_selection_golfer_id: backupSelectionGolferId,
     };
     return await privateAxios.post(BASE_URL, newPickData);
 };
@@ -21,9 +22,10 @@ const retrieve = async (pickId) => {
     return await privateAxios.get(BASE_URL + pickId + '/');
 };
 
-const changeGolfer = async (pickId, newGolferId) => {
+const changeGolfer = async (pickId, newPrimarySelectionGolferId, newBackupSelectionGolferId) => {
     const updatedPickData = {
-        golfer_id: newGolferId
+        primary_selection_golfer_id: newPrimarySelectionGolferId,
+        backup_selection_golfer_id: newBackupSelectionGolferId,
     };
     return await privateAxios.patch(BASE_URL + pickId + '/', updatedPickData);
 };
