@@ -63,7 +63,7 @@ class PickViewSet(ModelViewSet):
             error_messages.append('Field \'backup_selection_golfer_id\' is required')
         if not season_id:
             error_messages.append('Field \'season_id\' is required')
-        error_messages.extend(self._validate_pick(user=request.user, primary_selection_id=primary_selection_id, backup_selection_id=backup_selection_id))
+        error_messages.extend(self._validate_pick(user=request.user, season_id=season_id, primary_selection_id=primary_selection_id, backup_selection_id=backup_selection_id))
         # picked and cannot equal each other)
         if len(error_messages) > 0:
             return Response(
@@ -133,15 +133,15 @@ class PickViewSet(ModelViewSet):
             error_messages.append('Field \'primary_selection_golfer_id\' is required')
         if not backup_selection_id:
             error_messages.append('Field \'backup_selection_golfer_id\' is required')
-        error_messages.extend(self._validate_pick(user=request.user, primary_selection_id=primary_selection_id, backup_selection_id=backup_selection_id))
-        if len(error_messages) > 0:
-            return Response(
-                data={'errors': error_messages},
-                status=status.HTTP_400_BAD_REQUEST
-            )
         # attempt to update the pick object's associated golfer season
         try:
             pick: Pick = Pick.objects.get(id=pick_id, user=request.user)
+            error_messages.extend(self._validate_pick(user=request.user, season_id=pick.season.id, primary_selection_id=primary_selection_id, backup_selection_id=backup_selection_id))
+            if len(error_messages) > 0:
+                return Response(
+                    data={'errors': error_messages},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
             updated_data = {
                 'primary_selection': primary_selection_id,
                 'backup_selection': backup_selection_id,
@@ -188,13 +188,16 @@ class PickViewSet(ModelViewSet):
                 status=status.HTTP_404_NOT_FOUND
             )
     
-    def _validate_pick(self, user: User, primary_selection_id: int, backup_selection_id: int):
+    def _validate_pick(self, user: User, season_id: int, primary_selection_id: int, backup_selection_id: int):
         """Validate that the primary and backup selections are unique and have not been picked yet by
         the given user during the current season.
         """
         error_messages = []
         if primary_selection_id == backup_selection_id:
             error_messages.append('\'primary_selection_golfer_id\' and \'backup_selection_golfer_id\' must be unique')
-        # TODO - check that the primary selection has not been selected yet this season
-        # TODO - check that the backup selection has not been selected yet this season
+        previously_scored_golfer_ids = [str(pick.scored_golfer.id) for pick in user.pick_history_by_season(season_id=season_id) if pick.scored_golfer != None]
+        if primary_selection_id in previously_scored_golfer_ids:
+            error_messages.append('\'primary_selection_golfer_id\' has already been picked this season')
+        if backup_selection_id in previously_scored_golfer_ids:
+            error_messages.append('\'backup_selection_golfer_id\' has already been picked this season')
         return error_messages
