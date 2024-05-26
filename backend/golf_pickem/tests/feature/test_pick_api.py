@@ -151,7 +151,7 @@ class TestPickApi(APITestCase):
             'season_id': 1,
         }
         response: Response = self.client.post(path='/api/golf-pickem/picks/', data=valid_pick_data)
-        self.assertIsNone(response.data)
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
 
         # test creating a pick with an invalid tournament season
         invalid_pick_data = {
