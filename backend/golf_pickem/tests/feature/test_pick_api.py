@@ -113,6 +113,19 @@ class TestPickApi(APITestCase):
         response: Response = self.client.post(path='/api/golf-pickem/picks/', data=invalid_golfer_pick_data)
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
+        # TODO - test creating a pick with an invalid primary selectin golfer
+        # TODO - test creating a pick with an invalid backup selection golfer
+
+        # test creating a pick with the same primary and backup selection golfer
+        invalid_golfer_pick_data = {
+            'tournament_id': 3,
+            'primary_selection_golfer_id': 3,
+            'backup_selection_golfer_id': 3, 
+            'season_id': 1,
+        }
+        response: Response = self.client.post(path='/api/golf-pickem/picks/', data=invalid_golfer_pick_data)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+
         # test creating a valid pick
         valid_pick_data = {
             'tournament_id': 3,
@@ -133,10 +146,6 @@ class TestPickApi(APITestCase):
         response: Response = self.client.post(path='/api/golf-pickem/picks/', data=invalid_pick_data)
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
         self.assertEqual('You have already picked in this tournament for this season', response.data['message'])
-
-        # TODO - test creating a pick with an invalid primary selectin golfer
-        # TODO - test creating a pick with an invalid backup selection golfer
-        # TODO - test creating a pick with the same primary and backup selection golfer
 
     def test_retrieve_pick_endpoint(self):
         """Test the GET endpoint for getting a specific pick by its id.
@@ -193,7 +202,14 @@ class TestPickApi(APITestCase):
 
         # TODO - test updating a pick with a primary selection golfer the user has already selected this season
         # TODO - test updating a pick with a backup selection goler the user has already selected
-        # TODO - test updating a pick with the same primary and backup selection golfers
+        
+        # test updating a pick with the same primary and backup selection golfers
+        invalid_golfer_pick_data = {
+            'primary_selection_golfer_id': 3,
+            'backup_selection_golfer_id': 3
+        }
+        response: Response = self.client.patch(path=f'/api/golf-pickem/picks/{self.test_pick_2.id}/', data=invalid_golfer_pick_data)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
     
     def test_destroy_pick_endpoint(self):
         """Test the DELETE endpoint for deleting a pick by its id.

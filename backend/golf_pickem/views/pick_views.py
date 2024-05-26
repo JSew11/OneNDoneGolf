@@ -63,7 +63,7 @@ class PickViewSet(ModelViewSet):
             error_messages.append('Field \'backup_selection_golfer_id\' is required')
         if not season_id:
             error_messages.append('Field \'season_id\' is required')
-        # TODO - validate the primary and backup picks (cannot have been previously 
+        error_messages.extend(self._validate_pick(user=request.user, primary_selection_id=primary_selection_id, backup_selection_id=backup_selection_id))
         # picked and cannot equal each other)
         if len(error_messages) > 0:
             return Response(
@@ -133,6 +133,7 @@ class PickViewSet(ModelViewSet):
             error_messages.append('Field \'primary_selection_golfer_id\' is required')
         if not backup_selection_id:
             error_messages.append('Field \'backup_selection_golfer_id\' is required')
+        error_messages.extend(self._validate_pick(user=request.user, primary_selection_id=primary_selection_id, backup_selection_id=backup_selection_id))
         if len(error_messages) > 0:
             return Response(
                 data={'errors': error_messages},
@@ -186,3 +187,14 @@ class PickViewSet(ModelViewSet):
                 data={'message': f'Pick with id \'{pick_id}\' not found for the current user'},
                 status=status.HTTP_404_NOT_FOUND
             )
+    
+    def _validate_pick(self, user: User, primary_selection_id: int, backup_selection_id: int):
+        """Validate that the primary and backup selections are unique and have not been picked yet by
+        the given user during the current season.
+        """
+        error_messages = []
+        if primary_selection_id == backup_selection_id:
+            error_messages.append('\'primary_selection_golfer_id\' and \'backup_selection_golfer_id\' must be unique')
+        # TODO - check that the primary selection has not been selected yet this season
+        # TODO - check that the backup selection has not been selected yet this season
+        return error_messages
