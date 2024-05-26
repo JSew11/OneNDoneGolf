@@ -30,6 +30,7 @@ class TestPickModel(TestCase):
         self.test_golfer_1: Golfer = Golfer.objects.get(id=1)
         self.test_golfer_2: Golfer = Golfer.objects.get(id=2)
         self.test_golfer_3: Golfer = Golfer.objects.get(id=3)
+        self.test_golfer_4: Golfer = Golfer.objects.get(id=4)
         return super().setUp()
     
     def test_create_valid_pick(self):
@@ -39,11 +40,13 @@ class TestPickModel(TestCase):
             user = self.test_user,
             season = self.test_season_1,
             tournament = self.test_tournament_3,
-            golfer = self.test_golfer_3,
+            primary_selection = self.test_golfer_3,
+            backup_selection = self.test_golfer_4
         )
         self.assertEqual(self.test_user, valid_pick.user)
         self.assertEqual(self.test_tournament_3, valid_pick.tournament)
-        self.assertEqual(self.test_golfer_3, valid_pick.golfer)
+        self.assertEqual(self.test_golfer_3, valid_pick.primary_selection)
+        self.assertEqual(self.test_golfer_4, valid_pick.backup_selection)
 
     def test_create_invalid_tournament_pick(self):
         """Test creating a pick for a tournament the user has already picked in
@@ -54,7 +57,8 @@ class TestPickModel(TestCase):
                 user = self.test_user,
                 season = self.test_season_1,
                 tournament = self.test_tournament_1,
-                golfer = self.test_golfer_3,
+                primary_selection = self.test_golfer_3,
+                backup_selection = self.test_golfer_4
             )
             self.assertIn('unique_user_tournament_season', str(error.exception))
 
@@ -62,12 +66,15 @@ class TestPickModel(TestCase):
         """Test creating a pick for a golfer the user has already picked in the
         season (should fail).
         """
+        # test case for a primary selection that has already been picked
         with self.assertRaises(IntegrityError) as error:
             Pick.objects.create(
                 user = self.test_user,
                 season = self.test_season_1,
                 tournament = self.test_tournament_3,
-                golfer = self.test_golfer_1,
+                primary_selection = self.test_golfer_1,
+                backup_selection = self.test_golfer_4,
+                scored_golfer = self.test_golfer_1
             )
             self.assertIn('unique_user_golfer_season', str(error.exception))
 
@@ -76,7 +83,8 @@ class TestPickModel(TestCase):
         """
         # test the bulk update method
         self.assertTrue(Pick.objects.filter(id=2).update(
-            golfer = self.test_golfer_3
+            primary_selection = self.test_golfer_3,
+            backup_selection = self.test_golfer_4,
         ))
 
         # test the individual update method (changing the pick back to what it was)
@@ -100,7 +108,9 @@ class TestPickModel(TestCase):
         """
         with self.assertRaises(IntegrityError) as error:
             Pick.objects.filter(id=2).update(
-                golfer = self.test_golfer_1
+                primary_selection = self.test_golfer_1,
+                backup_selection = self.test_golfer_4,
+                scored_golfer = self.test_golfer_1
             )
             self.assertIn('unique_user_golfer_season', str(error.exception))
 
@@ -108,7 +118,7 @@ class TestPickModel(TestCase):
         """Test updating a pick (individual method) so that the pick is invalid.
         """
         test_pick: Pick = Pick.objects.get(id=2)
-        test_pick.golfer = self.test_golfer_1
+        test_pick.scored_golfer = self.test_golfer_1
         with self.assertRaises(IntegrityError) as error:
             test_pick.save()
             self.assertIn('unique_user_golfer_season', str(error.exception))
