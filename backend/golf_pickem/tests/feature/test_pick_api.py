@@ -143,15 +143,15 @@ class TestPickApi(APITestCase):
         response: Response = self.client.post(path='/api/golf-pickem/picks/', data=same_primary_backup_golfer_pick_data)
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
-        # # test creating a valid pick
-        # valid_pick_data = {
-        #     'tournament_id': 3,
-        #     'primary_selection_golfer_id': 3,
-        #     'backup_selection_golfer_id': 4, 
-        #     'season_id': 1,
-        # }
-        # response: Response = self.client.post(path='/api/golf-pickem/picks/', data=valid_pick_data)
-        # self.assertEqual(status.HTTP_201_CREATED, response.status_code)
+        # test creating a valid pick
+        valid_pick_data = {
+            'tournament_id': 3,
+            'primary_selection_golfer_id': 3,
+            'backup_selection_golfer_id': 4, 
+            'season_id': 1,
+        }
+        response: Response = self.client.post(path='/api/golf-pickem/picks/', data=valid_pick_data)
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
 
         # test creating a pick with an invalid tournament season
         invalid_pick_data = {
