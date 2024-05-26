@@ -72,7 +72,8 @@ class PickViewSet(ModelViewSet):
                 'season': season_id,
                 'tournament': tournament_id,
                 'primary_selection': primary_selection_id,
-                'backup_selection': backup_selection_id
+                'backup_selection': backup_selection_id,
+                'scored_golfer': None
             }
             serializer: PickSerializer = self.serializer_class(data=pick_data)
             if serializer.is_valid():
