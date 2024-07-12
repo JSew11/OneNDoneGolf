@@ -130,14 +130,26 @@ class TestPickModel(TestCase):
             self.test_pick_2.save()
             self.assertIn('unique_user_golfer_season', str(error.exception))
     
-    def test_get_prize_money(self):
-        """Test the get_prize_money method of the Pick model.
+    def test_prize_money(self):
+        """Test the prize_money property of the Pick model.
         """
         # test getting the prize money for a pick that has not yet been scored
-        self.assertEqual(0, self.test_pick_2.get_prize_money())
+        self.assertEqual(0, self.test_pick_2.prize_money)
 
         # test getting the prize money for a pick that has been scored
         tournament_season = TournamentSeason.objects.get(tournament=self.test_pick_1.tournament.id ,season=self.test_pick_1.season.id)
         golfer_season = GolferSeason.objects.get(golfer=self.test_pick_1.scored_golfer.id, season=self.test_pick_1.season.id)
         tournament_golfer = TournamentGolfer.objects.get(tournament_season=tournament_season.id, golfer_season=golfer_season.id)
-        self.assertEqual(tournament_golfer.prize_money, self.test_pick_1.get_prize_money())
+        self.assertEqual(tournament_golfer.prize_money, self.test_pick_1.prize_money)
+    
+    def test_won_tournament(self):
+        """Test the won_tournament property of the Pick model.
+        """
+        # test checking for a won tournament for a pick that has not yet been scored
+        self.assertFalse(self.test_pick_2.won_tournament)
+
+        # test checking for a won tournament for a pick that has been scored
+        tournament_season = TournamentSeason.objects.get(tournament=self.test_pick_1.tournament.id ,season=self.test_pick_1.season.id)
+        golfer_season = GolferSeason.objects.get(golfer=self.test_pick_1.scored_golfer.id, season=self.test_pick_1.season.id)
+        tournament_golfer = TournamentGolfer.objects.get(tournament_season=tournament_season.id, golfer_season=golfer_season.id)
+        self.assertEqual(tournament_golfer.position == 1, self.test_pick_1.won_tournament)
