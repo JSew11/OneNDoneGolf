@@ -8,6 +8,9 @@ from golf_pickem.models import (
     Season,
     Tournament,
     Golfer,
+    TournamentSeason,
+    GolferSeason,
+    TournamentGolfer,
 )
 
 class TestPickModel(TestCase):
@@ -18,7 +21,10 @@ class TestPickModel(TestCase):
         'season',
         'tournament',
         'golfer',
-        'pick'
+        'pick',
+        'tournament_season',
+        'golfer_season',
+        'tournament_golfer'
     ]
 
     def setUp(self) -> None:
@@ -31,6 +37,8 @@ class TestPickModel(TestCase):
         self.test_golfer_2: Golfer = Golfer.objects.get(id=2)
         self.test_golfer_3: Golfer = Golfer.objects.get(id=3)
         self.test_golfer_4: Golfer = Golfer.objects.get(id=4)
+        self.test_pick_1: Pick = Pick.objects.get(id=1)
+        self.test_pick_2: Pick = Pick.objects.get(id=2)
         return super().setUp()
     
     def test_create_valid_pick(self):
@@ -88,9 +96,9 @@ class TestPickModel(TestCase):
         ))
 
         # test the individual update method (changing the pick back to what it was)
-        test_pick: Pick = Pick.objects.get(id=2)
-        test_pick.golfer = self.test_golfer_2
-        test_pick.save()
+        self.test_pick_2.primary_selection = self.test_golfer_2
+        self.test_pick_2.backup_selection = self.test_golfer_3
+        self.test_pick_2.save()
 
     def test_invalid_tournament_pick_update(self):
         """Test updating a pick (bulk method) so that the user has already picked in
@@ -117,8 +125,19 @@ class TestPickModel(TestCase):
     def test_invalid_golfer_save(self):
         """Test updating a pick (individual method) so that the pick is invalid.
         """
-        test_pick: Pick = Pick.objects.get(id=2)
-        test_pick.scored_golfer = self.test_golfer_1
+        self.test_pick_2.scored_golfer = self.test_golfer_1
         with self.assertRaises(IntegrityError) as error:
-            test_pick.save()
+            self.test_pick_2.save()
             self.assertIn('unique_user_golfer_season', str(error.exception))
+    
+    def test_get_prize_money(self):
+        """Test the get_prize_money method of the Pick model.
+        """
+        # test getting the prize money for a pick that has not yet been scored
+        self.assertEqual(0, self.test_pick_2.get_prize_money())
+
+        # test getting the prize money for a pick that has been scored
+        tournament_season = TournamentSeason.objects.get(tournament=self.test_pick_1.tournament.id ,season=self.test_pick_1.season.id)
+        golfer_season = GolferSeason.objects.get(golfer=self.test_pick_1.scored_golfer.id, season=self.test_pick_1.season.id)
+        tournament_golfer = TournamentGolfer.objects.get(tournament_season=tournament_season.id, golfer_season=golfer_season.id)
+        self.assertEqual(tournament_golfer.prize_money, self.test_pick_1.get_prize_money())

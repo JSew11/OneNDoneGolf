@@ -96,6 +96,6 @@ class User(AbstractUser, SafeDeleteModel):
                                    blank=True, null=True)
 
     def pick_history_by_season(self, season_id: int) -> SafeDeleteQueryset:
-        """Get a user's pick history for a specific year.
+        """Get a user's pick history for a specific season.
         """
         return self.pick_history.filter(season__id=season_id).all()

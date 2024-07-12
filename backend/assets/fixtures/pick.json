@@ -24,7 +24,7 @@
         "user": 1,
         "season": 1,
         "tournament": 2,
-        "scored_golfer": 2,
+        "scored_golfer": null,
         "primary_selection": 2,
         "backup_selection": 3
     }
