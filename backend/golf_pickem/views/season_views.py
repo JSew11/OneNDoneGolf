@@ -7,7 +7,6 @@ from rest_framework import status, permissions
 
 from ..models import (
     Season,
-    Golfer,
     GolferSeason,
     Tournament,
     TournamentSeason,
