@@ -99,3 +99,14 @@ class User(AbstractUser, SafeDeleteModel):
         """Get a user's pick history for a specific season.
         """
         return self.pick_history.filter(season__id=season_id).all()
+    
+    def prize_money_by_season(self, season_id: int) -> int:
+        """Get the total prize money won by a user's picks for a specific season.
+        """
+        return sum(pick.prize_money for pick in self.pick_history_by_season(season_id=season_id))
+    
+    def tournaments_won_by_season(self, season_id: int) -> int:
+        """Get the total number of tournaments where the user picked the winner of the tournament
+        for a specific season.
+        """
+        return sum(pick.won_tournament for pick in self.pick_history_by_season(season_id=season_id))

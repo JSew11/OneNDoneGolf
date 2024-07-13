@@ -16,6 +16,7 @@ class TestUserModel(TestCase):
         'tournament_season',
         'golfer',
         'golfer_season',
+        'tournament_golfer',
         'pick'
     ]
 
@@ -94,7 +95,7 @@ class TestUserModel(TestCase):
         self.assertEqual(test_user_complete.last_name, 'User')
 
     def test_pick_history_by_season(self):
-        """Test the pick_history by season method in the user model.
+        """Test the pick_history_by_season method in the user model.
         """
         # test getting the pick history for a valid season id
         season_1_pick_history = self.test_user.pick_history_by_season(season_id=self.test_season.id)
@@ -103,3 +104,25 @@ class TestUserModel(TestCase):
         # test getting the pick history for an invalid season id
         invalid_season_pick_history = self.test_user.pick_history_by_season(season_id=100)
         self.assertEqual(len(invalid_season_pick_history), 0)
+    
+    def test_prize_money_by_season(self):
+        """Test the prize_money_by_season method in the user model.
+        """
+        # test getting the prize money for a valid season id
+        season_1_prize_money = self.test_user.prize_money_by_season(season_id=self.test_season.id)
+        self.assertEqual(8000, season_1_prize_money)
+
+        # test getting the prize money for an invalid season id
+        invalid_season_prize_money = self.test_user.prize_money_by_season(season_id=100)
+        self.assertEqual(0, invalid_season_prize_money)
+
+    def test_tournaments_won_by_season(self):
+        """Test the tournaments_won_by_season method in the user model.
+        """
+        # test getting the prize money for a valid season id
+        season_1_tournaments_won = self.test_user.tournaments_won_by_season(season_id=self.test_season.id)
+        self.assertEqual(1, season_1_tournaments_won)
+
+        # test getting the prize money for an invalid season id
+        invalid_season_tournaments_won = self.test_user.prize_money_by_season(season_id=100)
+        self.assertEqual(0, invalid_season_tournaments_won)
