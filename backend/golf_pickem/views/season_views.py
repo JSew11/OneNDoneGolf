@@ -159,6 +159,13 @@ class SeasonViewSet(ModelViewSet):
                 data={'status': f'Could not find the next tournament for Season with id \'{season_id}\' '},
                 status=status.HTTP_404_NOT_FOUND,
             )
+    
+    @action(detail=True, methods=['GET'])
+    def standings(self, request: Request, season_id: int) -> Response:
+        """Get the standings for the season with the given id.
+        """
+        # TODO - write this
+        return Response(data={'status': 'endpoint in progress'})
 
 class SeasonGolfersViewset(ModelViewSet):
     """Viewset for the golfers participating in a season. Supports viewing either
