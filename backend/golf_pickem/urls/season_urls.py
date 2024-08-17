@@ -2,6 +2,7 @@ from django.urls import path
 
 from ..views import (
     SeasonViewSet,
+    SeasonUsersViewset,
     SeasonGolfersViewset,
     SeasonTournamentsViewSet,
     SeasonTournamentGolferViewSet,
@@ -24,6 +25,11 @@ active_season_view = SeasonViewSet.as_view({
 
 next_tournament_view = SeasonViewSet.as_view({
     'get': 'next_tournament',
+})
+
+season_users_list_views = SeasonUsersViewset.as_view({
+    'get': 'list',
+    'post': 'create',
 })
 
 season_golfers_list_views = SeasonGolfersViewset.as_view({
@@ -59,6 +65,7 @@ urlpatterns = [
     path('active/', active_season_view, name='active_season'),
     path('<int:season_id>/', season_details_views, name='season_details'),
     path('<int:season_id>/next-tournament/', next_tournament_view, name='next_tournament'),
+    path('<int:season_id>/users/', season_users_list_views, name='season_users_list'),
     path('<int:season_id>/golfers/', season_golfers_list_views, name='season_golfers_list'),
     path('<int:season_id>/golfers/<int:golfer_id>/', season_golfers_detail_views, name='season_golfer_details'),
     path('<int:season_id>/tournaments/', season_tournaments_list_views, name='season_tournaments_list'),

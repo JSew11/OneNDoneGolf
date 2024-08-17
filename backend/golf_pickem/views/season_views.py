@@ -7,6 +7,7 @@ from rest_framework import status, permissions
 
 from ..models import (
     Season,
+    UserSeason,
     GolferSeason,
     Tournament,
     TournamentSeason,
@@ -14,6 +15,7 @@ from ..models import (
 )
 from ..serializers import (
     SeasonSerializer,
+    UserSeasonSerialier,
     GolferSerializer,
     GolferSeasonSerialier,
     TournamentSerializer,
@@ -166,6 +168,52 @@ class SeasonViewSet(ModelViewSet):
         """
         # TODO - write this
         return Response(data={'status': 'endpoint in progress'})
+
+class SeasonUsersViewset(ModelViewSet):
+    """Viewset for the users participating in a season. Supports creating and viewing
+    either as a list o individually.
+    """
+    queryset = UserSeason.objects.all()
+    serializer_class = UserSeasonSerialier
+    permission_classes = [permissions.DjangoModelPermissions]
+
+    def list(self, request: Request, season_id: int, *args, **kwargs) -> Response:
+        """List the users who participated in the season with the given id.
+        """
+        try:
+            season: Season = Season.objects.get(id=season_id)
+            serializer: UserSeasonSerialier = self.serializer_class(season.users, many=True)
+            return Response(
+                data=serializer.data,
+                status=status.HTTP_200_OK,
+            )
+        except Season.DoesNotExist:
+            return Response(
+                data={'status': f'Season with id \'{season_id}\' not found'},
+                status=status.HTTP_404_NOT_FOUND, 
+            )
+    
+    def create(self, request: Request, season_id: int, *args, **kwargs) -> Response:
+        """Create a user season using the given information.
+        """
+        user_registration_data = {
+            'season': season_id,
+            'user': request.user.id
+        }
+        user_id = request.data.get('user', default=None)
+        if request.user.has_perm('golf_pickem.create_userseason') and user_id!= None:
+            user_registration_data['user'] = user_id
+        serializer: UserSeasonSerialier = self.serializer_class(data=user_registration_data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                data=serializer.data,
+                status=status.HTTP_201_CREATED,
+            )
+        return Response(
+            data=serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
 class SeasonGolfersViewset(ModelViewSet):
     """Viewset for the golfers participating in a season. Supports viewing either

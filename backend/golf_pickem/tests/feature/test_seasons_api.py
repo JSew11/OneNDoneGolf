@@ -159,6 +159,55 @@ class TestSeasonViewSet(APITestCase):
         self.assertEqual(self.test_tournament_3.id, response.data['tournament']['id'])
         self.assertIsNone(response.data['user_pick'])
 
+class TestSeasonUsersViewSet(APITestCase):
+    """Tests for the season users viewset endpoints.
+    """
+    fixtures = [
+        'user',
+        'season',
+        'user_season',
+    ]
+
+    def setUp(self) -> None:
+        self.client: APIClient = APIClient()
+        self.admin_user: User = User.objects.get(email='onendonedev@gmail.com')
+        self.regular_user: User = User.objects.get(email='regular.user@email.com')
+        self.test_season: Season = Season.objects.get(id=1)
+        self.test_new_season: Season = Season.objects.get(id=2)
+        return super().setUp()
+    
+    def test_season_users_list_endpoint(self):
+        """Test the GET endpoint for getting the list of users participating in
+        a given season.
+        """
+        # test hitting the endpoint as an unauthorized user
+        response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/users/')
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
+        
+        self.client.force_authenticate(self.admin_user)
+
+        # test getting the list of season users
+        response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/users/')
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(1, len(response.data))
+    
+    def test_season_users_create_endpoint(self):
+        """Test the POST endpoint for registering a user for a given season.
+        """
+        # test hitting the endpoint as an unauthorized user
+        response: Response = self.client.post(path=f'/api/golf-pickem/seasons/{self.test_new_season.id}/users/', data={})
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
+        
+        self.client.force_authenticate(self.admin_user)
+
+        # test registering the user who is making the request
+        response: Response = self.client.post(path=f'/api/golf-pickem/seasons/{self.test_new_season.id}/users/', data={})
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
+
+        # test registering a different user as an admin
+        response: Response = self.client.post(path=f'/api/golf-pickem/seasons/{self.test_new_season.id}/users/', data={'user': self.regular_user.id})
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
+
 class TestSeasonGolfersViewSet(APITestCase):
     """Tests for the season golfers viewset endpoints.
     """
