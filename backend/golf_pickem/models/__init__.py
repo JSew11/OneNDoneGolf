@@ -1,3 +1,4 @@
+from .user_season import UserSeason
 from .season import Season
 from .tournament import Tournament
 from .tournament_season import TournamentSeason

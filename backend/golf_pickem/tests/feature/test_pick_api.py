@@ -8,6 +8,7 @@ from golf_pickem.models import (
     Tournament,
     Pick,
     Season,
+    UserSeason,
 )
 
 class TestPickApi(APITestCase):
@@ -16,6 +17,7 @@ class TestPickApi(APITestCase):
     fixtures = [
         'user',
         'season',
+        'user_season',
         'tournament',
         'tournament_season',
         'golfer',

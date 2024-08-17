@@ -16,6 +16,7 @@ class TestSeasonViewSet(APITestCase):
     fixtures = [
         'user',
         'season',
+        'user_season',
         'tournament',
         'tournament_season',
     ]
@@ -212,6 +213,7 @@ class TestSeasonTournamentsViewSet(APITestCase):
     fixtures = [
         'user',
         'season',
+        'user_season',
         'tournament',
         'golfer',
         'tournament_season',

@@ -13,6 +13,7 @@ class TestTournamentSeasonModel(TestCase):
     fixtures = [
         'user',
         'season',
+        'user_season',
         'tournament',
         'tournament_season',
         'golfer',

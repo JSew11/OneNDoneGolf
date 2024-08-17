@@ -1,7 +1,6 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 from safedelete.models import SafeDeleteModel
-from safedelete.queryset import SafeDeleteQueryset
 from safedelete import SOFT_DELETE_CASCADE
 
 # payment method type
@@ -94,19 +93,3 @@ class User(AbstractUser, SafeDeleteModel):
     referred_by = models.CharField(max_length=32,
                                    choices=REFERRAL_CHOICES,
                                    blank=True, null=True)
-
-    def pick_history_by_season(self, season_id: int) -> SafeDeleteQueryset:
-        """Get a user's pick history for a specific season.
-        """
-        return self.pick_history.filter(season__id=season_id).all()
-    
-    def prize_money_by_season(self, season_id: int) -> int:
-        """Get the total prize money won by a user's picks for a specific season.
-        """
-        return sum(pick.prize_money for pick in self.pick_history_by_season(season_id=season_id))
-    
-    def tournaments_won_by_season(self, season_id: int) -> int:
-        """Get the total number of tournaments where the user picked the winner of the tournament
-        for a specific season.
-        """
-        return sum(pick.won_tournament for pick in self.pick_history_by_season(season_id=season_id))

@@ -6,7 +6,10 @@ from rest_framework.request import Request
 from rest_framework import status
 
 from core.models.user import User
-from ..models import Pick
+from ..models import (
+    Pick,
+    UserSeason
+)
 from ..serializers import PickSerializer
 
 class PickViewSet(ModelViewSet):
@@ -26,7 +29,8 @@ class PickViewSet(ModelViewSet):
             user_id = request.query_params.get('user_id')
             user: User = User.objects.get(id=user_id) if user_id else request.user
             if season_id := request.query_params.get('season_id'):
-                data = user.pick_history_by_season(season_id=season_id)
+                user_season: UserSeason = UserSeason.objects.get(user=user.id, season=season_id)
+                data = user_season.pick_history()
             else:
                 data = user.pick_history
             serializer: PickSerializer = self.serializer_class(data, many=True)
@@ -58,6 +62,11 @@ class PickViewSet(ModelViewSet):
             error_messages.append('Field \'backup_selection_golfer_id\' is required')
         if not season_id:
             error_messages.append('Field \'season_id\' is required')
+        if len(error_messages) > 0: # return any missing field errors before validating the pick
+            return Response(
+                data={'errors': error_messages},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         error_messages.extend(self._validate_pick(user=request.user, season_id=season_id, primary_selection_id=primary_selection_id, backup_selection_id=backup_selection_id))
         # picked and cannot equal each other)
         if len(error_messages) > 0:
@@ -191,7 +200,8 @@ class PickViewSet(ModelViewSet):
         error_messages = []
         if primary_selection_id == backup_selection_id:
             error_messages.append('\'primary_selection_golfer_id\' and \'backup_selection_golfer_id\' must be unique')
-        previously_scored_golfer_ids = [str(pick.scored_golfer.id) for pick in user.pick_history_by_season(season_id=season_id) if pick.scored_golfer != None]
+        user_season: UserSeason = UserSeason.objects.get(user=user.id, season=season_id)
+        previously_scored_golfer_ids = [str(pick.scored_golfer.id) for pick in user_season.pick_history() if pick.scored_golfer != None]
         if primary_selection_id in previously_scored_golfer_ids:
             error_messages.append('\'primary_selection_golfer_id\' has already been picked this season')
         if backup_selection_id in previously_scored_golfer_ids:

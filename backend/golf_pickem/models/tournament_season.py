@@ -14,6 +14,7 @@ from core.models import User
 from . import (
     Tournament,
     Season,
+    UserSeason,
 )
 
 class TournamentSeason(SafeDeleteModel):
@@ -52,7 +53,8 @@ class TournamentSeason(SafeDeleteModel):
         """Returns the given user's pick for the tournament season. Returns none if
         the user has not yet picked.
         """
-        pick_history = user.pick_history_by_season(season_id=self.season.id)
+        user_season: UserSeason = UserSeason.objects.get(user=user.id, season=self.season.id)
+        pick_history = user_season.pick_history()
         if self.tournament.id in [obj['tournament_id'] for obj in pick_history.values('tournament_id').all()]:
             return pick_history.get(tournament_id=self.tournament.id)
         return None
