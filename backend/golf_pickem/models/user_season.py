@@ -40,19 +40,22 @@ class UserSeason(SafeDeleteModel):
     user = ForeignKey(User, on_delete=CASCADE, related_name='golf_pickem_seasons')
     season = ForeignKey(Season, on_delete=CASCADE, related_name='users')
 
+    @property
     def pick_history(self) -> SafeDeleteQueryset:
         """Get a user's pick history for this season.
         """
         return self.user.pick_history.filter(season__id=self.season.id).all()
     
+    @property
     def prize_money(self) -> int:
         """Get the total prize money won by a user's picks for this season.
         """
-        return sum(pick.prize_money for pick in self.pick_history())
+        return sum(pick.prize_money for pick in self.pick_history)
     
+    @property
     def tournaments_won(self) -> int:
         """Get the total number of tournaments where the user picked the winner of the tournament
         for this season.
         """
-        return sum(pick.won_tournament for pick in self.pick_history())
+        return sum(pick.won_tournament for pick in self.pick_history)
     

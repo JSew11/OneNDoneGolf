@@ -30,7 +30,7 @@ class PickViewSet(ModelViewSet):
             user: User = User.objects.get(id=user_id) if user_id else request.user
             if season_id := request.query_params.get('season_id'):
                 user_season: UserSeason = UserSeason.objects.get(user=user.id, season=season_id)
-                data = user_season.pick_history()
+                data = user_season.pick_history
             else:
                 data = user.pick_history
             serializer: PickSerializer = self.serializer_class(data, many=True)
@@ -201,7 +201,7 @@ class PickViewSet(ModelViewSet):
         if primary_selection_id == backup_selection_id:
             error_messages.append('\'primary_selection_golfer_id\' and \'backup_selection_golfer_id\' must be unique')
         user_season: UserSeason = UserSeason.objects.get(user=user.id, season=season_id)
-        previously_scored_golfer_ids = [str(pick.scored_golfer.id) for pick in user_season.pick_history() if pick.scored_golfer != None]
+        previously_scored_golfer_ids = [str(pick.scored_golfer.id) for pick in user_season.pick_history if pick.scored_golfer != None]
         if primary_selection_id in previously_scored_golfer_ids:
             error_messages.append('\'primary_selection_golfer_id\' has already been picked this season')
         if backup_selection_id in previously_scored_golfer_ids:

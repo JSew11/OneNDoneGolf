@@ -168,7 +168,7 @@ const PickModal = ({ season, tournament, pick }) => {
             variant='contained'
             color='primary'
             type='submit'
-            disabled={(primarySelectionGolferId === '' || backupSelectionGolferId === '') || (pick && (currentPickPrimarySelectionGolferId === primarySelectionGolferId || currentPickBackupSelectionGolferId === backupSelectionGolferId))}
+            disabled={(primarySelectionGolferId === '' || backupSelectionGolferId === '') || (pick && (currentPickPrimarySelectionGolferId === primarySelectionGolferId && currentPickBackupSelectionGolferId === backupSelectionGolferId))}
           >
             Submit
           </Button>
