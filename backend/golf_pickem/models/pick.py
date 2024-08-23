@@ -9,9 +9,8 @@ from django.db.models import (
 from safedelete.models import SafeDeleteModel
 from safedelete import SOFT_DELETE
 
-from core.models import User
 from . import (
-    Season,
+    UserSeason,
     Tournament,
     Golfer,
     TournamentSeason,
@@ -35,12 +34,12 @@ class Pick(SafeDeleteModel):
         verbose_name_plural = 'Picks'
         constraints = [
             UniqueConstraint(
-                fields=['user', 'tournament', 'season'],
+                fields=['user_season', 'tournament'],
                 condition=Q(deleted__isnull=True),
                 name='unique_user_tournament_season'
             ),
             UniqueConstraint(
-                fields=['user', 'scored_golfer', 'season'],
+                fields=['user_season', 'scored_golfer'],
                 condition=Q(deleted__isnull=True),
                 name='unique_user_golfer_season'
             )
@@ -52,8 +51,7 @@ class Pick(SafeDeleteModel):
     updated = DateTimeField(auto_now=True)
 
     # related models
-    user = ForeignKey(User, on_delete=CASCADE, related_name='pick_history')
-    season = ForeignKey(Season, on_delete=CASCADE, related_name='pick_history')
+    user_season = ForeignKey(UserSeason, on_delete=CASCADE, related_name='pick_history')
     tournament = ForeignKey(Tournament, on_delete=CASCADE, related_name='picks')
     scored_golfer = ForeignKey(Golfer, on_delete=CASCADE, related_name='picked_by_history', blank=True, null=True)
     primary_selection = ForeignKey(Golfer, on_delete=CASCADE, related_name='primary_selections')
@@ -66,8 +64,8 @@ class Pick(SafeDeleteModel):
         if self.scored_golfer is None:
             return 0
 
-        tournament_season = TournamentSeason.objects.get(tournament=self.tournament.id, season=self.season.id)
-        golfer_season = GolferSeason.objects.get(golfer=self.scored_golfer.id, season=self.season.id)
+        tournament_season = TournamentSeason.objects.get(tournament=self.tournament.id, season=self.user_season.season.id)
+        golfer_season = GolferSeason.objects.get(golfer=self.scored_golfer.id, season=self.user_season.season.id)
         tournament_golfer = TournamentGolfer.objects.get(tournament_season=tournament_season.id, golfer_season=golfer_season.id)
         return tournament_golfer.prize_money
     
@@ -78,7 +76,7 @@ class Pick(SafeDeleteModel):
         if self.scored_golfer is None:
             return False
         
-        tournament_season = TournamentSeason.objects.get(tournament=self.tournament.id, season=self.season.id)
-        golfer_season = GolferSeason.objects.get(golfer=self.scored_golfer.id, season=self.season.id)
+        tournament_season = TournamentSeason.objects.get(tournament=self.tournament.id, season=self.user_season.season.id)
+        golfer_season = GolferSeason.objects.get(golfer=self.scored_golfer.id, season=self.user_season.season.id)
         tournament_golfer = TournamentGolfer.objects.get(tournament_season=tournament_season.id, golfer_season=golfer_season.id)
         return tournament_golfer.position == 1

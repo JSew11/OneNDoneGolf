@@ -24,7 +24,7 @@ class TestUserSeasonModel(TestCase):
     def test_pick_history(self):
         """Test the pick_history method in the user season model.
         """
-        season_1_pick_history = self.test_user_season.pick_history
+        season_1_pick_history = self.test_user_season.pick_history.all()
         self.assertEqual(len(season_1_pick_history), 2)
     
     def test_prize_money(self):

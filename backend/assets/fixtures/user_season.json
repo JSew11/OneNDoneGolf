@@ -9,5 +9,16 @@
         "user": 1,
         "season": 1
     }
+},
+{
+    "model": "golf_pickem.userseason",
+    "pk": 2,
+    "fields": {
+        "deleted": null,
+        "created": "2023-12-01T19:13:30.208Z",
+        "updated": "2023-12-01T19:13:30.208Z",
+        "user": 2,
+        "season": 1
+    }
 }
 ]

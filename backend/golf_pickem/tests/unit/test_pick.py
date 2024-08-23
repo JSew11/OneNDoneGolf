@@ -6,6 +6,7 @@ from core.models.user import User
 from golf_pickem.models import (
     Pick,
     Season,
+    UserSeason,
     Tournament,
     Golfer,
     TournamentSeason,
@@ -19,6 +20,7 @@ class TestPickModel(TestCase):
     fixtures = [
         'user',
         'season',
+        'user_season',
         'tournament',
         'golfer',
         'pick',
@@ -30,6 +32,7 @@ class TestPickModel(TestCase):
     def setUp(self) -> None:
         self.test_user: User = User.objects.get(id=1)
         self.test_season_1: Season = Season.objects.get(id=1)
+        self.test_user_season: UserSeason = UserSeason.objects.get(user=self.test_user, season=self.test_season_1)
         self.test_tournament_1: Tournament = Tournament.objects.get(id=1)
         self.test_tournament_2: Tournament = Tournament.objects.get(id=2)
         self.test_tournament_3: Tournament = Tournament.objects.get(id=3)
@@ -45,13 +48,12 @@ class TestPickModel(TestCase):
         """Test creating a valid pick. 
         """
         valid_pick: Pick = Pick.objects.create(
-            user = self.test_user,
-            season = self.test_season_1,
+            user_season = self.test_user_season,
             tournament = self.test_tournament_3,
             primary_selection = self.test_golfer_3,
             backup_selection = self.test_golfer_4
         )
-        self.assertEqual(self.test_user, valid_pick.user)
+        self.assertEqual(self.test_user_season, valid_pick.user_season)
         self.assertEqual(self.test_tournament_3, valid_pick.tournament)
         self.assertEqual(self.test_golfer_3, valid_pick.primary_selection)
         self.assertEqual(self.test_golfer_4, valid_pick.backup_selection)
@@ -62,8 +64,7 @@ class TestPickModel(TestCase):
         """
         with self.assertRaises(IntegrityError) as error:
             Pick.objects.create(
-                user = self.test_user,
-                season = self.test_season_1,
+            user_season = self.test_user_season,
                 tournament = self.test_tournament_1,
                 primary_selection = self.test_golfer_3,
                 backup_selection = self.test_golfer_4
@@ -77,8 +78,7 @@ class TestPickModel(TestCase):
         # test case for a primary selection that has already been picked
         with self.assertRaises(IntegrityError) as error:
             Pick.objects.create(
-                user = self.test_user,
-                season = self.test_season_1,
+            user_season = self.test_user_season,
                 tournament = self.test_tournament_3,
                 primary_selection = self.test_golfer_1,
                 backup_selection = self.test_golfer_4,
@@ -137,8 +137,8 @@ class TestPickModel(TestCase):
         self.assertEqual(0, self.test_pick_2.prize_money)
 
         # test getting the prize money for a pick that has been scored
-        tournament_season = TournamentSeason.objects.get(tournament=self.test_pick_1.tournament.id ,season=self.test_pick_1.season.id)
-        golfer_season = GolferSeason.objects.get(golfer=self.test_pick_1.scored_golfer.id, season=self.test_pick_1.season.id)
+        tournament_season = TournamentSeason.objects.get(tournament=self.test_pick_1.tournament.id ,season=self.test_pick_1.user_season.season.id)
+        golfer_season = GolferSeason.objects.get(golfer=self.test_pick_1.scored_golfer.id, season=self.test_pick_1.user_season.season.id)
         tournament_golfer = TournamentGolfer.objects.get(tournament_season=tournament_season.id, golfer_season=golfer_season.id)
         self.assertEqual(tournament_golfer.prize_money, self.test_pick_1.prize_money)
     
@@ -149,7 +149,7 @@ class TestPickModel(TestCase):
         self.assertFalse(self.test_pick_2.won_tournament)
 
         # test checking for a won tournament for a pick that has been scored
-        tournament_season = TournamentSeason.objects.get(tournament=self.test_pick_1.tournament.id ,season=self.test_pick_1.season.id)
-        golfer_season = GolferSeason.objects.get(golfer=self.test_pick_1.scored_golfer.id, season=self.test_pick_1.season.id)
+        tournament_season = TournamentSeason.objects.get(tournament=self.test_pick_1.tournament.id ,season=self.test_pick_1.user_season.season.id)
+        golfer_season = GolferSeason.objects.get(golfer=self.test_pick_1.scored_golfer.id, season=self.test_pick_1.user_season.season.id)
         tournament_golfer = TournamentGolfer.objects.get(tournament_season=tournament_season.id, golfer_season=golfer_season.id)
         self.assertEqual(tournament_golfer.position == 1, self.test_pick_1.won_tournament)

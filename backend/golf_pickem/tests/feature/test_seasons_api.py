@@ -189,7 +189,7 @@ class TestSeasonUsersViewSet(APITestCase):
         # test getting the list of season users
         response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/users/')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(1, len(response.data))
+        self.assertEqual(2, len(response.data))
     
     def test_season_users_create_endpoint(self):
         """Test the POST endpoint for registering a user for a given season.
