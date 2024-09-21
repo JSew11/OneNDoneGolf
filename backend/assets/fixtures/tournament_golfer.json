@@ -154,5 +154,44 @@
         "tournament_season": 3,
         "golfer_season": 4
     }
+},
+{
+    "model": "golf_pickem.tournamentgolfer",
+    "pk": 13,
+    "fields": {
+        "deleted": null,
+        "created": "2024-08-22T23:14:54.836Z",
+        "updated": "2024-08-22T23:14:54.836Z",
+        "position": 5,
+        "prize_money": 0,
+        "tournament_season": 1,
+        "golfer_season": 5
+    }
+},
+{
+    "model": "golf_pickem.tournamentgolfer",
+    "pk": 14,
+    "fields": {
+        "deleted": null,
+        "created": "2024-08-22T23:15:35.000Z",
+        "updated": "2024-08-22T23:15:35.000Z",
+        "position": 5,
+        "prize_money": 0,
+        "tournament_season": 2,
+        "golfer_season": 5
+    }
+},
+{
+    "model": "golf_pickem.tournamentgolfer",
+    "pk": 15,
+    "fields": {
+        "deleted": null,
+        "created": "2024-08-22T23:15:59.712Z",
+        "updated": "2024-08-22T23:15:59.712Z",
+        "position": 5,
+        "prize_money": 0,
+        "tournament_season": 3,
+        "golfer_season": 5
+    }
 }
 ]

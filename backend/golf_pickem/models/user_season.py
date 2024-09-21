@@ -20,8 +20,8 @@ class UserSeason(SafeDeleteModel):
 
     class Meta:
         ordering = ['created']
-        verbose_name = 'User'
-        verbose_name_plural = 'Users'
+        verbose_name = 'User Season'
+        verbose_name_plural = 'User Seasons'
         constraints = [
             UniqueConstraint(
                 fields=['user', 'season'],

@@ -26,5 +26,33 @@
         "primary_selection": 2,
         "backup_selection": 3
     }
+},
+{
+    "model": "golf_pickem.pick",
+    "pk": 3,
+    "fields": {
+        "deleted": null,
+        "created": "2024-09-21T19:24:31.257Z",
+        "updated": "2024-09-21T19:24:31.257Z",
+        "user_season": 2,
+        "tournament": 1,
+        "scored_golfer": 2,
+        "primary_selection": 2,
+        "backup_selection": 1
+    }
+},
+{
+    "model": "golf_pickem.pick",
+    "pk": 4,
+    "fields": {
+        "deleted": null,
+        "created": "2024-09-21T19:25:46.626Z",
+        "updated": "2024-09-21T19:25:46.626Z",
+        "user_season": 2,
+        "tournament": 2,
+        "scored_golfer": null,
+        "primary_selection": 3,
+        "backup_selection": 1
+    }
 }
 ]

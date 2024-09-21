@@ -46,5 +46,17 @@
         "last_name": "BadSwing",
         "country": "AUS"
     }
+},
+{
+    "model": "golf_pickem.golfer",
+    "pk": 5,
+    "fields": {
+        "deleted": null,
+        "created": "2024-08-22T23:13:44.128Z",
+        "updated": "2024-08-22T23:13:44.128Z",
+        "first_name": "Southpaw",
+        "last_name": "Stanley",
+        "country": "MEX"
+    }
 }
 ]

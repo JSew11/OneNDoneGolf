@@ -24,8 +24,8 @@ class TournamentGolfer(SafeDeleteModel):
     
     class Meta:
         ordering = ['created']
-        verbose_name = 'Tournament'
-        verbose_name_plural = 'Tournaments'
+        verbose_name = 'Tournament Golfer'
+        verbose_name_plural = 'Tournament Golfers'
         constraints = [
             UniqueConstraint(
                 fields=['tournament_season', 'golfer_season'],

@@ -1,0 +1,23 @@
+[
+{
+    "model": "auth.group",
+    "pk": 1,
+    "fields": {
+        "name": "Golf Pickem Participant",
+        "permissions": [
+            36,
+            4,
+            16,
+            29,
+            30,
+            31,
+            32,
+            8,
+            12,
+            24,
+            20,
+            28
+        ]
+    }
+}
+]
