@@ -1,4 +1,5 @@
 from .season_serializer import SeasonSerializer
+from .user_season_serializer import UserSeasonSerialier
 from .tournament_serializer import TournamentSerializer
 from .tournament_season_serializer import TournamentSeasonSerializer
 from .golfer_serializer import GolferSerializer

@@ -54,7 +54,7 @@ const Dashboard = () => {
         <Grid item xs={10}>
           { 
             isLoggedIn ?
-            <QuickStandingsTable /> :
+            <QuickStandingsTable seasonId={activeSeason?.id}/> :
             <GameInformation />
           }
         </Grid>

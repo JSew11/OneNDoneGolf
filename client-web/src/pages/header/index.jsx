@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, Outlet } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
@@ -7,29 +8,16 @@ import {
   Box,
   Grid,
   Button,
-  AppBar,
-  Toolbar,
   Menu,
   MenuItem,
+  Tabs,
+  Tab,
+  AppBar,
 } from '@mui/material';
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 
 import { logout } from 'src/state/token/actions';
 import LoginModal from 'src/assets/modals/login';
-
-const NavBarLink = styled(Button)(({ theme }) => ({
-  color: theme.palette.primary.contrastText,
-  backgroundColor: theme.palette.primary.main,
-  '&:hover': {
-    color: theme.palette.primary.contrastText,
-    backgroundColor: theme.palette.primary.dark,
-  },
-  variant: 'contained',
-  disableElevation: true,
-  borderRadius: 0,
-  margin: 0,
-  padding: '8px 10px',
-}));
 
 const UserDropdownItem = styled(MenuItem)(({theme}) => ({
   justifyContent: 'flex-end'
@@ -39,6 +27,7 @@ const Header = () => {
   const APP_NAME = import.meta.env.VITE_APP_NAME;
 
   const [username, setUsername] = useState('');
+  const [tabs, setTabs] = useState([]);
 
   const navigate = useNavigate();
 
@@ -49,6 +38,23 @@ const Header = () => {
       setUsername(jwtDecode(access)['username']);
     }
   }, [access]);
+
+  useEffect(() => {
+    const availableTabs = [{'label': 'Home Page', 'link': '/'}];
+
+    if (isLoggedIn) {
+      availableTabs.push(
+        {'label': 'Full Standings', 'link': '/full-standings'},
+        {'label': 'Weekly Picks', 'link': '/weekly-picks'},
+        {'label': 'Winnings', 'link': '/winnings'},
+        {'label': 'OWGR', 'link': '/owgr'},
+        {'label': 'Participant Picks', 'link': '/participant-picks'},
+        {'label': 'PGA Tour Schedule', 'link': '/pga-tour-schedule'}
+      );
+    }
+
+    setTabs(availableTabs);
+  }, [isLoggedIn]);
 
   return (
     <>
@@ -65,14 +71,8 @@ const Header = () => {
             }
           </Grid>
         </Grid>
-        <Grid container>
-          <AppBar position='static' color='primary' className='mx-0 px-1' elevation={0}>
-            <Toolbar variant='dense' className='m-0 p-0'>
-              <NavBarLink href='/nonexistent-page'>Link Placeholder</NavBarLink>
-            </Toolbar>
-          </AppBar>
-        </Grid>
       </Box>
+      <NavTabs tabs={tabs}/>
       <Outlet />
     </>
   );
@@ -152,6 +152,68 @@ const UserDropdown = ({ username }) => {
         <UserDropdownItem onClick={logoutUser}>Logout</UserDropdownItem>
       </UserDropdownMenu>
     </>
+  );
+}
+
+function LinkTab(props) {
+  return (
+    <Tab
+      component="a"
+      aria-current={props.selected && 'page'}
+      {...props}
+    />
+  );
+}
+
+LinkTab.propTypes = {
+  selected: PropTypes.bool,
+};
+
+const samePageLinkNavigation = (event) => {
+  if (
+    event.defaultPrevented ||
+    event.button !== 0 || // ignore everything but left-click
+    event.metaKey ||
+    event.ctrlKey ||
+    event.altKey ||
+    event.shiftKey
+  ) {
+    return false;
+  }
+  return true;
+}
+
+const NavTabs = ({ tabs }) => {
+  const [value, setValue] = useState(0);
+
+  const handleChange = (event, newValue) => {
+    if (
+      event.type !== 'click' ||
+      (event.type === 'click' && samePageLinkNavigation(event))
+    ) {
+      setValue(newValue);
+    }
+  };
+
+  return (
+    <Box sx={{ width: '100%' }}>
+      <AppBar position='static'>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          indicatorColor='secondary'
+          textColor='inherit'
+          aria-label="one-n-done-gilf-nav"
+          role="navigation"
+        >
+          {
+            tabs.map((tab) => (
+              <LinkTab label={tab.label} href={tab.link} />
+            ))
+          }
+        </Tabs>
+      </AppBar>
+    </Box>
   );
 }
 

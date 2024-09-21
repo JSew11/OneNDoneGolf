@@ -1,7 +1,10 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
 from core.models import User
-from ..models import Golfer
+from ..models import (
+    UserSeason,
+    Golfer,
+)
 
 class GolferSerializer(ModelSerializer):
     """Serializer for the golfer model.
@@ -22,7 +25,8 @@ class GolferSerializer(ModelSerializer):
         user: User = self.context.get('user')
         season_id: int = self.context.get('season_id')
         if user != None and season_id != None:
-            return obj in [pick.scored_golfer for pick in user.pick_history_by_season(season_id=season_id) if pick.scored_golfer != None]
+            user_season: UserSeason = UserSeason.objects.get(user=user.id, season=season_id)
+            return obj in [pick.scored_golfer for pick in user_season.pick_history.all() if pick.scored_golfer != None]
         return None
     
     def get_tournament_picked_in(self, obj: Golfer):
@@ -33,6 +37,7 @@ class GolferSerializer(ModelSerializer):
         user: User = self.context.get('user')
         season_id: int = self.context.get('season_id')
         if user != None and season_id != None:
-            pick = user.pick_history_by_season(season_id=season_id).filter(scored_golfer=obj.id).first()
+            user_season: UserSeason = UserSeason.objects.get(user=user.id, season=season_id)
+            pick = user_season.pick_history.filter(scored_golfer=obj.id).first()
             return pick.tournament.alias if pick else None
         return None

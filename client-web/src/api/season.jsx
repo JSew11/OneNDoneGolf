@@ -32,6 +32,10 @@ const nextTournament = async (seasonId) => {
     return await privateAxios.get(BASE_URL + seasonId + '/next-tournament/');
 };
 
+const standings = async (seasonId) => {
+    return await privateAxios.get(BASE_URL + seasonId + '/users/');
+};
+
 const SeasonsApi = {
     list,
     create,
@@ -40,6 +44,7 @@ const SeasonsApi = {
     destroy,
     active,
     nextTournament,
+    standings,
 };
 
 export default SeasonsApi;

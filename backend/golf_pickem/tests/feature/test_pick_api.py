@@ -8,6 +8,7 @@ from golf_pickem.models import (
     Tournament,
     Pick,
     Season,
+    UserSeason,
 )
 
 class TestPickApi(APITestCase):
@@ -16,6 +17,7 @@ class TestPickApi(APITestCase):
     fixtures = [
         'user',
         'season',
+        'user_season',
         'tournament',
         'tournament_season',
         'golfer',
@@ -44,21 +46,22 @@ class TestPickApi(APITestCase):
 
         self.client.force_authenticate(self.admin_user)
 
-        # test getting all picks for the user making the request
-        response: Response = self.client.get(path='/api/golf-pickem/picks/')
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(2, len(response.data))
-
-        # test getting all picks made by the user making the request (filtered by year)
+        # test getting all picks made by the user making the request for the given season
         filterData = {
-            'season_id': 1
+            'season_id': self.test_season.id
         }
         response: Response = self.client.get(path='/api/golf-pickem/picks/', data=filterData)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(2, len(response.data))
 
+        # test getting all picks for the user making the request without specifying a season
+        response: Response = self.client.get(path='/api/golf-pickem/picks/')
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertEqual(1, len(response.data['errors']))
+
         # test getting all picks made by a specific user
         filterData = {
+            'season_id': self.test_season.id,
             'user_id': self.regular_user.id
         }
         response: Response = self.client.get(path='/api/golf-pickem/picks/', data=filterData)

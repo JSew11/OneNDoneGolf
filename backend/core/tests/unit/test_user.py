@@ -11,12 +11,7 @@ class TestUserModel(TestCase):
     """
     fixtures = [
         'user',
-        'season',
-        'tournament',
-        'tournament_season',
-        'golfer',
-        'golfer_season',
-        'pick'
+        'season'
     ]
 
     def setUp(self) -> None:
@@ -92,14 +87,3 @@ class TestUserModel(TestCase):
         self.assertEqual(test_user_complete.username, 'CompleteUser')
         self.assertEqual(test_user_complete.first_name, 'Complete')
         self.assertEqual(test_user_complete.last_name, 'User')
-
-    def test_pick_history_by_season(self):
-        """Test the pick_history by season method in the user model.
-        """
-        # test getting the pick history for a valid season id
-        season_1_pick_history = self.test_user.pick_history_by_season(season_id=self.test_season.id)
-        self.assertEqual(len(season_1_pick_history), 2)
-
-        # test getting the pick history for an invalid season id
-        invalid_season_pick_history = self.test_user.pick_history_by_season(season_id=100)
-        self.assertEqual(len(invalid_season_pick_history), 0)

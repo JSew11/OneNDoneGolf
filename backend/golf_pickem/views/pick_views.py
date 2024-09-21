@@ -6,7 +6,11 @@ from rest_framework.request import Request
 from rest_framework import status
 
 from core.models.user import User
-from ..models import Pick
+from ..models import (
+    Pick,
+    Season,
+    UserSeason
+)
 from ..serializers import PickSerializer
 
 class PickViewSet(ModelViewSet):
@@ -22,14 +26,20 @@ class PickViewSet(ModelViewSet):
             - user (int id) => defaults to the user who made the request
             - season (int id)
         """
+        user_id = request.query_params.get('user_id')
+        season_id = request.query_params.get('season_id')
+        error_messages = []
+        if not season_id:
+            error_messages.append('Field \'season_id\' is required')
+        if len(error_messages) > 0: # return any missing field errors before validating the pick
+            return Response(
+                data={'errors': error_messages},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         try:
-            user_id = request.query_params.get('user_id')
             user: User = User.objects.get(id=user_id) if user_id else request.user
-            if season_id := request.query_params.get('season_id'):
-                data = user.pick_history_by_season(season_id=season_id)
-            else:
-                data = user.pick_history
-            serializer: PickSerializer = self.serializer_class(data, many=True)
+            user_season: UserSeason = UserSeason.objects.get(user=user.id, season=season_id)
+            serializer: PickSerializer = self.serializer_class(user_season.pick_history.all(), many=True)
             return Response(
                 data=serializer.data,
                 status=status.HTTP_200_OK
@@ -37,6 +47,11 @@ class PickViewSet(ModelViewSet):
         except User.DoesNotExist:
             return Response(
                 data={'message': f'User with id \'{user_id}\' not found'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        except Season.DoesNotExist:
+            return Response(
+                data={'message': f'Season with id \'{season_id}\' not found'},
                 status=status.HTTP_400_BAD_REQUEST
             )
     
@@ -58,6 +73,11 @@ class PickViewSet(ModelViewSet):
             error_messages.append('Field \'backup_selection_golfer_id\' is required')
         if not season_id:
             error_messages.append('Field \'season_id\' is required')
+        if len(error_messages) > 0: # return any missing field errors before validating the pick
+            return Response(
+                data={'errors': error_messages},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         error_messages.extend(self._validate_pick(user=request.user, season_id=season_id, primary_selection_id=primary_selection_id, backup_selection_id=backup_selection_id))
         # picked and cannot equal each other)
         if len(error_messages) > 0:
@@ -67,9 +87,9 @@ class PickViewSet(ModelViewSet):
             )
         # attempt to create the pick from the given data
         try:
+            user_season: UserSeason = UserSeason.objects.get(user=request.user.id, season=season_id)
             pick_data = {
-                'user': request.user.id,
-                'season': season_id,
+                'user_season': user_season.id,
                 'tournament': tournament_id,
                 'primary_selection': primary_selection_id,
                 'backup_selection': backup_selection_id,
@@ -87,6 +107,11 @@ class PickViewSet(ModelViewSet):
                     data=serializer.errors,
                     status=status.HTTP_400_BAD_REQUEST
                 )
+        except UserSeason.DoesNotExist:
+            return Response(
+                data={'message': f'Current user not found in the season with id \'{season_id}\''},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         except IntegrityError as error:
             error_string = str(error)
             if 'unique_user_tournament_season' in error_string:
@@ -131,8 +156,8 @@ class PickViewSet(ModelViewSet):
             error_messages.append('Field \'backup_selection_golfer_id\' is required')
         # attempt to update the pick object's associated golfer season
         try:
-            pick: Pick = Pick.objects.get(id=pick_id, user=request.user)
-            error_messages.extend(self._validate_pick(user=request.user, season_id=pick.season.id, primary_selection_id=primary_selection_id, backup_selection_id=backup_selection_id))
+            pick: Pick = Pick.objects.get(id=pick_id)
+            error_messages.extend(self._validate_pick(user=request.user, season_id=pick.user_season.season.id, primary_selection_id=primary_selection_id, backup_selection_id=backup_selection_id))
             if len(error_messages) > 0:
                 return Response(
                     data={'errors': error_messages},
@@ -172,7 +197,7 @@ class PickViewSet(ModelViewSet):
         """Delete the player with the given id.
         """
         try:
-            pick: Pick = Pick.objects.get(id=pick_id, user=request.user)
+            pick: Pick = Pick.objects.get(id=pick_id)
             pick.delete()
             return Response(
                 data={'message': 'Pick deleted successfully'},
@@ -191,7 +216,8 @@ class PickViewSet(ModelViewSet):
         error_messages = []
         if primary_selection_id == backup_selection_id:
             error_messages.append('\'primary_selection_golfer_id\' and \'backup_selection_golfer_id\' must be unique')
-        previously_scored_golfer_ids = [str(pick.scored_golfer.id) for pick in user.pick_history_by_season(season_id=season_id) if pick.scored_golfer != None]
+        user_season: UserSeason = UserSeason.objects.get(user=user.id, season=season_id)
+        previously_scored_golfer_ids = [str(pick.scored_golfer.id) for pick in user_season.pick_history.all() if pick.scored_golfer != None]
         if primary_selection_id in previously_scored_golfer_ids:
             error_messages.append('\'primary_selection_golfer_id\' has already been picked this season')
         if backup_selection_id in previously_scored_golfer_ids:

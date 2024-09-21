@@ -1,7 +1,6 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 from safedelete.models import SafeDeleteModel
-from safedelete.queryset import SafeDeleteQueryset
 from safedelete import SOFT_DELETE_CASCADE
 
 # payment method type
@@ -94,8 +93,3 @@ class User(AbstractUser, SafeDeleteModel):
     referred_by = models.CharField(max_length=32,
                                    choices=REFERRAL_CHOICES,
                                    blank=True, null=True)
-
-    def pick_history_by_season(self, season_id: int) -> SafeDeleteQueryset:
-        """Get a user's pick history for a specific year.
-        """
-        return self.pick_history.filter(season__id=season_id).all()
