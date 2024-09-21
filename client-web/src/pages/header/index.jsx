@@ -27,8 +27,8 @@ const NavBarLink = styled(Button)(({ theme }) => ({
   variant: 'contained',
   disableElevation: true,
   borderRadius: 0,
-  margin: 0,
-  padding: '8px 10px',
+  margin: '0 5px',
+  padding: '8px 10px'
 }));
 
 const UserDropdownItem = styled(MenuItem)(({theme}) => ({
@@ -68,7 +68,13 @@ const Header = () => {
         <Grid container>
           <AppBar position='static' color='primary' className='mx-0 px-1' elevation={0}>
             <Toolbar variant='dense' className='m-0 p-0'>
-              <NavBarLink href='/nonexistent-page'>Link Placeholder</NavBarLink>
+              <NavBarLink href='/'>Quick Standings</NavBarLink>
+              <NavBarLink href='/full-standings'>Full Standings</NavBarLink>
+              <NavBarLink href='/weekly-picks'>Weekly Picks</NavBarLink>
+              <NavBarLink href='/winnings'>Winnings</NavBarLink>
+              <NavBarLink href='/owgr'>OWGR</NavBarLink>
+              <NavBarLink href='/participant-picks'>Participant Picks</NavBarLink>
+              <NavBarLink href='/pga-tour-schedule'>PGA Tour Schedule</NavBarLink>
             </Toolbar>
           </AppBar>
         </Grid>
