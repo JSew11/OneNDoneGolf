@@ -27,6 +27,7 @@ const Header = () => {
   const APP_NAME = import.meta.env.VITE_APP_NAME;
 
   const [username, setUsername] = useState('');
+  const [tabs, setTabs] = useState([]);
 
   const navigate = useNavigate();
 
@@ -37,6 +38,23 @@ const Header = () => {
       setUsername(jwtDecode(access)['username']);
     }
   }, [access]);
+
+  useEffect(() => {
+    const availableTabs = [{'label': 'Home Page', 'link': '/'}];
+
+    if (isLoggedIn) {
+      availableTabs.push(
+        {'label': 'Full Standings', 'link': '/full-standings'},
+        {'label': 'Weekly Picks', 'link': '/weekly-picks'},
+        {'label': 'Winnings', 'link': '/winnings'},
+        {'label': 'OWGR', 'link': '/owgr'},
+        {'label': 'Participant Picks', 'link': '/participant-picks'},
+        {'label': 'PGA Tour Schedule', 'link': '/pga-tour-schedule'}
+      );
+    }
+
+    setTabs(availableTabs);
+  }, [isLoggedIn]);
 
   return (
     <>
@@ -54,7 +72,7 @@ const Header = () => {
           </Grid>
         </Grid>
       </Box>
-      <NavTabs />
+      <NavTabs tabs={tabs}/>
       <Outlet />
     </>
   );
@@ -165,7 +183,7 @@ const samePageLinkNavigation = (event) => {
   return true;
 }
 
-const NavTabs = () => {
+const NavTabs = ({ tabs }) => {
   const [value, setValue] = useState(0);
 
   const handleChange = (event, newValue) => {
@@ -185,16 +203,14 @@ const NavTabs = () => {
           onChange={handleChange}
           indicatorColor='secondary'
           textColor='inherit'
-          variant='fullWidth'
           aria-label="one-n-done-gilf-nav"
           role="navigation"
         >
-          <LinkTab label="Full Standings" href="/full-standings" />
-          <LinkTab label="Weekly Picks" href="/weekly-picks" />
-          <LinkTab label="Winnings" href="/winnings" />
-          <LinkTab label="OWGR" href="/owgr" />
-          <LinkTab label="Participant Picks" href="/participant-picks" />
-          <LinkTab label="PGA Tour Schedule" href="/pga-tour-schedule" />
+          {
+            tabs.map((tab) => (
+              <LinkTab label={tab.label} href={tab.link} />
+            ))
+          }
         </Tabs>
       </AppBar>
     </Box>
