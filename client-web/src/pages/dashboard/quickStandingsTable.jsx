@@ -22,12 +22,12 @@ const QuickStandingsTable = ({ seasonId }) => {
             const standingsData = [];
             for (let standingsIndex in response.data) {
               standingsData.push({
+                'rank': Number(standingsIndex) + 1,
                 'name': response.data[standingsIndex]['user_details']['username'],
                 'prize_money': response.data[standingsIndex]['prize_money'],
                 'tournament_wins': response.data[standingsIndex]['tournaments_won']
               })
             }
-            // TODO - sort standingsData by prize money before displaying it in the table
             setStandingsRows(standingsData);
           }
         },
@@ -55,7 +55,7 @@ const QuickStandingsTable = ({ seasonId }) => {
           // render table data
           standingsRows.map((row) => (
           <StyledTableRow>
-            <StyledTableCell align='center'>RANK</StyledTableCell>
+            <StyledTableCell align='center'>{row['rank']}</StyledTableCell>
             <StyledTableCell>{row['name']}</StyledTableCell>
             <StyledTableCell>{row['prize_money']}</StyledTableCell>
             <StyledTableCell>{row['tournament_wins']}</StyledTableCell>

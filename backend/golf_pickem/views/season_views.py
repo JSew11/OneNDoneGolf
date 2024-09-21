@@ -161,13 +161,6 @@ class SeasonViewSet(ModelViewSet):
                 data={'status': f'Could not find the next tournament for Season with id \'{season_id}\' '},
                 status=status.HTTP_404_NOT_FOUND,
             )
-    
-    @action(detail=True, methods=['GET'])
-    def standings(self, request: Request, season_id: int) -> Response:
-        """Get the standings for the season with the given id.
-        """
-        # TODO - write this
-        return Response(data={'status': 'endpoint in progress'})
 
 class SeasonUsersViewset(ModelViewSet):
     """Viewset for the users participating in a season. Supports creating and viewing
@@ -182,7 +175,8 @@ class SeasonUsersViewset(ModelViewSet):
         """
         try:
             season: Season = Season.objects.get(id=season_id)
-            serializer: UserSeasonSerialier = self.serializer_class(season.users, many=True)
+            sorted_users = sorted(season.users.all(), key=lambda user: user.prize_money, reverse=True)
+            serializer: UserSeasonSerialier = self.serializer_class(sorted_users, many=True)
             return Response(
                 data=serializer.data,
                 status=status.HTTP_200_OK,
