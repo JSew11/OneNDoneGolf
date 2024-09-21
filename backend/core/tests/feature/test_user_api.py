@@ -40,7 +40,7 @@ class TestUserApi(APITestCase):
         # as the test user test accessing the test user with its uuid (should receive 200)
         response: Response = self.client.get(path=f'/api/users/{self.regular_user.id}/')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(self.regular_user.first_name, response.data['first_name'])
+        self.assertEqual(self.regular_user.username, response.data['username'])
 
         # as the test user test accessing the admin user with its uuid (should receive 403)
         response: Response = self.client.get(path=f'/api/users/{self.admin_user.id}/')
@@ -51,7 +51,7 @@ class TestUserApi(APITestCase):
         # as the admin user test accessing the admin user with its uuid (should receive 200)
         response: Response = self.client.get(path=f'/api/users/{self.admin_user.id}/')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(self.admin_user.first_name, response.data['first_name'])
+        self.assertEqual(self.admin_user.username, response.data['username'])
 
     def test_partial_update_user_endpoint(self):
         """Test the PATCH endpoint for partially updating a user by its associated uuid.
