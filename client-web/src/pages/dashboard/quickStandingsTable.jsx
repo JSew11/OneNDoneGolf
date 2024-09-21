@@ -22,6 +22,7 @@ const QuickStandingsTable = ({ seasonId }) => {
             const standingsData = [];
             for (let standingsIndex in response.data) {
               standingsData.push({
+                'id': response.data[standingsIndex]['id'],
                 'rank': Number(standingsIndex) + 1,
                 'name': response.data[standingsIndex]['user_details']['username'],
                 'prize_money': response.data[standingsIndex]['prize_money'],
@@ -39,14 +40,14 @@ const QuickStandingsTable = ({ seasonId }) => {
   return (
     <Table stickyHeader size='small' className='py-3'>
       <TableHead>
-        <StyledTableRow>
+        <StyledTableRow key='title'>
           <StyledTitleCell colSpan='4'>Current Season Standings</StyledTitleCell>
         </StyledTableRow>
-        <StyledTableRow>
+        <StyledTableRow key='header'>
           <StyledTableCell align='center'>Rank</StyledTableCell>
           <StyledTableCell>Name</StyledTableCell>
-          <StyledTableCell>Prize Money</StyledTableCell>
-          <StyledTableCell>Tournament Wins</StyledTableCell>
+          <StyledTableCell align='center'>Prize Money</StyledTableCell>
+          <StyledTableCell align='center'>Tournament Wins</StyledTableCell>
         </StyledTableRow>
       </TableHead>
       <TableBody>
@@ -54,12 +55,12 @@ const QuickStandingsTable = ({ seasonId }) => {
           seasonId || standingsRows.length < 1 ?
           // render table data
           standingsRows.map((row) => (
-          <StyledTableRow>
-            <StyledTableCell align='center'>{row['rank']}</StyledTableCell>
-            <StyledTableCell>{row['name']}</StyledTableCell>
-            <StyledTableCell>{row['prize_money']}</StyledTableCell>
-            <StyledTableCell>{row['tournament_wins']}</StyledTableCell>
-          </StyledTableRow>
+            <StyledTableRow key={row.id}>
+              <StyledTableCell align='center'>{row.rank}</StyledTableCell>
+              <StyledTableCell>{row.name}</StyledTableCell>
+              <StyledTableCell align='center'>{'$' + Number(row.prize_money).toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}</StyledTableCell>
+              <StyledTableCell align='center'>{row.tournament_wins}</StyledTableCell>
+            </StyledTableRow>
           )) :
           // loading circle
           <StyledTableRow>
