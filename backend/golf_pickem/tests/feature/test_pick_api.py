@@ -32,6 +32,7 @@ class TestPickApi(APITestCase):
         self.regular_user: User = User.objects.get(email='regular.user@email.com')
         self.test_pick_1: Pick = Pick.objects.get(id=1)
         self.test_pick_2: Pick = Pick.objects.get(id=2)
+        self.test_pick_3: Pick = Pick.objects.get(id=3)
         self.test_season: Season = Season.objects.get(id=1)
         self.test_golfer_3: Golfer = Golfer.objects.get(id=3)
         self.test_tournament_3: Tournament = Tournament.objects.get(id=3)
@@ -44,7 +45,7 @@ class TestPickApi(APITestCase):
         response: Response = self.client.get(path='/api/golf-pickem/picks/')
         self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
 
-        self.client.force_authenticate(self.admin_user)
+        self.client.force_authenticate(self.regular_user)
 
         # test getting all picks made by the user making the request for the given season
         filterData = {
@@ -76,7 +77,7 @@ class TestPickApi(APITestCase):
         response: Response = self.client.post(path='/api/golf-pickem/picks/', data={})
         self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
 
-        self.client.force_authenticate(self.admin_user)
+        self.client.force_authenticate(self.regular_user)
 
         # test creating a pick without providing the required fields
         response: Response = self.client.post(path='/api/golf-pickem/picks/', data={})
@@ -116,21 +117,21 @@ class TestPickApi(APITestCase):
         response: Response = self.client.post(path='/api/golf-pickem/picks/', data=invalid_backup_golfer_pick_data)
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
-        # test creating a pick with an invalid primary selection golfer
+        # test creating a pick with an invalid primary selection golfer (already picked this golfer)
         non_unique_primary_golfer_pick_data = {
             'tournament_id': 3,
-            'primary_selection_golfer_id': 1,
+            'primary_selection_golfer_id': 2,
             'backup_selection_golfer_id': 4, 
             'season_id': 1,
         }
         response: Response = self.client.post(path='/api/golf-pickem/picks/', data=non_unique_primary_golfer_pick_data)
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
-        # test creating a pick with an invalid backup selection golfer
+        # test creating a pick with an invalid backup selection golfer (already picked this golfer)
         non_unique_backup_golfer_pick_data = {
             'tournament_id': 3,
             'primary_selection_golfer_id': 3,
-            'backup_selection_golfer_id': 1, 
+            'backup_selection_golfer_id': 2, 
             'season_id': 1,
         }
         response: Response = self.client.post(path='/api/golf-pickem/picks/', data=non_unique_backup_golfer_pick_data)
@@ -173,7 +174,7 @@ class TestPickApi(APITestCase):
         response: Response = self.client.get(path=f'/api/golf-pickem/picks/{self.test_pick_1.id}/')
         self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
 
-        self.client.force_authenticate(self.admin_user)
+        self.client.force_authenticate(self.regular_user)
 
         # test getting the test pick by its id
         response: Response = self.client.get(path=f'/api/golf-pickem/picks/{self.test_pick_1.id}/')
@@ -187,10 +188,14 @@ class TestPickApi(APITestCase):
         response: Response = self.client.patch(path=f'/api/golf-pickem/picks/{self.test_pick_2.id}/')
         self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
 
-        self.client.force_authenticate(self.admin_user)
+        self.client.force_authenticate(self.regular_user)
+
+        # test editing a pick that the user does not have access to edit
+        response: Response = self.client.patch(path=f'/api/golf-pickem/picks/{self.test_pick_2.id}/')
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
 
         # test updating a pick without providiing the required 'golfer_id' field
-        response: Response = self.client.patch(path=f'/api/golf-pickem/picks/{self.test_pick_2.id}/', data={})
+        response: Response = self.client.patch(path=f'/api/golf-pickem/picks/{self.test_pick_3.id}/', data={})
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
         self.assertIn('Field \'primary_selection_golfer_id\' is required', response.data['errors'])
         self.assertIn('Field \'backup_selection_golfer_id\' is required', response.data['errors'])
@@ -200,7 +205,7 @@ class TestPickApi(APITestCase):
             'primary_selection_golfer_id': 100,
             'backup_selection_golfer_id': 4
         }
-        response: Response = self.client.patch(path=f'/api/golf-pickem/picks/{self.test_pick_2.id}/', data=invalid_golfer_pick_data)
+        response: Response = self.client.patch(path=f'/api/golf-pickem/picks/{self.test_pick_3.id}/', data=invalid_golfer_pick_data)
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
         # test updating a pick with an invalid backup selection golfer season
@@ -208,7 +213,7 @@ class TestPickApi(APITestCase):
             'primary_selection_golfer_id': 3,
             'backup_selection_golfer_id': 400
         }
-        response: Response = self.client.patch(path=f'/api/golf-pickem/picks/{self.test_pick_2.id}/', data=invalid_golfer_pick_data)
+        response: Response = self.client.patch(path=f'/api/golf-pickem/picks/{self.test_pick_3.id}/', data=invalid_golfer_pick_data)
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
         # test updating a pick with valid data
@@ -216,23 +221,23 @@ class TestPickApi(APITestCase):
             'primary_selection_golfer_id': 3,
             'backup_selection_golfer_id': 4
         }
-        response: Response = self.client.patch(path=f'/api/golf-pickem/picks/{self.test_pick_2.id}/', data=valid_update_data)
+        response: Response = self.client.patch(path=f'/api/golf-pickem/picks/{self.test_pick_3.id}/', data=valid_update_data)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
         # test updating a pick with a primary selection golfer the user has already selected this season
         invalid_golfer_pick_data = {
-            'primary_selection_golfer_id': 1,
+            'primary_selection_golfer_id': 2,
             'backup_selection_golfer_id': 3
         }
-        response: Response = self.client.patch(path=f'/api/golf-pickem/picks/{self.test_pick_2.id}/', data=invalid_golfer_pick_data)
+        response: Response = self.client.patch(path=f'/api/golf-pickem/picks/{self.test_pick_3.id}/', data=invalid_golfer_pick_data)
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
         
         # test updating a pick with a backup selection goler the user has already selected
         invalid_golfer_pick_data = {
             'primary_selection_golfer_id': 3,
-            'backup_selection_golfer_id': 1
+            'backup_selection_golfer_id': 2
         }
-        response: Response = self.client.patch(path=f'/api/golf-pickem/picks/{self.test_pick_2.id}/', data=invalid_golfer_pick_data)
+        response: Response = self.client.patch(path=f'/api/golf-pickem/picks/{self.test_pick_3.id}/', data=invalid_golfer_pick_data)
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
         
         # test updating a pick with the same primary and backup selection golfers
@@ -240,22 +245,26 @@ class TestPickApi(APITestCase):
             'primary_selection_golfer_id': 3,
             'backup_selection_golfer_id': 3
         }
-        response: Response = self.client.patch(path=f'/api/golf-pickem/picks/{self.test_pick_2.id}/', data=invalid_golfer_pick_data)
+        response: Response = self.client.patch(path=f'/api/golf-pickem/picks/{self.test_pick_3.id}/', data=invalid_golfer_pick_data)
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
     
     def test_destroy_pick_endpoint(self):
         """Test the DELETE endpoint for deleting a pick by its id.
         """
         # test hitting the endpoint as an unauthorized user
-        response: Response = self.client.delete(path=f'/api/golf-pickem/picks/{self.test_pick_2.id}/')
+        response: Response = self.client.delete(path=f'/api/golf-pickem/picks/{self.test_pick_3.id}/')
         self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
 
-        self.client.force_authenticate(self.admin_user)
+        self.client.force_authenticate(self.regular_user)
 
         # test deleting a pick that does not exist
         response: Response = self.client.delete(path=f'/api/golf-pickem/picks/{999}/')
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
 
-        # test deleting a pick that does exist
-        response: Response = self.client.delete(path=f'/api/golf-pickem/picks/{self.test_pick_2.id}/')
+        # test deleting another user's pick
+        response: Response = self.client.delete(path=f'/api/golf-pickem/picks/{self.test_pick_1.id}/')
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+
+        # test deleting the authenticated user's pick
+        response: Response = self.client.delete(path=f'/api/golf-pickem/picks/{self.test_pick_3.id}/')
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)

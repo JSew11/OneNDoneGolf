@@ -157,6 +157,11 @@ class PickViewSet(ModelViewSet):
         # attempt to update the pick object's associated golfer season
         try:
             pick: Pick = Pick.objects.get(id=pick_id)
+            if not request.user.has_perm('golf_pickem.change_any_pick') and pick.user_season.user.id != request.user.id:
+                return Response(
+                    data={'message': 'You do not have access to edit this pick'},
+                    status=status.HTTP_403_FORBIDDEN
+                )
             error_messages.extend(self._validate_pick(user=request.user, season_id=pick.user_season.season.id, primary_selection_id=primary_selection_id, backup_selection_id=backup_selection_id))
             if len(error_messages) > 0:
                 return Response(
@@ -198,6 +203,11 @@ class PickViewSet(ModelViewSet):
         """
         try:
             pick: Pick = Pick.objects.get(id=pick_id)
+            if not request.user.has_perm('golf_pickem.delete_any_pick') and pick.user_season.user.id != request.user.id:
+                return Response(
+                    data={'message': 'You do not have access to delete this pick'},
+                    status=status.HTTP_403_FORBIDDEN
+                )
             pick.delete()
             return Response(
                 data={'message': 'Pick deleted successfully'},

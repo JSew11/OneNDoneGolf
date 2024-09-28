@@ -15,7 +15,7 @@ class TestAuthApi(APITestCase):
         """Set up necessary objects for testing.
         """
         self.client = APIClient()
-        self.test_user: User = User.objects.get(email='onendonedev@gmail.com')
+        self.test_user: User = User.objects.get(email='regular.user@email.com')
         self.test_user_password = 'superbadtestpw'
         return super().setUp()
     
