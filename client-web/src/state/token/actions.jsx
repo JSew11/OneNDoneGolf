@@ -15,7 +15,6 @@ export const register = (userRegistrationData) => (dispatch) => {
         type: REGISTER_SUCCESS,
         payload: {
           access: response.data.access,
-          activeParticipant: response.data.activeParticipant ?? false,
         },
       });
 
@@ -39,7 +38,6 @@ export const login = (email, password) => (dispatch) => {
           type: LOGIN_SUCCESS,
           payload: {
             access: response.data.access,
-            activeParticipant: response.data.activeParticipant ?? false,
           },
         });
       }
@@ -76,7 +74,6 @@ export const refreshToken = () => (dispatch) => {
         type: REFRESH_TOKEN,
         payload: {
           access: response.data.access,
-          activeParticipant: response.data.activeParticipant ?? false,
         },
       });
     }

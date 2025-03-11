@@ -12,7 +12,7 @@ const Dashboard = () => {
   const [activeSeason, setActiveSeason] = useState(null);
   const [nextTournament, setNextTournament] = useState(null);
   const [pick, setPick] = useState(false);
-  const { isLoggedIn, activeParticipant } = useSelector(state => state.auth);
+  const { isLoggedIn } = useSelector(state => state.auth);
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -43,7 +43,7 @@ const Dashboard = () => {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      { isLoggedIn && activeParticipant && activeSeason && nextTournament && 
+      { isLoggedIn && activeSeason && nextTournament && 
         <Grid container justifyContent='center' alignItems='center' className='py-4'>
           <Grid item xs={8}>
             <PickModal season={activeSeason} tournament={nextTournament} pick={pick}/>
