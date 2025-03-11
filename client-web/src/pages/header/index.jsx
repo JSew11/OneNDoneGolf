@@ -40,16 +40,16 @@ const Header = () => {
   }, [access]);
 
   useEffect(() => {
-    const availableTabs = [{'label': 'Home Page', 'link': '/'}];
+    const availableTabs = [{'key': 0, 'label': 'Home Page', 'link': '/'}];
 
     if (isLoggedIn) {
       availableTabs.push(
-        {'label': 'Full Standings', 'link': '/full-standings'},
-        {'label': 'Weekly Picks', 'link': '/weekly-picks'},
-        {'label': 'Winnings', 'link': '/winnings'},
-        {'label': 'OWGR', 'link': '/owgr'},
-        {'label': 'Participant Picks', 'link': '/participant-picks'},
-        {'label': 'PGA Tour Schedule', 'link': '/pga-tour-schedule'}
+        {'key': 1, 'label': 'Full Standings', 'link': '/full-standings'},
+        {'key': 2, 'label': 'Weekly Picks', 'link': '/weekly-picks'},
+        {'key': 3, 'label': 'Winnings', 'link': '/winnings'},
+        {'key': 4, 'label': 'OWGR', 'link': '/owgr'},
+        {'key': 5, 'label': 'Participant Picks', 'link': '/participant-picks'},
+        {'key': 6, 'label': 'PGA Tour Schedule', 'link': '/pga-tour-schedule'}
       );
     }
 
@@ -199,6 +199,7 @@ const NavTabs = ({ tabs }) => {
     <Box sx={{ width: '100%' }}>
       <AppBar position='static'>
         <Tabs
+          key='header-nav'
           value={value}
           onChange={handleChange}
           indicatorColor='secondary'
@@ -208,7 +209,7 @@ const NavTabs = ({ tabs }) => {
         >
           {
             tabs.map((tab) => (
-              <LinkTab label={tab.label} href={tab.link} />
+              <LinkTab key={tab.key} label={tab.label} href={tab.link} />
             ))
           }
         </Tabs>

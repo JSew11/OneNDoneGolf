@@ -9,38 +9,44 @@ import {
 
 const token = sessionStorage.getItem('token');
 
-const initialState = token ? {isLoggedIn: true, access: token} : {isLoggedIn: false, access: null}
+const initialState = token ? {isLoggedIn: true, activeParticipant: false, access: token} : {isLoggedIn: false, activeParticipant: false, access: null}
 
 export default function auth(state=initialState, { type, payload }) {
   switch (type) {
     case REGISTER_SUCCESS:
       return {
         isLoggedIn: true,
+        activeParticipant: payload.activeParticipant,
         access: payload.access,
       };
     case REGISTER_FAIL:
       return {
         isLoggedIn: false,
+        activeParticipant: false,
         access: null,
       };
     case LOGIN_SUCCESS:
       return {
         isLoggedIn: true,
+        activeParticipant: payload.activeParticipant,
         access: payload.access,
       };
     case LOGIN_FAIL:
       return {
         isLoggedIn: false,
+        activeParticipant: false,
         access: null,
       };
     case LOGOUT:
       return {
         isLoggedIn: false,
+        activeParticipant: false,
         access: null,
       };
     case REFRESH_TOKEN: 
       return {
         isLoggedIn: true,
+        activeParticipant: payload.activeParticipant,
         access: payload.access,
       }
     default:
