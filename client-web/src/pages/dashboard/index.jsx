@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid';
 
 import SeasonsApi from 'src/api/season';
 import PickModal from 'src/assets/modals/pick';
-import QuickStandingsTable from 'src/pages/dashboard/quickStandingsTable';
+import QuickStandingsTable from 'src/assets/components/quickStandingsTable';
 import GameInformation from 'src/pages/dashboard/gameInformation';
 
 const Dashboard = () => {
