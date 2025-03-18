@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate, Outlet } from 'react-router-dom';
+import { useNavigate, Outlet, Link } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import { styled } from '@mui/material/styles';
 import { 
@@ -158,7 +158,7 @@ const UserDropdown = ({ username }) => {
 function LinkTab(props) {
   return (
     <Tab
-      component="a"
+      component={Link}
       aria-current={props.selected && 'page'}
       {...props}
     />
@@ -209,7 +209,7 @@ const NavTabs = ({ tabs }) => {
         >
           {
             tabs.map((tab) => (
-              <LinkTab key={tab.key} label={tab.label} href={tab.link} />
+              <LinkTab key={tab.key} label={tab.label} to={tab.link} />
             ))
           }
         </Tabs>
