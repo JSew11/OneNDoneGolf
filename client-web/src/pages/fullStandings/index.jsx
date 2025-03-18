@@ -26,7 +26,7 @@ const FullStandings = () => {
 
   return (
       <Box sx={{ flexGrow: 1 }}>
-        <Grid container justifyContent='left' alignItems='center' className='px-2'>
+        <Grid container spacing={1} className='px-2'>
           <Grid item xs={5}>
             <QuickStandingsTable seasonId={activeSeason?.id}/>
           </Grid>

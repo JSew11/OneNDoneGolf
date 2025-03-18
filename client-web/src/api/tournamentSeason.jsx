@@ -6,6 +6,14 @@ import {
     TOURNAMENT_API_BASE_URL
 } from 'src/assets/constants/apiUrls';
 
+const list = async (seasonId) => {
+    return await privateAxios.get(
+        GOLF_PICKEM_API_BASE_URL +
+        SEASON_API_BASE_URL + seasonId + '/' +
+        TOURNAMENT_API_BASE_URL
+    );
+}
+
 const field = async (seasonId, tournamentId ) => {
     return await privateAxios.get(
         GOLF_PICKEM_API_BASE_URL +
@@ -15,6 +23,7 @@ const field = async (seasonId, tournamentId ) => {
 };
 
 const TournamentSeasonsApi = {
+    list,
     field,
 };
 
