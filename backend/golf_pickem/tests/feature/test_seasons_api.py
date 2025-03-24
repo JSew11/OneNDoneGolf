@@ -308,7 +308,7 @@ class TestSeasonTournamentsViewSet(APITestCase):
         response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/tournaments/{self.test_tournament_1.id}/')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(self.test_season.id, response.data['season'])
-        self.assertEqual(self.test_tournament_1.id, response.data['tournament']) 
+        self.assertEqual(self.test_tournament_1.id, response.data['tournament']['id']) 
 
     def test_field_endpoint(self):
         """Test the GET endpoint for getting a list of available golfers.
