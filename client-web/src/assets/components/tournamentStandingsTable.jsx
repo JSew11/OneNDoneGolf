@@ -43,7 +43,6 @@ const TournamentStandingsTable = ({ seasonId }) => {
       SeasonTournamentGolfersApi.list(seasonId, selectedTournament.id).then(
         (response) => {
           if (response.data.length > 0) {
-            console.log(response.data);
             setSelectedTournamentGolfers(response.data.sort((a,b) => {
               return a.position - b.position;
             }));
