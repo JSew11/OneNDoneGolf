@@ -9,7 +9,8 @@ import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
-import TournamentSeasonsApi from '../../api/tournamentSeason';
+import SeasonTournamentsApi from '../../api/seasonTournament';
+import SeasonTournamentGolfersApi from '../../api/seasonTournamentGolfers';
 import StyledTableRow from 'src/assets/components/styledTable/row';
 import {
   StyledTableCell,
@@ -21,14 +22,14 @@ const TournamentStandingsTable = ({ seasonId }) => {
 
   const [seasonTournaments, setSeasonTournaments] = useState([]);
   const [selectedTournament, setSelectedTournament] = useState(null);
+  const [selectedTournamentGolfers, setSelectedTournamentGolfers] = useState([]);
 
   useEffect(() => {
     if (seasonId) {
-      TournamentSeasonsApi.list(seasonId).then(
+      SeasonTournamentsApi.list(seasonId).then(
         (response) => {
           if (response.data.length > 0) {
             setSeasonTournaments(response.data);
-            // TODO - change this once tournament api is fixed
             setSelectedTournament(response.data[0].tournament);
           }
         },
@@ -38,7 +39,18 @@ const TournamentStandingsTable = ({ seasonId }) => {
   }, [seasonId])
 
   useEffect(() => {
-    // TODO - get details for the selected tournament's field
+    if (seasonId && selectedTournament.id) {
+      SeasonTournamentGolfersApi.list(seasonId, selectedTournament.id).then(
+        (response) => {
+          if (response.data.length > 0) {
+            console.log(response.data);
+            setSelectedTournamentGolfers(response.data.sort((a,b) => {
+              return a.position - b.position;
+            }));
+          }
+        }
+      )
+    }
   }, [selectedTournament]);
 
   const handleChange = (event)=> {
@@ -61,7 +73,9 @@ const TournamentStandingsTable = ({ seasonId }) => {
                         color: theme.palette.primary.contrastText
                       }
                     }}
-                  >Tournament</InputLabel>
+                  >
+                    Tournament
+                  </InputLabel>
                   <Select
                     labelId='tournament-select-label'
                     id='tournament-select'
@@ -85,10 +99,9 @@ const TournamentStandingsTable = ({ seasonId }) => {
                     }}
                   >
                     {
-                      seasonTournaments.map((tournament) => (
-                        // TODO - refine this once tournament api is fixed
-                        <MenuItem value={tournament.tournament}>
-                          SAMPLE
+                      seasonTournaments.map((seasonTournament) => (
+                        <MenuItem key={seasonTournament.tournament.id} value={seasonTournament.tournament}>
+                          {seasonTournament.tournament.name}
                         </MenuItem>
                       ))
                     }
@@ -109,11 +122,19 @@ const TournamentStandingsTable = ({ seasonId }) => {
         {
           seasonId && seasonTournaments.length > 0 ?
           // render table data
-          <StyledTableRow key={0}>
-            <StyledTableCell>SAMPLE</StyledTableCell>
-            <StyledTableCell align='center'>SAMPLE</StyledTableCell>
-            <StyledTableCell align='center'>SAMPLE</StyledTableCell>
-          </StyledTableRow>
+            selectedTournamentGolfers.map((tournamentGolfer) => (
+              <StyledTableRow key={tournamentGolfer.id}>
+                <StyledTableCell>
+                  {tournamentGolfer.golfer_season.golfer.first_name} {tournamentGolfer.golfer_season.golfer.last_name}
+                </StyledTableCell>
+                <StyledTableCell align='center'>
+                  {tournamentGolfer.position}
+                </StyledTableCell>
+                <StyledTableCell align='center'>
+                  {tournamentGolfer.prize_money}
+                </StyledTableCell>
+              </StyledTableRow>
+            ))
             :
           // loading circle
           <StyledTableRow>

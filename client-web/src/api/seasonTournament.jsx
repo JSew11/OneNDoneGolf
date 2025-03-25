@@ -14,17 +14,17 @@ const list = async (seasonId) => {
     );
 }
 
-const field = async (seasonId, tournamentId ) => {
+const field = async (seasonId, tournamentId) => {
     return await privateAxios.get(
         GOLF_PICKEM_API_BASE_URL +
         SEASON_API_BASE_URL + seasonId + '/' +
         TOURNAMENT_API_BASE_URL + tournamentId + '/field'
     );
-};
+}
 
-const TournamentSeasonsApi = {
+const SeasonTournamentsApi = {
     list,
     field,
 };
 
-export default TournamentSeasonsApi;
+export default SeasonTournamentsApi;

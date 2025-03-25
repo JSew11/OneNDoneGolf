@@ -11,7 +11,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 
-import TournamentSeasonsApi from 'src/api/tournamentSeason';
+import SeasonTournamentsApi from 'src/api/seasonTournament';
 import PicksApi from 'src/api/pick';
 
 const PickModal = ({ season, tournament, pick }) => {
@@ -23,7 +23,7 @@ const PickModal = ({ season, tournament, pick }) => {
   const [backupSelectionGolferId, setBackupSelectionGolferId] = useState('');
 
   const handleOpen = () => {
-    TournamentSeasonsApi.field(season.id, tournament.id).then(
+    SeasonTournamentsApi.field(season.id, tournament.id).then(
       (response) => {
         setField(response.data);
 
