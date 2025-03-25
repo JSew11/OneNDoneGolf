@@ -112,8 +112,8 @@ const TournamentStandingsTable = ({ seasonId }) => {
           </StyledTitleCell>
         </StyledTableRow>
         <StyledTableRow key='header'>
-          <StyledTableCell>Golfer</StyledTableCell>
           <StyledTableCell align='center'>Place</StyledTableCell>
+          <StyledTableCell>Golfer</StyledTableCell>
           <StyledTableCell align='center'>Prize Money</StyledTableCell>
         </StyledTableRow>
       </TableHead>
@@ -123,14 +123,14 @@ const TournamentStandingsTable = ({ seasonId }) => {
           // render table data
             selectedTournamentGolfers.map((tournamentGolfer) => (
               <StyledTableRow key={tournamentGolfer.id}>
+                <StyledTableCell align='center'>
+                  {tournamentGolfer.position}
+                </StyledTableCell>
                 <StyledTableCell>
                   {tournamentGolfer.golfer_season.golfer.first_name} {tournamentGolfer.golfer_season.golfer.last_name}
                 </StyledTableCell>
                 <StyledTableCell align='center'>
-                  {tournamentGolfer.position}
-                </StyledTableCell>
-                <StyledTableCell align='center'>
-                  {tournamentGolfer.prize_money}
+                  {'$' + Number(tournamentGolfer.prize_money).toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}
                 </StyledTableCell>
               </StyledTableRow>
             ))
