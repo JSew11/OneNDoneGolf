@@ -5,12 +5,14 @@ import Header from './pages/header/index.jsx';
 import Dashboard from './pages/dashboard/index.jsx';
 import Error404 from './pages/error404/index.jsx';
 import FullStandings from './pages/fullStandings/index.jsx';
+import WeeklyPicks from './pages/weeklyPicks/index.jsx';
 
 const Routes = () => (
   <Switch>
     <Route Component={Header}>
       <Route path='/' Component={Dashboard} />
       <Route path='/full-standings' Component={FullStandings} />
+      <Route path='/weekly-picks' Component={WeeklyPicks}/>
     </Route>
     <Route path='*' Component={Error404} />
   </Switch>

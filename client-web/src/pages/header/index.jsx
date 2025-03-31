@@ -204,8 +204,8 @@ const NavTabs = ({ tabs }) => {
           onChange={handleChange}
           indicatorColor='secondary'
           textColor='inherit'
-          aria-label="one-n-done-gilf-nav"
-          role="navigation"
+          aria-label='one-n-done-golf-nav'
+          role='navigation'
         >
           {
             tabs.map((tab) => (

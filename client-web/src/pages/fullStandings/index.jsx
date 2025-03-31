@@ -5,10 +5,11 @@ import Grid from '@mui/material/Grid';
 
 import SeasonsApi from 'src/api/season';
 import QuickStandingsTable from 'src/assets/components/quickStandingsTable';
-import TournamentStandingsTable from '../../assets/components/tournamentStandingsTable';
+import TournamentStandingsTable from 'src/assets/components/tournamentStandingsTable';
 
 const FullStandings = () => {
   const [activeSeason, setActiveSeason] = useState(null);
+
   const { isLoggedIn } = useSelector(state => state.auth);
   
   useEffect(() => {
