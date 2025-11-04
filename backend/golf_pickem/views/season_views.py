@@ -104,7 +104,7 @@ class SeasonViewSet(ModelViewSet):
             season.delete()
             return Response(
                 data={'message': 'Season deleted successfully'},
-                status=status.HTTP_204_NO_CONTENT
+                status=status.HTTP_204_NO_CONTENT,
             )
         except Season.DoesNotExist:
             return Response(
@@ -160,6 +160,36 @@ class SeasonViewSet(ModelViewSet):
             return Response(
                 data={'status': f'Could not find the next tournament for Season with id \'{season_id}\' '},
                 status=status.HTTP_404_NOT_FOUND,
+            )
+    
+    @action(detail=True, methods=['GET'])
+    def active_tournament(self, request: Request, season_id: int) -> Response:
+        """Get the currently active tournament in the given season's schedule. Returns
+        nothing if there are no active tournaments.
+        """
+        try:
+            season: Season = Season.objects.get(id=season_id)
+            active_tournament_id = season.active_tournament_id()
+            if not active_tournament_id:
+                return Response(
+                    data={'status': f'There is no active Tournament for Season with id \'{season_id}\' '},
+                    status=status.HTTP_204_NO_CONTENT,
+                )
+            tournament: Tournament = Tournament.objects.get(id=active_tournament_id)
+            tournament_serializer: TournamentSerializer = TournamentSerializer(tournament)
+            return Response(
+                data=tournament_serializer.data,
+                status=status.HTTP_200_OK,
+            )
+        except Season.DoesNotExist:
+            return Response(
+                data={'status': f'Season with id \'{season_id}\' not found'},
+                status=status.HTTP_404_NOT_FOUND, 
+            )
+        except Tournament.DoesNotExist:
+            return Response(
+                data={'status': f'Active Tournament for Season with id \'{season_id}\' not found'},
+                status=status.HTTP_404_NOT_FOUND, 
             )
 
 class SeasonUsersViewset(ModelViewSet):

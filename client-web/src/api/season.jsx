@@ -32,6 +32,10 @@ const nextTournament = async (seasonId) => {
     return await privateAxios.get(BASE_URL + seasonId + '/next-tournament/');
 };
 
+const activeTournament = async (seasonId) => {
+    return await privateAxios.get(BASE_URL + seasonId + '/active-tournament/')
+}
+
 const standings = async (seasonId) => {
     return await privateAxios.get(BASE_URL + seasonId + '/users/');
 };
@@ -44,6 +48,7 @@ const SeasonsApi = {
     destroy,
     active,
     nextTournament,
+    activeTournament,
     standings,
 };
 
