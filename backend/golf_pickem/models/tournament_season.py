@@ -58,3 +58,9 @@ class TournamentSeason(SafeDeleteModel):
         if self.tournament.id in [obj['tournament_id'] for obj in pick_history.values('tournament_id').all()]:
             return pick_history.get(tournament_id=self.tournament.id)
         return None
+    
+    def picked_golfers(self):
+        """Returns a list of all golfers that were picked for this tournament season.
+        """
+        users = [season_user.user for season_user in UserSeason.objects.filter(season=self.season_id).all()]
+        return [self.user_pick(user).scored_golfer for user in users]

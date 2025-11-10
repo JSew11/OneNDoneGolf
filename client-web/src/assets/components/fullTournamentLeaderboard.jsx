@@ -9,11 +9,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { styled } from '@mui/material/styles';
 import { useTheme } from '@mui/material';
 
-
 import StyledTableRow from 'src/assets/components/styledTable/row';
-import {
-  StyledTableCell
-} from 'src/assets/components/styledTable/tableCells';
+import { StyledTableCell } from 'src/assets/components/styledTable/tableCells';
 import SeasonTournamentGolfersApi from 'src/api/seasonTournamentGolfers';
 
 const FullTournamentLeaderboard = ({ season, tournament }) => {
