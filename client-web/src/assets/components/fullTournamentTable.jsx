@@ -88,7 +88,7 @@ const FullTournamentTable = ({ season, tournament }) => {
       </TableHead>
       <TableBody>
         {
-          season && tournament && allTournamentGolfers.length > 0 ?
+          season && tournament && tableData.length > 0 ?
           // render table data
             tableData.map((tournamentGolfer) => (
               <TournamentTableRow key={tournamentGolfer.id} golferPicked={tournamentGolfer.picked ?? false} onlyPicked={onlyShowPicked}>
@@ -130,7 +130,7 @@ const FullTournamentTable = ({ season, tournament }) => {
             :
           // loading circle
           <StyledTableRow>
-            <StyledTableCell align='center' colSpan='4'>
+            <StyledTableCell align='center' colSpan={11}>
               <CircularProgress className='my-4' size='50px'/>
             </StyledTableCell>
           </StyledTableRow>
