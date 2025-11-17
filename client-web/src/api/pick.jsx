@@ -4,8 +4,16 @@ import { GOLF_PICKEM_API_BASE_URL, PICK_API_BASE_URL } from 'src/assets/constant
 
 const BASE_URL = GOLF_PICKEM_API_BASE_URL + PICK_API_BASE_URL
 
-const list = async () => {
-    return await privateAxios.get(BASE_URL);
+const list = async (seasonId, userId = null) => {
+    const query_params = {
+        season_id: seasonId
+    }
+    if (userId !== null) {
+        query_params['user_id'] = userId;
+    }
+    return await privateAxios.get(BASE_URL, {
+        params: query_params
+    });
 };
 
 const create = async (seasonId, tournamentId, primarySelectionGolferId, backupSelectionGolferId) => {
