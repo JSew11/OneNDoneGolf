@@ -254,7 +254,7 @@ class TestSeasonGolfersViewSet(APITestCase):
         response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/golfers/{self.test_golfer.id}/')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(self.test_season.id, response.data['season'])
-        self.assertEqual(self.test_golfer.id, response.data['golfer'])
+        self.assertEqual(self.test_golfer.id, response.data['golfer']['id'])
 
 class TestSeasonTournamentsViewSet(APITestCase):
     """Tests for the season tournaments viewset endpoints.
