@@ -15,7 +15,7 @@ from ..models import (
 )
 from ..serializers import (
     SeasonSerializer,
-    UserSeasonSerialier,
+    UserSeasonSerializer,
     GolferSerializer,
     GolferSeasonSerialier,
     TournamentSerializer,
@@ -197,7 +197,7 @@ class SeasonUsersViewset(ModelViewSet):
     either as a list o individually.
     """
     queryset = UserSeason.objects.all()
-    serializer_class = UserSeasonSerialier
+    serializer_class = UserSeasonSerializer
     permission_classes = [permissions.DjangoModelPermissions]
 
     def list(self, request: Request, season_id: int, *args, **kwargs) -> Response:
@@ -206,7 +206,7 @@ class SeasonUsersViewset(ModelViewSet):
         try:
             season: Season = Season.objects.get(id=season_id)
             sorted_users = sorted(season.users.all(), key=lambda user: user.prize_money, reverse=True)
-            serializer: UserSeasonSerialier = self.serializer_class(sorted_users, many=True)
+            serializer: UserSeasonSerializer = self.serializer_class(sorted_users, many=True)
             return Response(
                 data=serializer.data,
                 status=status.HTTP_200_OK,
@@ -227,7 +227,7 @@ class SeasonUsersViewset(ModelViewSet):
         user_id = request.data.get('user', default=None)
         if request.user.has_perm('core.create_user') and user_id!= None: # only want admin to be able to do this
             user_registration_data['user'] = user_id
-        serializer: UserSeasonSerialier = self.serializer_class(data=user_registration_data)
+        serializer: UserSeasonSerializer = self.serializer_class(data=user_registration_data)
         if serializer.is_valid():
             serializer.save()
             return Response(
@@ -358,9 +358,9 @@ class SeasonTournamentGolferViewSet(ModelViewSet):
         """
         try:
             tournament_season: TournamentSeason = TournamentSeason.objects.get(season=season_id, tournament=tournament_id)
-            serialzier: TournamentGolferSerializer = self.serializer_class(tournament_season.field, many=True)
+            serializer: TournamentGolferSerializer = self.serializer_class(tournament_season.field, many=True)
             return Response(
-                data=serialzier.data,
+                data=serializer.data,
                 status=status.HTTP_200_OK
             )
         except TournamentSeason.DoesNotExist:

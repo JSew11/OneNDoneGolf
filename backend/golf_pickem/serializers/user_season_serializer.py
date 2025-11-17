@@ -11,7 +11,7 @@ from core.serializers import (
     UserSerializer
 )
 
-class UserSeasonSerialier(ModelSerializer):
+class UserSeasonSerializer(ModelSerializer):
     """Serializer for the golfer season model.
     """
     user = PrimaryKeyRelatedField(queryset=User.objects.all(), write_only=True)
