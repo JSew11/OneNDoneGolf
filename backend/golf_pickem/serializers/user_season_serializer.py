@@ -1,21 +1,28 @@
 from rest_framework.serializers import (
     ModelSerializer,
     ReadOnlyField,
-    PrimaryKeyRelatedField,
     SerializerMethodField,
 )
 
 from core.models import User
+from core.serializers import UserSerializer
 from ..models import UserSeason
-from core.serializers import (
-    UserSerializer
-)
+from ..serializers import SeasonSerializer
+
+class NewUserSeasonSerializer(ModelSerializer):
+    """Serializer for creating user seasons.
+    """
+
+    class Meta:
+        model = UserSeason
+        exclude = ['created', 'updated', 'deleted']
+        read_only_fields = ['id']
 
 class UserSeasonSerializer(ModelSerializer):
-    """Serializer for the golfer season model.
+    """Serializer for the user season model.
     """
-    user = PrimaryKeyRelatedField(queryset=User.objects.all(), write_only=True)
-    user_details = SerializerMethodField()
+    user = UserSerializer(many=False, read_only=True)
+    season = SeasonSerializer(many=False, read_only=True)
 
     prize_money = ReadOnlyField()
     tournaments_won = ReadOnlyField()
@@ -24,9 +31,3 @@ class UserSeasonSerializer(ModelSerializer):
         model = UserSeason
         exclude = ['created', 'updated', 'deleted']
         read_only_fields = ['id']
-    
-    def get_user_details(self, obj: UserSeason):
-        """Get serialized details of the user associated with this serializer's
-        UserSeason model.
-        """
-        return UserSerializer(User.objects.get(id=obj.user.id)).data

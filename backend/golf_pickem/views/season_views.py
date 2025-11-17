@@ -16,6 +16,7 @@ from ..models import (
 from ..serializers import (
     SeasonSerializer,
     UserSeasonSerializer,
+    NewUserSeasonSerializer,
     GolferSerializer,
     GolferSeasonSerialier,
     TournamentSerializer,
@@ -227,7 +228,7 @@ class SeasonUsersViewset(ModelViewSet):
         user_id = request.data.get('user', default=None)
         if request.user.has_perm('core.create_user') and user_id!= None: # only want admin to be able to do this
             user_registration_data['user'] = user_id
-        serializer: UserSeasonSerializer = self.serializer_class(data=user_registration_data)
+        serializer: NewUserSeasonSerializer = NewUserSeasonSerializer(data=user_registration_data)
         if serializer.is_valid():
             serializer.save()
             return Response(
