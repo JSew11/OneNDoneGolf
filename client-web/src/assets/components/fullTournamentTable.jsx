@@ -1,6 +1,4 @@
 import { useEffect, useState } from 'react';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
 import Table from '@mui/material/Table';
 import TableHead from '@mui/material/TableHead';
 import TableBody from '@mui/material/TableBody';
@@ -54,97 +52,91 @@ const FullTournamentTable = ({ season, tournament }) => {
   }
 
   return (
-    <Box sx={{ flexGrow: 1, textAlign: 'center'}}>
-      <Grid container className='mt-3 px-2'>
-        <Grid item xs={12}>
-          <Table stickyHeader size='small' className='my-0 pb-3'>
-            <TableHead>
-              <StyledTableRow key='title'>
-                <StyledTitleCell colspan={11}>{
-                  season && tournament ? 
-                    tournament.name
-                  :
-                    'Loading Active Tournament'
-                }</StyledTitleCell>
-              </StyledTableRow>
-              <StyledTableRow key='filters'>
-                <StyledTableCell colspan={11}>
-                  <Checkbox
-                    className='py-0 my-0'
-                    checked={onlyShowPicked}
-                    onChange={handleCheckboxChange}
-                    inputProps={{ 'aria-label': 'controlled' }}
-                  /> Hide Unpicked Golfers
+    <Table stickyHeader size='small' className='my-0 pb-3'>
+      <TableHead>
+        <StyledTableRow key='title'>
+          <StyledTitleCell colspan={11}>{
+            season && tournament ? 
+              tournament.name
+            :
+              'Loading Active Tournament'
+          }</StyledTitleCell>
+        </StyledTableRow>
+        <StyledTableRow key='filters'>
+          <StyledTableCell colspan={11}>
+            <Checkbox
+              className='py-0 my-0'
+              checked={onlyShowPicked}
+              onChange={handleCheckboxChange}
+              inputProps={{ 'aria-label': 'controlled' }}
+            /> Hide Unpicked Golfers
+          </StyledTableCell>
+        </StyledTableRow>
+        <StyledTableRow key='header'>
+          <StyledTableCell align='right'>Place</StyledTableCell>
+          <StyledTableCell>Golfer</StyledTableCell>
+          <StyledTableCell align='center'>Overall</StyledTableCell>
+          <StyledTableCell align='center'>Today</StyledTableCell>
+          <StyledTableCell>Thru</StyledTableCell>
+          <StyledTableCell>R1</StyledTableCell>
+          <StyledTableCell>R2</StyledTableCell>
+          <StyledTableCell>R3</StyledTableCell>
+          <StyledTableCell>R4</StyledTableCell>
+          <StyledTableCell>Total</StyledTableCell>
+          <StyledTableCell>Winnings</StyledTableCell>
+        </StyledTableRow>
+      </TableHead>
+      <TableBody>
+        {
+          season && tournament && allTournamentGolfers.length > 0 ?
+          // render table data
+            tableData.map((tournamentGolfer) => (
+              <TournamentTableRow key={tournamentGolfer.id} golferPicked={tournamentGolfer.picked ?? false} onlyPicked={onlyShowPicked}>
+                <StyledTableCell align='right'>
+                  {tournamentGolfer.position}
                 </StyledTableCell>
-              </StyledTableRow>
-              <StyledTableRow key='header'>
-                <StyledTableCell align='right'>Place</StyledTableCell>
-                <StyledTableCell>Golfer</StyledTableCell>
-                <StyledTableCell align='center'>Overall</StyledTableCell>
-                <StyledTableCell align='center'>Today</StyledTableCell>
-                <StyledTableCell>Thru</StyledTableCell>
-                <StyledTableCell>R1</StyledTableCell>
-                <StyledTableCell>R2</StyledTableCell>
-                <StyledTableCell>R3</StyledTableCell>
-                <StyledTableCell>R4</StyledTableCell>
-                <StyledTableCell>Total</StyledTableCell>
-                <StyledTableCell>Winnings</StyledTableCell>
-              </StyledTableRow>
-            </TableHead>
-            <TableBody>
-              {
-                season && tournament && allTournamentGolfers.length > 0 ?
-                // render table data
-                  tableData.map((tournamentGolfer) => (
-                    <TournamentTableRow key={tournamentGolfer.id} golferPicked={tournamentGolfer.picked ?? false} onlyPicked={onlyShowPicked}>
-                      <StyledTableCell align='right'>
-                        {tournamentGolfer.position}
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        {tournamentGolfer.golfer_season.golfer.first_name} {tournamentGolfer.golfer_season.golfer.last_name}
-                      </StyledTableCell>
-                      <StyledTableCell align='center'>
-                        N/A {/* TODO - Overall */}
-                      </StyledTableCell>
-                      <StyledTableCell align = 'center'>
-                        N/A {/* TODO - Today */}
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        N/A {/* TODO - Thru */}
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        N/A {/* TODO - R1 */}
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        N/A {/* TODO - R2 */}
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        N/A {/* TODO - R3 */}
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        N/A {/* TODO - R4 */}
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        N/A {/* TODO - Total */}
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        {'$' + Number(tournamentGolfer.prize_money).toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}
-                      </StyledTableCell>
-                    </TournamentTableRow>
-                  ))
-                  :
-                // loading circle
-                <StyledTableRow>
-                  <StyledTableCell align='center' colSpan='4'>
-                    <CircularProgress className='my-4' size='50px'/>
-                  </StyledTableCell>
-                </StyledTableRow>
-              }
-            </TableBody>
-          </Table>
-        </Grid>
-      </Grid>
-    </Box>
+                <StyledTableCell>
+                  {tournamentGolfer.golfer_season.golfer.first_name} {tournamentGolfer.golfer_season.golfer.last_name}
+                </StyledTableCell>
+                <StyledTableCell align='center'>
+                  N/A {/* TODO - Overall */}
+                </StyledTableCell>
+                <StyledTableCell align = 'center'>
+                  N/A {/* TODO - Today */}
+                </StyledTableCell>
+                <StyledTableCell>
+                  N/A {/* TODO - Thru */}
+                </StyledTableCell>
+                <StyledTableCell>
+                  N/A {/* TODO - R1 */}
+                </StyledTableCell>
+                <StyledTableCell>
+                  N/A {/* TODO - R2 */}
+                </StyledTableCell>
+                <StyledTableCell>
+                  N/A {/* TODO - R3 */}
+                </StyledTableCell>
+                <StyledTableCell>
+                  N/A {/* TODO - R4 */}
+                </StyledTableCell>
+                <StyledTableCell>
+                  N/A {/* TODO - Total */}
+                </StyledTableCell>
+                <StyledTableCell>
+                  {'$' + Number(tournamentGolfer.prize_money).toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}
+                </StyledTableCell>
+              </TournamentTableRow>
+            ))
+            :
+          // loading circle
+          <StyledTableRow>
+            <StyledTableCell align='center' colSpan='4'>
+              <CircularProgress className='my-4' size='50px'/>
+            </StyledTableCell>
+          </StyledTableRow>
+        }
+      </TableBody>
+    </Table>
   );
 }
 

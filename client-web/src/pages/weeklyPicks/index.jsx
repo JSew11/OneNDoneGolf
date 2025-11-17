@@ -45,19 +45,19 @@ const WeeklyPicks = () => {
   }, [activeSeason]);
 
   return (
-    isActiveTournament ? 
+    <Box sx={{ flexGrow: 1, textAlign: 'center'}}>
+      <Grid container className='mt-3 px-2'>
+        <Grid item xs={12}>
+      {
+        isActiveTournament ? 
         (activeSeason && activeTournament && <FullTournamentTable season={activeSeason} tournament={activeTournament}/>)
       :
-        (
-          <Box sx={{ flexGrow: 1, textAlign: 'center'}}>
-            <Grid container className='mt-3'>
-              <Grid item xs={12}>
-                <h1>There is no currently active tournament. Please check in again while there is an ongoing event!</h1>
-              </Grid>
-            </Grid>
-          </Box>
-        )
-    );
+        <h1>There is no currently active tournament. Please check in again while there is an ongoing event!</h1>
+      }
+        </Grid>
+      </Grid>
+    </Box>
+  );
 }
 
 export default WeeklyPicks;
