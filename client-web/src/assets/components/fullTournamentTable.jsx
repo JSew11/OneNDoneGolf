@@ -10,7 +10,10 @@ import { styled } from '@mui/material/styles';
 import { useTheme } from '@mui/material';
 
 import StyledTableRow from 'src/assets/components/styledTable/row';
-import { StyledTableCell } from 'src/assets/components/styledTable/tableCells';
+import {
+  StyledTitleCell,
+  StyledTableCell
+} from 'src/assets/components/styledTable/tableCells';
 import SeasonTournamentGolfersApi from 'src/api/seasonTournamentGolfers';
 
 const FullTournamentTable = ({ season, tournament }) => {
@@ -52,30 +55,28 @@ const FullTournamentTable = ({ season, tournament }) => {
 
   return (
     <Box sx={{ flexGrow: 1, textAlign: 'center'}}>
-      <Grid container className='mt-3'>
-        <Grid item xs={12} className='playfair-display'
-              sx={{color: theme.palette.primary.dark}}>
-          <h2>{
-            season && tournament ? 
-              tournament.name
-            :
-              'Loading Active Tournament'
-          }</h2>
-        </Grid>
-      </Grid>
-      <Grid container className='px-2 pb-1'>
-        <Grid item xs={3} className='playfair-display text-sm'>
-          <Checkbox
-            checked={onlyShowPicked}
-            onChange={handleCheckboxChange}
-            inputProps={{ 'aria-label': 'controlled' }}
-          /> Hide Unpicked Golfers
-        </Grid>
-      </Grid>
-      <Grid container className='px-2'>
+      <Grid container className='mt-3 px-2'>
         <Grid item xs={12}>
           <Table stickyHeader size='small' className='my-0 pb-3'>
             <TableHead>
+              <StyledTableRow key='title'>
+                <StyledTitleCell colspan={11}>{
+                  season && tournament ? 
+                    tournament.name
+                  :
+                    'Loading Active Tournament'
+                }</StyledTitleCell>
+              </StyledTableRow>
+              <StyledTableRow key='filters'>
+                <StyledTableCell colspan={11}>
+                  <Checkbox
+                    className='py-0 my-0'
+                    checked={onlyShowPicked}
+                    onChange={handleCheckboxChange}
+                    inputProps={{ 'aria-label': 'controlled' }}
+                  /> Hide Unpicked Golfers
+                </StyledTableCell>
+              </StyledTableRow>
               <StyledTableRow key='header'>
                 <StyledTableCell align='right'>Place</StyledTableCell>
                 <StyledTableCell>Golfer</StyledTableCell>
