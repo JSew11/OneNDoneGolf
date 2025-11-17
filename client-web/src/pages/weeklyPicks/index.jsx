@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 
 import SeasonsApi from 'src/api/season';
-import FullTournamentLeaderboard from 'src/assets/components/fullTournamentLeaderboard';
+import FullTournamentTable from 'src/assets/components/fullTournamentTable';
 
 const WeeklyPicks = () => {
 
@@ -46,7 +46,7 @@ const WeeklyPicks = () => {
 
   return (
     isActiveTournament ? 
-        (activeSeason && activeTournament && <FullTournamentLeaderboard season={activeSeason} tournament={activeTournament}/>)
+        (activeSeason && activeTournament && <FullTournamentTable season={activeSeason} tournament={activeTournament}/>)
       :
         (
           <Box sx={{ flexGrow: 1, textAlign: 'center'}}>

@@ -13,7 +13,7 @@ import StyledTableRow from 'src/assets/components/styledTable/row';
 import { StyledTableCell } from 'src/assets/components/styledTable/tableCells';
 import SeasonTournamentGolfersApi from 'src/api/seasonTournamentGolfers';
 
-const FullTournamentLeaderboard = ({ season, tournament }) => {
+const FullTournamentTable = ({ season, tournament }) => {
   const theme = useTheme();
 
   const [allTournamentGolfers, setAllTournamentGolfers] = useState([]);
@@ -95,7 +95,7 @@ const FullTournamentLeaderboard = ({ season, tournament }) => {
                 season && tournament && allTournamentGolfers.length > 0 ?
                 // render table data
                   tableData.map((tournamentGolfer) => (
-                    <TournamentLeaderboardRow key={tournamentGolfer.id} golferPicked={tournamentGolfer.picked ?? false} onlyPicked={onlyShowPicked}>
+                    <TournamentTableRow key={tournamentGolfer.id} golferPicked={tournamentGolfer.picked ?? false} onlyPicked={onlyShowPicked}>
                       <StyledTableCell align='right'>
                         {tournamentGolfer.position}
                       </StyledTableCell>
@@ -129,7 +129,7 @@ const FullTournamentLeaderboard = ({ season, tournament }) => {
                       <StyledTableCell>
                         {'$' + Number(tournamentGolfer.prize_money).toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}
                       </StyledTableCell>
-                    </TournamentLeaderboardRow>
+                    </TournamentTableRow>
                   ))
                   :
                 // loading circle
@@ -147,7 +147,7 @@ const FullTournamentLeaderboard = ({ season, tournament }) => {
   );
 }
 
-const TournamentLeaderboardRow = styled(StyledTableRow, {
+const TournamentTableRow = styled(StyledTableRow, {
   shouldForwardProp: (prop) => prop !== 'golferPicked' && prop !== 'onlyPicked'
 }) (({ theme, golferPicked, onlyPicked }) => ({
   '&:nth-of-type(odd)': {
@@ -158,4 +158,4 @@ const TournamentLeaderboardRow = styled(StyledTableRow, {
   },
 }));
 
-export default FullTournamentLeaderboard;
+export default FullTournamentTable;
