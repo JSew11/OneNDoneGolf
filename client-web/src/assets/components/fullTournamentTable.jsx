@@ -55,7 +55,7 @@ const FullTournamentTable = ({ season, tournament }) => {
     <Table stickyHeader size='small' className='my-0 pb-3'>
       <TableHead>
         <StyledTableRow key='title'>
-          <StyledTitleCell colspan={11}>{
+          <StyledTitleCell colSpan={11}>{
             season && tournament ? 
               tournament.name
             :
@@ -63,7 +63,7 @@ const FullTournamentTable = ({ season, tournament }) => {
           }</StyledTitleCell>
         </StyledTableRow>
         <StyledTableRow key='filters'>
-          <StyledTableCell colspan={11}>
+          <StyledTableCell colSpan={11}>
             <Checkbox
               className='py-0 my-0'
               checked={onlyShowPicked}
