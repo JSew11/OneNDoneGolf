@@ -1,5 +1,4 @@
 import { privateAxios } from 'src/api/axios';
-
 import { 
     GOLF_PICKEM_API_BASE_URL,
     SEASON_API_BASE_URL,
@@ -17,8 +16,8 @@ const list = async (seasonId, tournamentId) => {
     )
 }
 
-const SeasonTournamentGolferApi = {
+const SeasonTournamentGolfersApi = {
     list,
 };
 
-export default SeasonTournamentGolferApi;
+export default SeasonTournamentGolfersApi;

@@ -1,9 +1,14 @@
 import { useEffect, useState } from 'react';
+import { useTheme } from '@mui/material';
 import { useSelector } from 'react-redux';
 import Table from '@mui/material/Table';
 import TableHead from '@mui/material/TableHead';
 import TableBody from '@mui/material/TableBody';
 import CircularProgress from '@mui/material/CircularProgress';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 import { jwtDecode } from 'jwt-decode';
 
 import StyledTableRow from 'src/assets/components/styledTable/row';
@@ -12,17 +17,46 @@ import {
   StyledTableCell
 } from 'src/assets/components/styledTable/tableCells';
 import PicksApi from 'src/api/pick';
+import SeasonUsersApi from 'src/api/seasonUser';
 
 const PicksTable = ({ seasonId }) => {
+  const theme = useTheme();
 
   const [tableData, setTableData] = useState([]);
+  const [seasonUsers, setSeasonUsers] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState(null);
   
   const { access } = useSelector(state => state.auth);
-  
+
+  useEffect(() => {
+    if (seasonId) {
+      SeasonUsersApi.list(seasonId).then(
+        (response) => {
+          if (response.status === 200) {
+            const seasonUserData = [];
+            for (let seasonUsersIndex in response.data) {
+              seasonUserData.push({
+                id: response.data[seasonUsersIndex]['user']['id'],
+                username: response.data[seasonUsersIndex]['user']['username']
+              });
+            }
+            setSeasonUsers(seasonUserData);
+          }
+        },
+        (error) => error
+      );
+    }
+  }, [seasonId]);
+
   useEffect(() => {
     if (access !== null) {
-      setSelectedUserId(jwtDecode(access)['id'])
+      const decodedToken = jwtDecode(access);
+      const selectedUser = {
+        id: decodedToken['id'],
+        username: decodedToken['username']
+      };
+      setSeasonUsers([selectedUser])
+      setSelectedUserId(selectedUser['id']);
     }
   }, [access]);
 
@@ -53,13 +87,60 @@ const PicksTable = ({ seasonId }) => {
     }
   }, [selectedUserId]);
 
+
+  const handleChange = (event)=> {
+    setSelectedUserId(event.target.value);
+  }
+
   return (
     <Table stickyHeader size='small' className='my-0 pb-3'>
       <TableHead>
         <StyledTableRow key='title'>
           <StyledTitleCell colSpan={4}>{
-              seasonId ?
-                'TODO - dropdown to select user'
+              seasonId && selectedUserId ?
+                <FormControl fullWidth>
+                  <InputLabel
+                    id='user-select-label'
+                    sx={{
+                      color: theme.palette.primary.contrastText,
+                      '&.Mui-focused': {
+                        color: theme.palette.primary.contrastText
+                      }
+                    }}
+                  >
+                    User
+                  </InputLabel>
+                  <Select
+                    labelId='user-select-label'
+                    id='user-select'
+                    value={selectedUserId}
+                    label='User'
+                    onChange={handleChange}
+                    sx={{
+                      color: theme.palette.primary.contrastText,
+                      '.MuiOutlinedInput-notchedOutline': {
+                        borderColor: theme.palette.primary.contrastText,
+                      },
+                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                        borderColor: theme.palette.primary.contrastText,
+                      },
+                      '&:hover .MuiOutlinedInput-notchedOutline': {
+                        borderColor: theme.palette.primary.contrastText,
+                      },
+                      '.MuiSvgIcon-root ': {
+                        fill: theme.palette.primary.contrastText,
+                      }
+                    }}
+                  >
+                    {
+                      seasonUsers.map((seasonUser) => (
+                        <MenuItem key={seasonUser.id} value={seasonUser.id}>
+                          {seasonUser.username}
+                        </MenuItem>
+                      ))
+                    }
+                  </Select>
+                </FormControl>
               :
                 'Loading Table Data'
             }

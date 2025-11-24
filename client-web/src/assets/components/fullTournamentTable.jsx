@@ -12,7 +12,7 @@ import {
   StyledTitleCell,
   StyledTableCell
 } from 'src/assets/components/styledTable/tableCells';
-import SeasonTournamentGolferApi from 'src/api/seasonTournamentGolfer';
+import SeasonTournamentGolfersApi from 'src/api/seasonTournamentGolfer';
 
 const FullTournamentTable = ({ season, tournament }) => {
   const theme = useTheme();
@@ -24,7 +24,7 @@ const FullTournamentTable = ({ season, tournament }) => {
 
   useEffect(() => {
     if (season && tournament) {
-      SeasonTournamentGolferApi.list(season.id, tournament.id).then(
+      SeasonTournamentGolfersApi.list(season.id, tournament.id).then(
         (response) => {
           if (response.data.length > 0) {
             const initialData = response.data.sort((a,b) => {

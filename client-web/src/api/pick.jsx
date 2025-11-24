@@ -1,5 +1,4 @@
 import { privateAxios } from 'src/api/axios.jsx';
-
 import { GOLF_PICKEM_API_BASE_URL, PICK_API_BASE_URL } from 'src/assets/constants/apiUrls';
 
 const BASE_URL = GOLF_PICKEM_API_BASE_URL + PICK_API_BASE_URL
