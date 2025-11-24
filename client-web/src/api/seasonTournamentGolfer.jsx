@@ -17,8 +17,8 @@ const list = async (seasonId, tournamentId) => {
     )
 }
 
-const SeasonTournamentGolfersApi = {
+const SeasonTournamentGolferApi = {
     list,
 };
 
-export default SeasonTournamentGolfersApi;
+export default SeasonTournamentGolferApi;

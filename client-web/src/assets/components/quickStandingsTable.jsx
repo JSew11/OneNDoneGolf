@@ -24,7 +24,7 @@ const QuickStandingsTable = ({ seasonId }) => {
               standingsData.push({
                 'id': response.data[standingsIndex]['id'],
                 'rank': Number(standingsIndex) + 1,
-                'name': response.data[standingsIndex]['user_details']['username'],
+                'name': response.data[standingsIndex]['user']['username'],
                 'prize_money': response.data[standingsIndex]['prize_money'],
                 'tournament_wins': response.data[standingsIndex]['tournaments_won']
               })

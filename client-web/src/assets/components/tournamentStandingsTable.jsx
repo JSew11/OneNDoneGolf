@@ -9,8 +9,8 @@ import InputLabel from '@mui/material/InputLabel';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
-import SeasonTournamentsApi from '../../api/seasonTournament';
-import SeasonTournamentGolfersApi from '../../api/seasonTournamentGolfers';
+import SeasonTournamentsApi from 'src/api/seasonTournament';
+import SeasonTournamentGolferApi from 'src/api/seasonTournamentGolfer';
 import StyledTableRow from 'src/assets/components/styledTable/row';
 import {
   StyledTableCell,
@@ -40,7 +40,7 @@ const TournamentStandingsTable = ({ seasonId }) => {
 
   useEffect(() => {
     if (seasonId && selectedTournament.id) {
-      SeasonTournamentGolfersApi.list(seasonId, selectedTournament.id).then(
+      SeasonTournamentGolferApi.list(seasonId, selectedTournament.id).then(
         (response) => {
           if (response.data.length > 0) {
             setSelectedTournamentGolfers(response.data.sort((a,b) => {
