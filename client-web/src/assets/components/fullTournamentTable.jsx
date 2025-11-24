@@ -63,7 +63,7 @@ const FullTournamentTable = ({ season, tournament }) => {
           }</StyledTitleCell>
         </StyledTableRow>
         <StyledTableRow key='filters'>
-          <StyledTableCell colSpan={11}>
+          <StyledTableCell colSpan={11} sx={{ borderBottom: 0 }}>
             <Checkbox
               className='py-0 my-0'
               checked={onlyShowPicked}
