@@ -72,13 +72,13 @@ const PicksTable = ({ seasonId }) => {
               tournament: pick['tournament'] ? 
                   pick['tournament']['name']
                 :
-                  '--',
+                  '',
               golfer: pick['scored_golfer'] ? 
                   pick['scored_golfer']['first_name'] + ' ' + pick['scored_golfer']['last_name']
                 :
                   '--',
-              place: 'TODO - get this',
-              prizeMoney: 'TODO - get this'
+              place: pick['position'] ?? '--',
+              prizeMoney: pick['prize_money'] ?? '--'
             });
           }
           setTableData(pickData);
