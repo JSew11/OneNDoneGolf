@@ -78,7 +78,10 @@ const PicksTable = ({ seasonId }) => {
                 :
                   '--',
               place: pick['position'] ?? '--',
-              prizeMoney: pick['prize_money'] ?? '--'
+              prizeMoney: pick['prize_money'] ? 
+                '$' + Number(pick['prize_money']).toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+              :
+                '--'
             });
           }
           setTableData(pickData);
