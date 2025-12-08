@@ -63,4 +63,4 @@ class TournamentSeason(SafeDeleteModel):
         """Returns a list of all golfers that were picked for this tournament season.
         """
         users = [season_user.user for season_user in UserSeason.objects.filter(season=self.season_id).all()]
-        return [self.user_pick(user).scored_golfer for user in users]
+        return [self.user_pick(user).scored_golfer for user in users if self.user_pick(user) is not None]

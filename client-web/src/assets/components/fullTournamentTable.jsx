@@ -2,42 +2,74 @@ import { useEffect, useState } from 'react';
 import Table from '@mui/material/Table';
 import TableHead from '@mui/material/TableHead';
 import TableBody from '@mui/material/TableBody';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 import Checkbox from '@mui/material/Checkbox';
 import CircularProgress from '@mui/material/CircularProgress';
 import { styled } from '@mui/material/styles';
 import { useTheme } from '@mui/material';
 
+import SeasonsApi from 'src/api/season';
+import SeasonTournamentsApi from 'src/api/seasonTournament';
+import SeasonTournamentGolfersApi from 'src/api/seasonTournamentGolfer';
 import StyledTableRow from 'src/assets/components/styledTable/row';
 import {
   StyledTitleCell,
   StyledTableCell
 } from 'src/assets/components/styledTable/tableCells';
-import SeasonTournamentGolfersApi from 'src/api/seasonTournamentGolfer';
 
-const FullTournamentTable = ({ season, tournament }) => {
+const FullTournamentTable = ({ seasonId }) => {
   const theme = useTheme();
 
+  const [seasonTournaments, setSeasonTournaments] = useState([]);
+  const [selectedTournament, setSelectedTournament] = useState(null);
   const [allTournamentGolfers, setAllTournamentGolfers] = useState([]);
   const [pickedTournamentGolfers, setPickedTournamentGolfers] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [onlyShowPicked, setOnlyShowPicked] = useState(false);
 
   useEffect(() => {
-    if (season && tournament) {
-      SeasonTournamentGolfersApi.list(season.id, tournament.id).then(
+    if (seasonId) {
+    }
+  }, [seasonId])
+
+  useEffect(() => {
+    if (seasonId) {
+      SeasonTournamentsApi.list(seasonId).then(
+        (response) => {
+          if (response.status === 200) {
+            setSeasonTournaments(response.data);
+            setSelectedTournament(response.data[0].tournament);
+          }
+        },
+        (error) => error
+      );
+    }
+  }, [seasonId]);
+
+  useEffect(() => {
+    if (seasonId && selectedTournament) {
+      SeasonTournamentGolfersApi.list(seasonId, selectedTournament.id).then(
         (response) => {
           if (response.data.length > 0) {
-            const initialData = response.data.sort((a,b) => {
+            const allGolfersData = response.data.sort((a,b) => {
               return a.position - b.position;
             })
-            setAllTournamentGolfers(initialData);
-            setPickedTournamentGolfers(initialData.filter((golfer) => golfer.picked ?? false));
-            setTableData(initialData);
+            setAllTournamentGolfers(allGolfersData);
+            const pickedGolfersData = allGolfersData.filter((golfer) => golfer.picked ?? false);
+            setPickedTournamentGolfers(pickedGolfersData);
+            if (onlyShowPicked) {
+              setTableData(pickedGolfersData);
+            } else {
+              setTableData(allGolfersData);
+            }
           }
         }
       )
     }
-  }, []);
+  }, [seasonId, selectedTournament]);
 
   useEffect(() => {
     if (onlyShowPicked) {
@@ -47,7 +79,11 @@ const FullTournamentTable = ({ season, tournament }) => {
     }
   }, [onlyShowPicked])
 
-  const handleCheckboxChange = () => {
+  const handleChange = (event)=> {
+    setSelectedTournament(event.target.value);
+  }
+
+  const handleHideUnpickedGolfersChange = () => {
     setOnlyShowPicked(!onlyShowPicked);
   }
 
@@ -55,19 +91,63 @@ const FullTournamentTable = ({ season, tournament }) => {
     <Table stickyHeader size='small' className='my-0 pb-3'>
       <TableHead>
         <StyledTableRow key='title'>
-          <StyledTitleCell colSpan={11}>{
-            season && tournament ? 
-              tournament.name
-            :
-              'Loading Active Tournament'
-          }</StyledTitleCell>
+          <StyledTitleCell colSpan={11}>
+            {
+              selectedTournament ?
+                <FormControl fullWidth>
+                  <InputLabel
+                    id='tournament-select-label'
+                    sx={{
+                      color: theme.palette.primary.contrastText,
+                      '&.Mui-focused': {
+                        color: theme.palette.primary.contrastText
+                      }
+                    }}
+                  >
+                    Tournament
+                  </InputLabel>
+                  <Select
+                    labelId='tournament-select-label'
+                    id='tournament-select'
+                    value={selectedTournament}
+                    label='Tournament'
+                    onChange={handleChange}
+                    sx={{
+                      color: theme.palette.primary.contrastText,
+                      '.MuiOutlinedInput-notchedOutline': {
+                        borderColor: theme.palette.primary.contrastText,
+                      },
+                      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                        borderColor: theme.palette.primary.contrastText,
+                      },
+                      '&:hover .MuiOutlinedInput-notchedOutline': {
+                        borderColor: theme.palette.primary.contrastText,
+                      },
+                      '.MuiSvgIcon-root ': {
+                        fill: theme.palette.primary.contrastText,
+                      }
+                    }}
+                  >
+                    {
+                      seasonTournaments.map((seasonTournament) => (
+                        <MenuItem key={seasonTournament.tournament.id} value={seasonTournament.tournament}>
+                          {seasonTournament.tournament.name}
+                        </MenuItem>
+                      ))
+                    }
+                  </Select>
+                </FormControl>
+              :
+                'Loading Table Data'
+            }
+          </StyledTitleCell>
         </StyledTableRow>
         <StyledTableRow key='filters'>
           <StyledTableCell colSpan={11} sx={{ borderBottom: 0 }}>
             <Checkbox
               className='py-0 my-0'
               checked={onlyShowPicked}
-              onChange={handleCheckboxChange}
+              onChange={handleHideUnpickedGolfersChange}
               inputProps={{ 'aria-label': 'controlled' }}
             /> Hide Unpicked Golfers
           </StyledTableCell>
@@ -88,7 +168,7 @@ const FullTournamentTable = ({ season, tournament }) => {
       </TableHead>
       <TableBody>
         {
-          season && tournament && tableData.length > 0 ?
+          seasonId && selectedTournament && tableData.length > 0 ?
           // render table data
             tableData.map((tournamentGolfer) => (
               <TournamentTableRow key={tournamentGolfer.id} golferPicked={tournamentGolfer.picked ?? false} onlyPicked={onlyShowPicked}>

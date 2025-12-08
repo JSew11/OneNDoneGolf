@@ -29,12 +29,7 @@ const ParticipantPicks = () => {
     <Box sx={{ flexGrow: 1 }} className='mt-3 px-2'>
       <Grid container spacing={1}>
         <Grid item xs={12}>
-          {
-            activeSeason ?
-              <PicksTable seasonId={activeSeason.id}/>
-            :
-              <h1>There is no currently active season. Please check in again while there is an ongoing event!</h1>
-          }
+          <PicksTable seasonId={activeSeason?.id}/>
         </Grid>
       </Grid>
     </Box>

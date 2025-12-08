@@ -49,7 +49,7 @@ const PicksTable = ({ seasonId }) => {
   }, [seasonId]);
 
   useEffect(() => {
-    if (access !== null) {
+    if (access) {
       const decodedToken = jwtDecode(access);
       const selectedUser = {
         id: decodedToken['id'],
@@ -61,7 +61,7 @@ const PicksTable = ({ seasonId }) => {
   }, [access]);
 
   useEffect(() => {
-    if (seasonId !== null && selectedUserId !== null) {
+    if (seasonId && selectedUserId) {
       PicksApi.list(seasonId, selectedUserId).then(
         (response) => {
           const pickData = [];
@@ -88,7 +88,7 @@ const PicksTable = ({ seasonId }) => {
         }
       );
     }
-  }, [selectedUserId]);
+  }, [seasonId, selectedUserId]);
 
 
   const handleChange = (event)=> {

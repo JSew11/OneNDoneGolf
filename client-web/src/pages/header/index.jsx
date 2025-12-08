@@ -40,16 +40,15 @@ const Header = () => {
   }, [access]);
 
   useEffect(() => {
-    const availableTabs = [{'key': 0, 'label': 'Home Page', 'link': '/'}];
+    const availableTabs = [{'key': 0, 'label': 'Pickem Home', 'link': '/'}];
 
     if (isLoggedIn) {
       availableTabs.push(
-        {'key': 1, 'label': 'Full Standings', 'link': '/full-standings'},
-        {'key': 2, 'label': 'Weekly Picks', 'link': '/weekly-picks'},
-        {'key': 3, 'label': 'Winnings', 'link': '/winnings'},
-        {'key': 4, 'label': 'OWGR', 'link': '/owgr'},
-        {'key': 5, 'label': 'Participant Picks', 'link': '/participant-picks'},
-        {'key': 6, 'label': 'PGA Tour Schedule', 'link': '/pga-tour-schedule'}
+        {'key': 1, 'label': 'Weekly Picks', 'link': '/weekly-picks'},
+        {'key': 2, 'label': 'Winnings', 'link': '/winnings'},
+        {'key': 3, 'label': 'OWGR', 'link': '/owgr'},
+        {'key': 4, 'label': 'Participant Picks', 'link': '/participant-picks'},
+        {'key': 5, 'label': 'PGA Tour Schedule', 'link': '/pga-tour-schedule'}
       );
     }
 
