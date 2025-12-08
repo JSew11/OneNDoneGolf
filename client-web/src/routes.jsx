@@ -11,7 +11,7 @@ const Routes = () => (
   <Switch>
     <Route Component={Header}>
       <Route path='/' Component={Dashboard} />
-      <Route path='/weekly-picks' Component={WeeklyPicks}/>
+      <Route path='/tournament-standings' Component={WeeklyPicks}/>
       <Route path='/participant-picks' Component={ParticipantPicks}/>
     </Route>
     <Route path='*' Component={Error404} />

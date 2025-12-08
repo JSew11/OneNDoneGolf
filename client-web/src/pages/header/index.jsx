@@ -44,7 +44,7 @@ const Header = () => {
 
     if (isLoggedIn) {
       availableTabs.push(
-        {'key': 1, 'label': 'Weekly Picks', 'link': '/weekly-picks'},
+        {'key': 1, 'label': 'Tournament Standings', 'link': '/tournament-standings'},
         {'key': 2, 'label': 'Winnings', 'link': '/winnings'},
         {'key': 3, 'label': 'OWGR', 'link': '/owgr'},
         {'key': 4, 'label': 'Participant Picks', 'link': '/participant-picks'},

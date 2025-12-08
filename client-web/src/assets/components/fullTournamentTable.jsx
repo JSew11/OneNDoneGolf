@@ -24,7 +24,7 @@ const FullTournamentTable = ({ seasonId }) => {
   const theme = useTheme();
 
   const [seasonTournaments, setSeasonTournaments] = useState([]);
-  const [selectedTournament, setSelectedTournament] = useState(null);
+  const [selectedTournamentId, setSelectedTournamentId] = useState(null);
   const [allTournamentGolfers, setAllTournamentGolfers] = useState([]);
   const [pickedTournamentGolfers, setPickedTournamentGolfers] = useState([]);
   const [tableData, setTableData] = useState([]);
@@ -32,26 +32,31 @@ const FullTournamentTable = ({ seasonId }) => {
 
   useEffect(() => {
     if (seasonId) {
-    }
-  }, [seasonId])
-
-  useEffect(() => {
-    if (seasonId) {
       SeasonTournamentsApi.list(seasonId).then(
         (response) => {
           if (response.status === 200) {
-            setSeasonTournaments(response.data);
-            setSelectedTournament(response.data[0].tournament);
+            const availableTournaments = response.data.filter((tournament) => {
+              return Date.parse(tournament.start_date) < Date.now();
+            });
+            setSeasonTournaments(availableTournaments);
+            setSelectedTournamentId(availableTournaments[0].tournament.id);
           }
         },
         (error) => error
       );
+      SeasonsApi.activeTournament(seasonId).then(
+        (response) => {
+          if (response.status === 200) {
+            setSelectedTournamentId(response.data.id);
+          }
+        }
+      )
     }
   }, [seasonId]);
 
   useEffect(() => {
-    if (seasonId && selectedTournament) {
-      SeasonTournamentGolfersApi.list(seasonId, selectedTournament.id).then(
+    if (seasonId && selectedTournamentId) {
+      SeasonTournamentGolfersApi.list(seasonId, selectedTournamentId).then(
         (response) => {
           if (response.data.length > 0) {
             const allGolfersData = response.data.sort((a,b) => {
@@ -69,7 +74,7 @@ const FullTournamentTable = ({ seasonId }) => {
         }
       )
     }
-  }, [seasonId, selectedTournament]);
+  }, [seasonId, selectedTournamentId]);
 
   useEffect(() => {
     if (onlyShowPicked) {
@@ -80,7 +85,7 @@ const FullTournamentTable = ({ seasonId }) => {
   }, [onlyShowPicked])
 
   const handleChange = (event)=> {
-    setSelectedTournament(event.target.value);
+    setSelectedTournamentId(event.target.value);
   }
 
   const handleHideUnpickedGolfersChange = () => {
@@ -93,7 +98,7 @@ const FullTournamentTable = ({ seasonId }) => {
         <StyledTableRow key='title'>
           <StyledTitleCell colSpan={11}>
             {
-              selectedTournament ?
+              selectedTournamentId && seasonTournaments.length > 0 ?
                 <FormControl fullWidth>
                   <InputLabel
                     id='tournament-select-label'
@@ -109,7 +114,7 @@ const FullTournamentTable = ({ seasonId }) => {
                   <Select
                     labelId='tournament-select-label'
                     id='tournament-select'
-                    value={selectedTournament}
+                    value={selectedTournamentId}
                     label='Tournament'
                     onChange={handleChange}
                     sx={{
@@ -130,7 +135,7 @@ const FullTournamentTable = ({ seasonId }) => {
                   >
                     {
                       seasonTournaments.map((seasonTournament) => (
-                        <MenuItem key={seasonTournament.tournament.id} value={seasonTournament.tournament}>
+                        <MenuItem key={seasonTournament.tournament.id} value={seasonTournament.tournament.id}>
                           {seasonTournament.tournament.name}
                         </MenuItem>
                       ))
@@ -168,7 +173,7 @@ const FullTournamentTable = ({ seasonId }) => {
       </TableHead>
       <TableBody>
         {
-          seasonId && selectedTournament && tableData.length > 0 ?
+          seasonId && selectedTournamentId && tableData.length > 0 ?
           // render table data
             tableData.map((tournamentGolfer) => (
               <TournamentTableRow key={tournamentGolfer.id} golferPicked={tournamentGolfer.picked ?? false} onlyPicked={onlyShowPicked}>
@@ -207,13 +212,12 @@ const FullTournamentTable = ({ seasonId }) => {
                 </StyledTableCell>
               </TournamentTableRow>
             ))
-            :
-          // loading circle
-          <StyledTableRow>
-            <StyledTableCell align='center' colSpan={11}>
-              <CircularProgress className='my-4' size='50px'/>
-            </StyledTableCell>
-          </StyledTableRow>
+          :
+            <StyledTableRow>
+              <StyledTableCell align='center' colSpan={11}>
+                <CircularProgress className='my-4' size='50px'/>
+              </StyledTableCell>
+            </StyledTableRow>
         }
       </TableBody>
     </Table>
