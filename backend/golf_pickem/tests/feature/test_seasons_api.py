@@ -208,6 +208,22 @@ class TestSeasonUsersViewSet(APITestCase):
         response: Response = self.client.post(path=f'/api/golf-pickem/seasons/{self.test_new_season.id}/users/', data={'user': self.regular_user.id})
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
 
+    def test_retrieve_season_user_endpoint(self):
+        """Test the GET endpoint for retrieving an individual user participating 
+        in a given season.
+        """
+        # test hitting the endpoint as an unauthorized user
+        response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/users/{self.admin_user.id}/')
+        self.assertEqual(status.HTTP_401_UNAUTHORIZED, response.status_code)
+        
+        self.client.force_authenticate(self.admin_user)
+
+        # test getting the user season by the season id and user id
+        response: Response = self.client.get(path=f'/api/golf-pickem/seasons/{self.test_season.id}/users/{self.admin_user.id}/')
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(self.test_season.id, response.data['season']['id'])
+        self.assertEqual(self.admin_user.id, response.data['user']['id'])
+
 class TestSeasonGolfersViewSet(APITestCase):
     """Tests for the season golfers viewset endpoints.
     """

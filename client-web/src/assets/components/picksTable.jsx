@@ -25,6 +25,7 @@ const PicksTable = ({ seasonId }) => {
   const [tableData, setTableData] = useState([]);
   const [seasonUsers, setSeasonUsers] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const [selectedUserTotals, setSelectedUserTotals] = useState([]);
   
   const { access } = useSelector(state => state.auth);
 
@@ -62,6 +63,19 @@ const PicksTable = ({ seasonId }) => {
 
   useEffect(() => {
     if (seasonId && selectedUserId) {
+      SeasonUsersApi.retrieve(seasonId, selectedUserId).then(
+        (response) => {
+          setSelectedUserTotals({
+            'winnings': response.data['prize_money'] ?
+                '$' + Number(response.data['prize_money']).toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+              :
+                'N/A',
+            'rank': response.data['rank'] ?? 'N/A',
+            'cash_won': response.data['cash_won'] ?? 'N/A'
+        })
+        }
+      );
+
       PicksApi.list(seasonId, selectedUserId).then(
         (response) => {
           const pickData = [];
@@ -69,6 +83,7 @@ const PicksTable = ({ seasonId }) => {
             const pick = response.data[pickIndex];
             pickData.push({
               id: pick['id'],
+              tournament_scored: (pick['scored_golfer'] != null),
               tournament: pick['tournament'] ? 
                   pick['tournament']['name']
                 :
@@ -89,7 +104,6 @@ const PicksTable = ({ seasonId }) => {
       );
     }
   }, [seasonId, selectedUserId]);
-
 
   const handleChange = (event)=> {
     setSelectedUserId(event.target.value);
@@ -149,6 +163,12 @@ const PicksTable = ({ seasonId }) => {
             }
           </StyledTitleCell>
         </StyledTableRow>
+        <StyledTableRow key='totals'>
+          <StyledTableCell></StyledTableCell>
+          <StyledTableCell align='center'><b>Winnings:</b> {selectedUserTotals['winnings']}</StyledTableCell>
+          <StyledTableCell align='center'><b>Rank:</b> {selectedUserTotals['rank']}</StyledTableCell>
+          <StyledTableCell align='center'><b>Cash Won:</b> {selectedUserTotals['cash_won']}</StyledTableCell>
+        </StyledTableRow>
         <StyledTableRow key='header'>
           <StyledTableCell align='center'>Tournament</StyledTableCell>
           <StyledTableCell align='center'>Golfer</StyledTableCell>
@@ -159,13 +179,22 @@ const PicksTable = ({ seasonId }) => {
       <TableBody>
         {
           seasonId && selectedUserId && tableData.length > 0 ?
-            // TODO - render table data
+            // render table data
             tableData.map((row) => (
               <StyledTableRow key={row.id}>
                 <StyledTableCell align='center'>{row.tournament}</StyledTableCell>
-                <StyledTableCell align='center'>{row.golfer}</StyledTableCell>
-                <StyledTableCell align='center'>{row.place}</StyledTableCell>
-                <StyledTableCell align='center'>{row.prizeMoney}</StyledTableCell>
+                {
+                  row.tournament_scored ?
+                    <>
+                      <StyledTableCell align='center'>{row.golfer}</StyledTableCell>
+                      <StyledTableCell align='center'>{row.place}</StyledTableCell>
+                      <StyledTableCell align='center'>{row.prizeMoney}</StyledTableCell>
+                    </>
+                  :
+                    <StyledTableCell align='center' colSpan='3'>
+                      -- Tournament has not yet been scored --
+                    </StyledTableCell>
+                }
               </StyledTableRow>
             ))
           :

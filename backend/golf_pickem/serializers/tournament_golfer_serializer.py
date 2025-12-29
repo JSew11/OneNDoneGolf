@@ -6,13 +6,13 @@ from ..models import (
     Golfer,
     TournamentGolfer,
 )
-from ..serializers import TournamentSeasonSerializer, GolferSeasonSerialier
+from ..serializers import TournamentSeasonSerializer, GolferSeasonSerializer
 
 class TournamentGolferSerializer(ModelSerializer):
     """Serializer for the tournament golfer model.
     """
     tournament_season = TournamentSeasonSerializer(many=False, read_only=True)
-    golfer_season = GolferSeasonSerialier(many=False, read_only=True)
+    golfer_season = GolferSeasonSerializer(many=False, read_only=True)
 
     picked = SerializerMethodField()
 
