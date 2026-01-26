@@ -14,8 +14,7 @@ from core.models import User
 from . import (
     Tournament,
     Season,
-    UserSeason,
-)
+    UserSeason,)
 
 class TournamentSeason(SafeDeleteModel):
     """Model for a tournament taking part in a season.
@@ -64,3 +63,11 @@ class TournamentSeason(SafeDeleteModel):
         """
         users = [season_user.user for season_user in UserSeason.objects.filter(season=self.season_id).all()]
         return [self.user_pick(user).scored_golfer for user in users if self.user_pick(user) is not None]
+    
+    def finish_tournament_season(self) -> None:
+        """Scores all picks for the current tournament season.
+        """
+        users = [season_user.user for season_user in UserSeason.objects.filter(season=self.season_id).all()]
+        tournament_season_picks = [self.user_pick(user) for user in users if self.user_pick(user) is not None]
+        for pick in tournament_season_picks:
+            pick.score_pick()

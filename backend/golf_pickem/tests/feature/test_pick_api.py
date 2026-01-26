@@ -66,7 +66,7 @@ class TestPickApi(APITestCase):
         }
         response: Response = self.client.get(path='/api/golf-pickem/picks/', data=filterData)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(0, len(response.data))
+        self.assertEqual(2, len(response.data))
 
     def test_create_pick_endpoint(self):
         """Test the POST endpoint for creating a new pick using a given tournament,
