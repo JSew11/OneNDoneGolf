@@ -67,6 +67,8 @@ class TournamentSeason(SafeDeleteModel):
     def finish_tournament_season(self) -> None:
         """Scores all picks for the current tournament season.
         """
+        # TODO - make sure external API has obtained all final tournament data before scoring picks
+        
         users = [season_user.user for season_user in UserSeason.objects.filter(season=self.season_id).all()]
         tournament_season_picks = [self.user_pick(user) for user in users if self.user_pick(user) is not None]
         for pick in tournament_season_picks:
