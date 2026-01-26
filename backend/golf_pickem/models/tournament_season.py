@@ -1,3 +1,7 @@
+from datetime import (
+  datetime,
+  timezone
+)
 from django.db.models import (
     UniqueConstraint,
     Q,
@@ -48,6 +52,21 @@ class TournamentSeason(SafeDeleteModel):
     tournament = ForeignKey(Tournament, on_delete=CASCADE, related_name='seasons')
     season = ForeignKey(Season, on_delete=CASCADE, related_name='schedule')
     
+    @property
+    def winning_users(self):
+        """Get the user ids of the winner(s) of this tournament_season. Returns none
+        if the tournament has not yet finished.
+        """
+        if self.end_date > datetime.now(timezone.utc):
+            return None
+        users = [season_user.user for season_user in UserSeason.objects.filter(season=self.season_id).all()]
+        picks = [self.user_pick(user) for user in users if self.user_pick(user) is not None]
+        pick_user_positions = [(pick.user_season.user.id, pick.scored_tournament_golfer().position) for pick in picks]
+
+        highest_position = min(pick_user_positions, key=lambda x: x[1])[1]
+        return [obj[0] for obj in filter(lambda x: x[1] == highest_position, pick_user_positions)]
+
+        
     def user_pick(self, user: User):
         """Returns the given user's pick for the tournament season. Returns none if
         the user has not yet picked.
@@ -70,6 +89,6 @@ class TournamentSeason(SafeDeleteModel):
         # TODO - make sure external API has obtained all final tournament data before scoring picks
         
         users = [season_user.user for season_user in UserSeason.objects.filter(season=self.season_id).all()]
-        tournament_season_picks = [self.user_pick(user) for user in users if self.user_pick(user) is not None]
-        for pick in tournament_season_picks:
+        picks = [self.user_pick(user) for user in users if self.user_pick(user) is not None]
+        for pick in picks:
             pick.score_pick()

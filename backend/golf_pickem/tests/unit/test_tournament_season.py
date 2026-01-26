@@ -47,3 +47,16 @@ class TestTournamentSeasonModel(TestCase):
 
         # test that all picks for the tournament season have a scored golfer
         self.assertEqual(len(self.test_tournament_season_2.picked_golfers()), 2)
+
+    def test_winning_users(self):
+        """Test the winners property of the tournament_season model.
+        """
+        # test getting winning_users for an unfinished tournament_season
+        self.assertIsNone(self.test_tournament_season_3.winning_users)
+
+        # test getting winning_users for a tournament_season with only one winner
+        self.assertEqual(1, len(self.test_tournament_season_1.winning_users))
+
+        # test getting winning_users for a tournament_season with multiple winners
+        self.test_tournament_season_2.finish_tournament_season()
+        self.assertGreater(len(self.test_tournament_season_2.winning_users), 1)
