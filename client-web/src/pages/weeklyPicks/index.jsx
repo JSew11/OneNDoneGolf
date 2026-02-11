@@ -9,7 +9,6 @@ import FullTournamentTable from 'src/assets/components/fullTournamentTable';
 const WeeklyPicks = () => {
 
   const [activeSeason, setActiveSeason] = useState(null);
-  const [activeTournament, setActiveTournament] = useState(null);
   
   const { isLoggedIn } = useSelector(state => state.auth);
 
