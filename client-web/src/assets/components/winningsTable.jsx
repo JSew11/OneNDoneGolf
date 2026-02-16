@@ -9,7 +9,7 @@ import {
   StyledTableCell
 } from 'src/assets/components/styledTable/tableCells';
 
-const WinningsTable = () => {
+const WinningsTable = ({ seasonId }) => {
   return (
     <Table stickyHeader size='small' className='my-0 pb-3'>
       <TableHead></TableHead>
