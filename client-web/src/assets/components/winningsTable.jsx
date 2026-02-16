@@ -9,6 +9,7 @@ import {
   StyledTitleCell,
   StyledTableCell
 } from 'src/assets/components/styledTable/tableCells';
+import SeasonTournamentsApi from 'src/api/seasonTournament';
 
 const WinningsTable = ({ seasonId }) => {
 
@@ -16,7 +17,21 @@ const WinningsTable = ({ seasonId }) => {
 
   useEffect(() => {
     if (seasonId) {
-      // TODO - populate table data
+      SeasonTournamentsApi.list(seasonId).then(
+        (response) => {
+          const tournamentSeasonData = [];
+          for (let tournamentSeason of response.data) {
+            tournamentSeasonData.push({
+              'id': tournamentSeason.id,
+              'tournament': tournamentSeason.tournament.name,
+              'winners': tournamentSeason.winners,
+              'winning_golfers': tournamentSeason.winning_golfers,
+              'place': tournamentSeason.place
+            });
+          }
+          setTableData(tournamentSeasonData);
+        }
+      );
     }
   }, [seasonId]);
 
@@ -40,9 +55,16 @@ const WinningsTable = ({ seasonId }) => {
             tableData.map((row) => (
               <StyledTableRow key={row.id}>
                 <StyledTableCell colSpan={3} align='center'>{row.tournament}</StyledTableCell>
-                <StyledTableCell colSpan={3} align='center'>{row.winners}</StyledTableCell>
-                <StyledTableCell colSpan={3} align='center'>{row.golfers}</StyledTableCell>
-                <StyledTableCell colSpan={1} align='center'>{row.place}</StyledTableCell>
+                {
+                  row.winners && row.winning_golfers && row.place ?
+                    <>
+                      <StyledTableCell colSpan={3} align='center'>{row.winners}</StyledTableCell>
+                      <StyledTableCell colSpan={3} align='center'>{row.winning_golfers}</StyledTableCell>
+                      <StyledTableCell colSpan={1} align='center'>{row.place}</StyledTableCell>
+                    </>
+                  :
+                    <StyledTableCell colSpan={7} align='center'>Incomplete</StyledTableCell>
+                }
               </StyledTableRow>
             ))
           :

@@ -52,20 +52,32 @@ class TournamentSeason(SafeDeleteModel):
     tournament = ForeignKey(Tournament, on_delete=CASCADE, related_name='seasons')
     season = ForeignKey(Season, on_delete=CASCADE, related_name='schedule')
     
-    @property
-    def winning_users(self):
-        """Get the user ids of the winner(s) of this tournament_season. Returns none
+    def winning_pick_position(self):
+        """Get the highest finishing position of the picked golfers for this tournament
+        season and the positions of each user pick.
+        """
+        if self.end_date > datetime.now(timezone.utc):
+            return None, None
+        
+        users = [season_user.user for season_user in UserSeason.objects.filter(season=self.season_id).all()]
+        picks = [self.user_pick(user) for user in users if self.user_pick(user) is not None]
+        pick_user_positions = [(pick.user_season.user.id, pick.scored_tournament_golfer().position) for pick in picks if pick.scored_golfer != None]
+
+        if (len(pick_user_positions) > 0):
+            return min(pick_user_positions, key=lambda x: x[1])[1], pick_user_positions
+    
+        return None, None
+    
+    def winning_user_ids(self):
+        """Get the user ids of the winner(s) of this tournament season. Returns none
         if the tournament has not yet finished.
         """
         if self.end_date > datetime.now(timezone.utc):
             return None
-        users = [season_user.user for season_user in UserSeason.objects.filter(season=self.season_id).all()]
-        picks = [self.user_pick(user) for user in users if self.user_pick(user) is not None]
-        pick_user_positions = [(pick.user_season.user.id, pick.scored_tournament_golfer().position) for pick in picks]
-
-        highest_position = min(pick_user_positions, key=lambda x: x[1])[1]
-        return [obj[0] for obj in filter(lambda x: x[1] == highest_position, pick_user_positions)]
-
+        
+        highest_position, pick_user_positions = self.winning_pick_position()
+        if (highest_position != None and pick_user_positions != None):
+            return [obj[0] for obj in filter(lambda x: x[1] == highest_position, pick_user_positions)]
         
     def user_pick(self, user: User):
         """Returns the given user's pick for the tournament season. Returns none if
@@ -92,3 +104,15 @@ class TournamentSeason(SafeDeleteModel):
         picks = [self.user_pick(user) for user in users if self.user_pick(user) is not None]
         for pick in picks:
             pick.score_pick()
+
+    def winning_picked_golfer_ids(self):
+        """Get the golfers for the winning picks for the tournament season.
+        """
+        if self.end_date > datetime.now(timezone.utc):
+            return None
+        
+        users = [season_user.user for season_user in UserSeason.objects.filter(season=self.season_id).all()]
+        picked_tournament_golfers = [self.user_pick(user).scored_tournament_golfer() for user in users if self.user_pick(user) is not None and self.user_pick(user).scored_golfer != None]
+        highest_position, _ = self.winning_pick_position()
+
+        return [picked_golfer.golfer_season.golfer.id for picked_golfer in picked_tournament_golfers if picked_golfer.position == highest_position]

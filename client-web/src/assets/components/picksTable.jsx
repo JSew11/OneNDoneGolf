@@ -191,9 +191,7 @@ const PicksTable = ({ seasonId }) => {
                       <StyledTableCell align='center'>{row.prizeMoney}</StyledTableCell>
                     </>
                   :
-                    <StyledTableCell align='center' colSpan='3'>
-                      -- Tournament has not yet been scored --
-                    </StyledTableCell>
+                    <StyledTableCell align='center' colSpan='3'>Incomplete</StyledTableCell>
                 }
               </StyledTableRow>
             ))

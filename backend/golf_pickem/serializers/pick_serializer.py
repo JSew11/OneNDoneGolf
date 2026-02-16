@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
-from ..models import Pick, TournamentGolfer, GolferSeason, TournamentSeason
+from ..models import Pick
 from ..serializers import UserSeasonSerializer, TournamentSerializer, GolferSerializer
 
 class NewPickSerializer(ModelSerializer):
