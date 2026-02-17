@@ -70,7 +70,7 @@ const TournamentScheduleTable = ({ seasonId }) => {
         }
       </TableBody>
     </Table>
-  )
+  );
 
 };
 
