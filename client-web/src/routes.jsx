@@ -7,6 +7,7 @@ import Error404 from 'src/pages/error404/index.jsx';
 import WeeklyPicks from 'src/pages/weeklyPicks/index.jsx';
 import ParticipantPicks from 'src/pages/participantPicks/index.jsx';
 import Winnings from 'src/pages/winnings/index.jsx';
+import TournamentSchedule from './pages/tournamentSchedule';
 
 const Routes = () => (
   <Switch>
@@ -15,6 +16,7 @@ const Routes = () => (
       <Route path='/tournament-standings' Component={WeeklyPicks}/>
       <Route path='/winnings' Component={Winnings}/>
       <Route path='/participant-picks' Component={ParticipantPicks}/>
+      <Route path='/schedule' Component={TournamentSchedule} />
     </Route>
     <Route path='*' Component={Error404} />
   </Switch>

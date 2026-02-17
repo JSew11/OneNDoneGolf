@@ -48,7 +48,7 @@ const Header = () => {
         {'key': 2, 'label': 'Winnings', 'link': '/winnings'},
         {'key': 3, 'label': 'OWGR', 'link': '/owgr'},
         {'key': 4, 'label': 'Participant Picks', 'link': '/participant-picks'},
-        {'key': 5, 'label': 'PGA Tour Schedule', 'link': '/pga-tour-schedule'}
+        {'key': 5, 'label': 'PGA Tour Schedule', 'link': '/schedule'}
       );
     }
 
