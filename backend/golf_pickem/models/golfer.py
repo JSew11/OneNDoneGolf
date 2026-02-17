@@ -7,6 +7,8 @@ from django.core.validators import RegexValidator
 from safedelete.models import SafeDeleteModel
 from safedelete import SOFT_DELETE_CASCADE
 
+from golf_pickem.models import UserSeason
+
 class Golfer(SafeDeleteModel):
     """Model for a golfer.
     """
@@ -27,3 +29,21 @@ class Golfer(SafeDeleteModel):
     first_name = CharField(max_length=255, validators=[RegexValidator(r'^[a-zA-Z]+$')])
     last_name = CharField(max_length=255, validators=[RegexValidator(r'^[a-zA-Z .]+$')])
     country = CharField(max_length=255, validators=[RegexValidator(r'^[a-zA-Z .,]+$')])
+
+    def times_picked(self, seasonId: int) -> int:
+        """Get the number of times the golfer was picked in the given 
+        season.
+        """
+        return self.picked_by_history.filter(user_season__season=seasonId).count()
+    
+    def times_picked_as_winner(self, seasonId: int) -> int:
+        """Get the number of times the golfer was picked and won the
+        tournament in the given season.
+        """
+        return len([pick for pick in self.picked_by_history.filter(user_season__season=seasonId).all() if pick.won_tournament])
+    
+    def remaining_available_picks(self, seasonId: int) -> int:
+        """Get the number of users who have not picked the golfer in the
+        given season.
+        """
+        return UserSeason.objects.filter(season=seasonId).count() - self.times_picked(seasonId)
