@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate, Outlet } from 'react-router-dom';
+import { useNavigate, Outlet, Link } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import { styled } from '@mui/material/styles';
 import { 
@@ -40,16 +40,15 @@ const Header = () => {
   }, [access]);
 
   useEffect(() => {
-    const availableTabs = [{'label': 'Home Page', 'link': '/'}];
+    const availableTabs = [{'key': 0, 'label': 'Pickem Home', 'link': '/'}];
 
     if (isLoggedIn) {
       availableTabs.push(
-        {'label': 'Full Standings', 'link': '/full-standings'},
-        {'label': 'Weekly Picks', 'link': '/weekly-picks'},
-        {'label': 'Winnings', 'link': '/winnings'},
-        {'label': 'OWGR', 'link': '/owgr'},
-        {'label': 'Participant Picks', 'link': '/participant-picks'},
-        {'label': 'PGA Tour Schedule', 'link': '/pga-tour-schedule'}
+        {'key': 1, 'label': 'Tournament Standings', 'link': '/tournament-standings'},
+        {'key': 2, 'label': 'Winnings', 'link': '/winnings'},
+        {'key': 3, 'label': 'OWGR', 'link': '/owgr'},
+        {'key': 4, 'label': 'Participant Picks', 'link': '/participant-picks'},
+        {'key': 5, 'label': 'PGA Tour Schedule', 'link': '/schedule'}
       );
     }
 
@@ -158,7 +157,7 @@ const UserDropdown = ({ username }) => {
 function LinkTab(props) {
   return (
     <Tab
-      component="a"
+      component={Link}
       aria-current={props.selected && 'page'}
       {...props}
     />
@@ -199,16 +198,17 @@ const NavTabs = ({ tabs }) => {
     <Box sx={{ width: '100%' }}>
       <AppBar position='static'>
         <Tabs
+          key='header-nav'
           value={value}
           onChange={handleChange}
           indicatorColor='secondary'
           textColor='inherit'
-          aria-label="one-n-done-gilf-nav"
-          role="navigation"
+          aria-label='one-n-done-golf-nav'
+          role='navigation'
         >
           {
             tabs.map((tab) => (
-              <LinkTab label={tab.label} href={tab.link} />
+              <LinkTab key={tab.key} label={tab.label} to={tab.link} />
             ))
           }
         </Tabs>

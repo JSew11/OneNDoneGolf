@@ -80,3 +80,38 @@ class Pick(SafeDeleteModel):
         golfer_season = GolferSeason.objects.get(golfer=self.scored_golfer.id, season=self.user_season.season.id)
         tournament_golfer = TournamentGolfer.objects.get(tournament_season=tournament_season.id, golfer_season=golfer_season.id)
         return tournament_golfer.position == 1
+    
+    def scored_tournament_golfer(self) -> TournamentGolfer:
+        """Gets the tournament golfer model for the pick's scored golfer.
+        """
+        if self.scored_golfer is None:
+            return None
+        
+        golfer_season: GolferSeason = GolferSeason.objects.get(
+            golfer=self.scored_golfer.id,
+            season=self.user_season.season.id
+        )
+        tournament_season: TournamentSeason = TournamentSeason.objects.get(
+            tournament=self.tournament.id,
+            season=self.user_season.season.id
+        )
+        return TournamentGolfer.objects.get(
+            golfer_season=golfer_season.id,
+            tournament_season=tournament_season.id
+        )
+
+    def score_pick(self) -> None:
+        """Set the scored golfer for the pick (should be the primary golfer unless the scored golfer did not compete).
+        """
+        tournament_season: TournamentSeason = TournamentSeason.objects.get(tournament=self.tournament.id, season=self.user_season.season.id)
+
+        primary_golfer_season: GolferSeason = GolferSeason.objects.get(golfer=self.primary_selection.id, season=self.user_season.season.id)
+        primary_tournament_golfer: TournamentGolfer = TournamentGolfer.objects.get(tournament_season=tournament_season.id, golfer_season=primary_golfer_season.id)
+
+        # position = 0 indicates that the golfer did not participate in the tournament
+        if primary_tournament_golfer.position != 0:
+            self.scored_golfer = self.primary_selection
+        else:
+            self.scored_golfer = self.backup_selection
+        
+        self.save()

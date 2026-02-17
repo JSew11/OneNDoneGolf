@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid';
 
 import SeasonsApi from 'src/api/season';
 import PickModal from 'src/assets/modals/pick';
-import QuickStandingsTable from 'src/pages/dashboard/quickStandingsTable';
+import PickemStandingsTable from 'src/assets/components/pickemStandingsTable';
 import GameInformation from 'src/pages/dashboard/gameInformation';
 
 const Dashboard = () => {
@@ -54,7 +54,7 @@ const Dashboard = () => {
         <Grid item xs={10}>
           { 
             isLoggedIn ?
-            <QuickStandingsTable seasonId={activeSeason?.id}/> :
+            <PickemStandingsTable seasonId={activeSeason?.id}/> :
             <GameInformation />
           }
         </Grid>

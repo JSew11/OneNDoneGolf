@@ -9,7 +9,9 @@ import {
 
 const token = sessionStorage.getItem('token');
 
-const initialState = token ? {isLoggedIn: true, access: token} : {isLoggedIn: false, access: null}
+const initialState = token ?
+  {isLoggedIn: true, access: token} : 
+  {isLoggedIn: false, access: null}
 
 export default function auth(state=initialState, { type, payload }) {
   switch (type) {

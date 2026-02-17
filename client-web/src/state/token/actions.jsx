@@ -14,7 +14,7 @@ export const register = (userRegistrationData) => (dispatch) => {
       dispatch({
         type: REGISTER_SUCCESS,
         payload: {
-          access: response.data.access
+          access: response.data.access,
         },
       });
 
@@ -37,7 +37,7 @@ export const login = (email, password) => (dispatch) => {
         dispatch({
           type: LOGIN_SUCCESS,
           payload: {
-            access: response.data.access
+            access: response.data.access,
           },
         });
       }
@@ -67,11 +67,15 @@ export const logout = () => (dispatch) => {
   );
 };
 
-export const refreshToken = (access) => (dispatch) => {
-  dispatch({
-    type: REFRESH_TOKEN,
-    payload: {
-      access: access,
-    },
-  });
+export const refreshToken = () => (dispatch) => {
+  AuthApi.refreshToken().then(
+    (response) => {
+      dispatch({
+        type: REFRESH_TOKEN,
+        payload: {
+          access: response.data.access,
+        },
+      });
+    }
+  );
 }

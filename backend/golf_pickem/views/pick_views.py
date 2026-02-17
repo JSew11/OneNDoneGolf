@@ -11,7 +11,7 @@ from ..models import (
     Season,
     UserSeason
 )
-from ..serializers import PickSerializer
+from ..serializers import PickSerializer, NewPickSerializer
 
 class PickViewSet(ModelViewSet):
     """Viewset for the pick model. Supports all functionality for creating, 
@@ -95,7 +95,7 @@ class PickViewSet(ModelViewSet):
                 'backup_selection': backup_selection_id,
                 'scored_golfer': None
             }
-            serializer: PickSerializer = self.serializer_class(data=pick_data)
+            serializer: NewPickSerializer = NewPickSerializer(data=pick_data)
             if serializer.is_valid():
                 serializer.save()
                 return Response(

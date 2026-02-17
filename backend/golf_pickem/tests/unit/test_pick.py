@@ -42,6 +42,7 @@ class TestPickModel(TestCase):
         self.test_golfer_4: Golfer = Golfer.objects.get(id=4)
         self.test_pick_1: Pick = Pick.objects.get(id=1)
         self.test_pick_2: Pick = Pick.objects.get(id=2)
+        self.test_pick_4: Pick = Pick.objects.get(id=4)
         return super().setUp()
     
     def test_create_valid_pick(self):
@@ -153,3 +154,14 @@ class TestPickModel(TestCase):
         golfer_season = GolferSeason.objects.get(golfer=self.test_pick_1.scored_golfer.id, season=self.test_pick_1.user_season.season.id)
         tournament_golfer = TournamentGolfer.objects.get(tournament_season=tournament_season.id, golfer_season=golfer_season.id)
         self.assertEqual(tournament_golfer.position == 1, self.test_pick_1.won_tournament)
+    
+    def test_score_pick(self):
+        """Test the score_pick method of the Pick model.
+        """
+        # test scoring a pick where the primary selection competes
+        self.test_pick_2.score_pick()
+        self.assertEqual(self.test_pick_2.scored_golfer.id, self.test_golfer_2.id)
+
+        # test scoring a pick where the primary selection does not compete
+        self.test_pick_4.score_pick()
+        self.assertEqual(self.test_pick_4.scored_golfer.id, self.test_golfer_2.id)

@@ -1,8 +1,8 @@
 from .season_serializer import SeasonSerializer
-from .user_season_serializer import UserSeasonSerialier
+from .user_season_serializer import UserSeasonSerializer, NewUserSeasonSerializer
 from .tournament_serializer import TournamentSerializer
 from .tournament_season_serializer import TournamentSeasonSerializer
 from .golfer_serializer import GolferSerializer
-from .golfer_season_serializer import GolferSeasonSerialier
-from .pick_serializer import PickSerializer
+from .golfer_season_serializer import GolferSeasonSerializer
+from .pick_serializer import PickSerializer, NewPickSerializer
 from .tournament_golfer_serializer import TournamentGolferSerializer

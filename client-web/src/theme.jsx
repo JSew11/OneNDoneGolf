@@ -10,6 +10,9 @@ const SECONDARY_COLOR_MAIN = '#b6d7a8';
 const SECONDARY_COLOR_DARK = '#7f9675';
 const SECONDARY_COLOR_CONTRAST = '#000000';
 
+const PICKED_COLOR_LIGHT = '#b5d4ec';
+const PICKED_COLOR_DARK = '#9dc3e0';
+
 const SITE_BACKGROUND_COLOR = '#f0f0f0';
 const DISABLED_CONTRAST_COLOR = '#999999';
 
@@ -39,6 +42,10 @@ export const appTheme = createTheme({
       dark: SECONDARY_COLOR_DARK,
       contrastText: SECONDARY_COLOR_CONTRAST,
     },
+    picked: {
+      light: PICKED_COLOR_LIGHT,
+      dark: PICKED_COLOR_DARK,
+    }
   },
   components: {
     MuiButton: {

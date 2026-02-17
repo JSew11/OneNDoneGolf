@@ -11,7 +11,7 @@ import {
   StyledTitleCell
 } from 'src/assets/components/styledTable/tableCells';
 
-const QuickStandingsTable = ({ seasonId }) => {
+const PickemStandingsTable = ({ seasonId }) => {
   const [standingsRows, setStandingsRows] = useState([]);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ const QuickStandingsTable = ({ seasonId }) => {
               standingsData.push({
                 'id': response.data[standingsIndex]['id'],
                 'rank': Number(standingsIndex) + 1,
-                'name': response.data[standingsIndex]['user_details']['username'],
+                'name': response.data[standingsIndex]['user']['username'],
                 'prize_money': response.data[standingsIndex]['prize_money'],
                 'tournament_wins': response.data[standingsIndex]['tournaments_won']
               })
@@ -41,7 +41,14 @@ const QuickStandingsTable = ({ seasonId }) => {
     <Table stickyHeader size='small' className='py-3'>
       <TableHead>
         <StyledTableRow key='title'>
-          <StyledTitleCell colSpan='4'>Current Season Standings</StyledTitleCell>
+          <StyledTitleCell colSpan='4'>
+          {
+            seasonId && standingsRows.length > 0 ?
+              'Current Season Standings'
+            :
+              'Loading Table Data'
+          }
+          </StyledTitleCell>
         </StyledTableRow>
         <StyledTableRow key='header'>
           <StyledTableCell align='center'>Rank</StyledTableCell>
@@ -52,7 +59,7 @@ const QuickStandingsTable = ({ seasonId }) => {
       </TableHead>
       <TableBody>
         {
-          seasonId || standingsRows.length < 1 ?
+          seasonId && standingsRows.length > 0 ?
           // render table data
           standingsRows.map((row) => (
             <StyledTableRow key={row.id}>
@@ -74,4 +81,4 @@ const QuickStandingsTable = ({ seasonId }) => {
   );
 };
 
-export default QuickStandingsTable;
+export default PickemStandingsTable;

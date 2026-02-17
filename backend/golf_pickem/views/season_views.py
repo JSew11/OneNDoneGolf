@@ -15,9 +15,10 @@ from ..models import (
 )
 from ..serializers import (
     SeasonSerializer,
-    UserSeasonSerialier,
+    UserSeasonSerializer,
+    NewUserSeasonSerializer,
     GolferSerializer,
-    GolferSeasonSerialier,
+    GolferSeasonSerializer,
     TournamentSerializer,
     TournamentSeasonSerializer,
     TournamentGolferSerializer,
@@ -104,7 +105,7 @@ class SeasonViewSet(ModelViewSet):
             season.delete()
             return Response(
                 data={'message': 'Season deleted successfully'},
-                status=status.HTTP_204_NO_CONTENT
+                status=status.HTTP_204_NO_CONTENT,
             )
         except Season.DoesNotExist:
             return Response(
@@ -161,13 +162,43 @@ class SeasonViewSet(ModelViewSet):
                 data={'status': f'Could not find the next tournament for Season with id \'{season_id}\' '},
                 status=status.HTTP_404_NOT_FOUND,
             )
+    
+    @action(detail=True, methods=['GET'])
+    def active_tournament(self, request: Request, season_id: int) -> Response:
+        """Get the currently active tournament in the given season's schedule. Returns
+        nothing if there are no active tournaments.
+        """
+        try:
+            season: Season = Season.objects.get(id=season_id)
+            active_tournament_id = season.active_tournament_id()
+            if not active_tournament_id:
+                return Response(
+                    data={'status': f'There is no active Tournament for Season with id \'{season_id}\' '},
+                    status=status.HTTP_204_NO_CONTENT,
+                )
+            tournament: Tournament = Tournament.objects.get(id=active_tournament_id)
+            tournament_serializer: TournamentSerializer = TournamentSerializer(tournament)
+            return Response(
+                data=tournament_serializer.data,
+                status=status.HTTP_200_OK,
+            )
+        except Season.DoesNotExist:
+            return Response(
+                data={'status': f'Season with id \'{season_id}\' not found'},
+                status=status.HTTP_404_NOT_FOUND, 
+            )
+        except Tournament.DoesNotExist:
+            return Response(
+                data={'status': f'Active Tournament for Season with id \'{season_id}\' not found'},
+                status=status.HTTP_404_NOT_FOUND, 
+            )
 
 class SeasonUsersViewset(ModelViewSet):
     """Viewset for the users participating in a season. Supports creating and viewing
     either as a list o individually.
     """
     queryset = UserSeason.objects.all()
-    serializer_class = UserSeasonSerialier
+    serializer_class = UserSeasonSerializer
     permission_classes = [permissions.DjangoModelPermissions]
 
     def list(self, request: Request, season_id: int, *args, **kwargs) -> Response:
@@ -176,7 +207,7 @@ class SeasonUsersViewset(ModelViewSet):
         try:
             season: Season = Season.objects.get(id=season_id)
             sorted_users = sorted(season.users.all(), key=lambda user: user.prize_money, reverse=True)
-            serializer: UserSeasonSerialier = self.serializer_class(sorted_users, many=True)
+            serializer: UserSeasonSerializer = self.serializer_class(sorted_users, many=True)
             return Response(
                 data=serializer.data,
                 status=status.HTTP_200_OK,
@@ -197,7 +228,7 @@ class SeasonUsersViewset(ModelViewSet):
         user_id = request.data.get('user', default=None)
         if request.user.has_perm('core.create_user') and user_id!= None: # only want admin to be able to do this
             user_registration_data['user'] = user_id
-        serializer: UserSeasonSerialier = self.serializer_class(data=user_registration_data)
+        serializer: NewUserSeasonSerializer = NewUserSeasonSerializer(data=user_registration_data)
         if serializer.is_valid():
             serializer.save()
             return Response(
@@ -208,13 +239,29 @@ class SeasonUsersViewset(ModelViewSet):
             data=serializer.errors,
             status=status.HTTP_400_BAD_REQUEST,
         )
+    
+    def retrieve(self, request: Request, season_id: int, user_id: int, *args, **kwargs) -> Response:
+        """Get the user season with the given season and user id.
+        """
+        try:
+            user_season = UserSeason.objects.get(user=user_id, season=season_id)
+            serializer: UserSeasonSerializer = self.serializer_class(user_season)
+            return Response(
+                data=serializer.data,
+                status=status.HTTP_200_OK
+            )
+        except GolferSeason.DoesNotExist:
+            return Response(
+                data={'status': f'User with id \'{user_id}\' not found as a participant of Season with id \'{season_id}\''},
+                status=status.HTTP_404_NOT_FOUND, 
+            )
 
 class SeasonGolfersViewset(ModelViewSet):
     """Viewset for the golfers participating in a season. Supports viewing either
     as a list or individually.
     """
     queryset = GolferSeason.objects.all()
-    serializer_class = GolferSeasonSerialier
+    serializer_class = GolferSeasonSerializer
     permission_classes = [permissions.DjangoModelPermissions]
 
     def list(self, request: Request, season_id: int, *args, **kwargs) -> Response:
@@ -222,7 +269,7 @@ class SeasonGolfersViewset(ModelViewSet):
         """
         try:
             season: Season = Season.objects.get(id=season_id)
-            serializer: GolferSeasonSerialier = self.serializer_class(season.golfers, many=True)
+            serializer: GolferSeasonSerializer = self.serializer_class(season.golfers, many=True)
             return Response(
                 data=serializer.data,
                 status=status.HTTP_200_OK,
@@ -239,7 +286,7 @@ class SeasonGolfersViewset(ModelViewSet):
         """
         try:
             golfer_season = GolferSeason.objects.get(golfer=golfer_id, season=season_id)
-            serializer: GolferSeasonSerialier = self.serializer_class(golfer_season)
+            serializer: GolferSeasonSerializer = self.serializer_class(golfer_season)
             return Response(
                 data=serializer.data,
                 status=status.HTTP_200_OK
@@ -328,9 +375,9 @@ class SeasonTournamentGolferViewSet(ModelViewSet):
         """
         try:
             tournament_season: TournamentSeason = TournamentSeason.objects.get(season=season_id, tournament=tournament_id)
-            serialzier: TournamentGolferSerializer = self.serializer_class(tournament_season.field, many=True)
+            serializer: TournamentGolferSerializer = self.serializer_class(tournament_season.field, many=True)
             return Response(
-                data=serialzier.data,
+                data=serializer.data,
                 status=status.HTTP_200_OK
             )
         except TournamentSeason.DoesNotExist:

@@ -1,5 +1,4 @@
 import { privateAxios } from 'src/api/axios.jsx';
-
 import { GOLF_PICKEM_API_BASE_URL, SEASON_API_BASE_URL } from 'src/assets/constants/apiUrls';
 
 const BASE_URL = GOLF_PICKEM_API_BASE_URL + SEASON_API_BASE_URL
@@ -32,6 +31,10 @@ const nextTournament = async (seasonId) => {
     return await privateAxios.get(BASE_URL + seasonId + '/next-tournament/');
 };
 
+const activeTournament = async (seasonId) => {
+    return await privateAxios.get(BASE_URL + seasonId + '/active-tournament/')
+}
+
 const standings = async (seasonId) => {
     return await privateAxios.get(BASE_URL + seasonId + '/users/');
 };
@@ -44,6 +47,7 @@ const SeasonsApi = {
     destroy,
     active,
     nextTournament,
+    activeTournament,
     standings,
 };
 
