@@ -11,3 +11,7 @@
 
 # PostgreSQL local Docker storage
 data/
+
+# node versions
+client-web/package-lock.json
+client-web/node_modules/
