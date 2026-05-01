@@ -9,6 +9,7 @@ Golf Pick'em site where users compete to select the best golfer on a tournament 
 * [Git](https://git-scm.com/downloads)/Git UI (I like [GitKraken](https://www.gitkraken.com/))
 * Database Management Client (I like [DBeaver](https://dbeaver.io/))
 * API Client (I like [Postman](https://www.postman.com/downloads/))
+* [Node](https://nodejs.org/en/download/) (download the installer for your operating system)
 
 ### Project Setup
 1. Clone the repo (https://github.com/JSew11/OneNDoneGolf) using the command:  
@@ -25,10 +26,8 @@ SECRET_KEY=# this can be anything you want
 
 APP_NAME="One N' Done Country Club"
 API_BASE_URL="http://localhost:8000/api" # development api url
-
-GOLF_DATA_API_BASE_URL="https://api.sportsdata.io/golf/v2" # sportsdataio golf api
-GOLF_DATA_API_KEY=# get this from lead devs when setting up
 ```
+1. Open the project in your command terminal, navigate to the `client-web` directory and run `npm install`
 
 ### Running the App
 1. Navigate to the project root

@@ -1,8 +1,6 @@
-version: "3.9"
-   
 services:
   db:
-    image: postgres
+    image: postgres:17.9
     volumes:
       - ./data/db:/var/lib/postgresql/data
     environment:
@@ -36,6 +34,7 @@ services:
     command: npm run dev
     volumes:
       - .:/code
+      - /code/client-web/node_modules
     ports:
       - "3000:3000"
     environment:
