@@ -8,7 +8,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Checkbox from '@mui/material/Checkbox';
 import CircularProgress from '@mui/material/CircularProgress';
-import { styled } from '@mui/material/styles';
+import { responsiveFontSizes, styled } from '@mui/material/styles';
 import { useTheme } from '@mui/material';
 
 import SeasonsApi from 'src/api/season';
@@ -59,7 +59,11 @@ const FullTournamentTable = ({ seasonId }) => {
       SeasonTournamentGolfersApi.list(seasonId, selectedTournamentId).then(
         (response) => {
           if (response.data.length > 0) {
-            const allGolfersData = response.data.sort((a,b) => {
+            const allGolfersData = response.data
+            .sort((a,b) => {
+              console.log(a.position, b.position);
+              if (a.position === null) return 999999 - b.position;
+              if (b.position === null) return a.position - 999999;
               return a.position - b.position;
             })
             setAllTournamentGolfers(allGolfersData);

@@ -1,11 +1,6 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
-from core.models import User
-from ..models import (
-    Tournament,
-    Golfer,
-    TournamentGolfer,
-)
+from ..models import TournamentGolfer
 from ..serializers import TournamentSeasonSerializer, GolferSeasonSerializer
 
 class TournamentGolferSerializer(ModelSerializer):
