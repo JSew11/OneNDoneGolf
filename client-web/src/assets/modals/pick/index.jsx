@@ -113,9 +113,19 @@ const PickModal = ({ season, tournament, pick }) => {
                           disabled={(golfer.already_picked && currentPickPrimarySelectionGolferId !== golfer.id) || (golfer.id === backupSelectionGolferId)}
                         >
                           <Box sx={{flexGrow: 1}}>
-                            <Grid container>
-                              <Grid item xs={11} alignItems='self-start'>{golfer.first_name} {golfer.last_name}</Grid>
-                              <Grid item xs={1} alignItems='self-end'>{(golfer.id !== currentPickPrimarySelectionGolferId && golfer.tournament_picked_in) ? golfer.tournament_picked_in : ''}</Grid>
+                            <Grid container sx={{justifyContent: 'space-between'}}>
+                              <span>{golfer.first_name} {golfer.last_name}</span>
+                              <span>
+                                { 
+                                  (golfer.id === currentPickBackupSelectionGolferId) ?
+                                    'Backup Pick'
+                                  :
+                                    golfer.tournament_picked_in ?
+                                      golfer.tournament_picked_in
+                                    : 
+                                      ''
+                                }
+                              </span>
                             </Grid>
                           </Box>
                         </MenuItem>
@@ -138,9 +148,19 @@ const PickModal = ({ season, tournament, pick }) => {
                           disabled={(golfer.already_picked && currentPickBackupSelectionGolferId !== golfer.id) || (golfer.id === primarySelectionGolferId)}
                         >
                           <Box sx={{flexGrow: 1}}>
-                            <Grid container>
-                              <Grid item xs={11} alignItems='self-start'>{golfer.first_name} {golfer.last_name}</Grid>
-                              <Grid item xs={1} alignItems='self-end'>{(golfer.id !== currentPickPrimarySelectionGolferId && golfer.tournament_picked_in) ? golfer.tournament_picked_in : ''}</Grid>
+                            <Grid container sx={{justifyContent: 'space-between'}}>
+                              <span>{golfer.first_name} {golfer.last_name}</span>
+                              <span>
+                                { 
+                                  (golfer.id === currentPickPrimarySelectionGolferId) ?
+                                    'Primary Pick'
+                                  :
+                                    golfer.tournament_picked_in ?
+                                      golfer.tournament_picked_in
+                                    : 
+                                      ''
+                                }
+                              </span>
                             </Grid>
                           </Box>
                         </MenuItem>

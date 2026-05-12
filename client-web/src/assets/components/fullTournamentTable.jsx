@@ -61,7 +61,6 @@ const FullTournamentTable = ({ seasonId }) => {
           if (response.data.length > 0) {
             const allGolfersData = response.data
             .sort((a,b) => {
-              console.log(a.position, b.position);
               if (a.position === null) return 999999 - b.position;
               if (b.position === null) return a.position - 999999;
               return a.position - b.position;
