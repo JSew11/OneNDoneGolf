@@ -117,7 +117,7 @@ const PickModal = ({ season, tournament, pick }) => {
                               <span>{golfer.first_name} {golfer.last_name}</span>
                               <span>
                                 { 
-                                  (golfer.id === currentPickBackupSelectionGolferId) ?
+                                  (golfer.id === backupSelectionGolferId) ?
                                     'Backup Pick'
                                   :
                                     golfer.tournament_picked_in ?
@@ -152,7 +152,7 @@ const PickModal = ({ season, tournament, pick }) => {
                               <span>{golfer.first_name} {golfer.last_name}</span>
                               <span>
                                 { 
-                                  (golfer.id === currentPickPrimarySelectionGolferId) ?
+                                  (golfer.id === primarySelectionGolferId) ?
                                     'Primary Pick'
                                   :
                                     golfer.tournament_picked_in ?
