@@ -25,7 +25,7 @@ const PickModal = ({ season, tournament, pick }) => {
   const handleOpen = () => {
     SeasonTournamentsApi.field(season.id, tournament.id).then(
       (response) => {
-        setField(response.data);
+        setField(response.data.sort((a,b) => a.last_name.localeCompare(b.last_name)));
 
         if (pick) {
           setCurrentPickPrimarySelectionGolferId(pick['primary_selection']);
