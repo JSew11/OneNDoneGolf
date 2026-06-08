@@ -17,7 +17,7 @@ services:
       watch:
         - action: sync
           path: ./backend
-          target: /code
+          target: /code/backend
           initial_sync: true
           ignore:
             - .pytest_cache
@@ -46,7 +46,7 @@ services:
       watch:
         - action: sync
           path: ./client-web
-          target: /code
+          target: /code/client-web
           initial_sync: true
           ignore:
             - node_modules/
