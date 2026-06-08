@@ -25,8 +25,6 @@ services:
             - __pycache__
         - action: rebuild
           path: ./backend/requirements.txt
-    volumes:
-      - .:/code
     ports:
       - "8000:8000"
     environment:
@@ -54,9 +52,6 @@ services:
             - node_modules/
         - action: rebuild
           path: ./client-web/package.json
-    volumes:
-      - .:/code
-      - /code/client-web/node_modules
     ports:
       - "3000:3000"
     environment:
