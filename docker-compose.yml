@@ -13,6 +13,18 @@ services:
   backend:
     build: ./backend
     command: python manage.py runserver 0.0.0.0:8000
+    develop:
+      watch:
+        - action: sync
+          path: ./backend
+          target: /code
+          initial_sync: true
+          ignore:
+            - .pytest_cache
+            - .vscode
+            - __pycache__
+        - action: rebuild
+          path: ./backend/requirements.txt
     volumes:
       - .:/code
     ports:
@@ -32,6 +44,16 @@ services:
   client-web:
     build: ./client-web
     command: npm run dev
+    develop:
+      watch:
+        - action: sync
+          path: ./client-web
+          target: /code
+          initial_sync: true
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: ./client-web/package.json
     volumes:
       - .:/code
       - /code/client-web/node_modules
