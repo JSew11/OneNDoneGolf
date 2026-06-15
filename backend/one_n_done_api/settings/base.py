@@ -161,7 +161,7 @@ SIMPLE_JWT = {
 
 # Test Fixtures
 FIXTURE_DIRS = [
-    BASE_DIR + '/assets/fixtures'
+    BASE_DIR + os.path.dirname(os.path.realpath('pick.json'))
 ]
 
 REST_FRAMEWORK = {
