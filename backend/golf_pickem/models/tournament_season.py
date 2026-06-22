@@ -57,23 +57,23 @@ class TournamentSeason(SafeDeleteModel):
         season and the positions of each user pick.
         """
         if self.end_date > datetime.now(timezone.utc):
-            return None, None
+            return -1, []
         
         users = [season_user.user for season_user in UserSeason.objects.filter(season=self.season_id).all()]
         picks = [self.user_pick(user) for user in users if self.user_pick(user) is not None]
         pick_user_positions = [(pick.user_season.user.id, pick.scored_tournament_golfer().position) for pick in picks if pick.scored_golfer != None]
 
-        if (len(pick_user_positions) > 0):
-            return min(pick_user_positions, key=lambda x: x[1])[1], pick_user_positions
+        if (pick_user_positions != None and len(pick_user_positions) > 0):
+            return min(pick_user_positions, key=lambda x: 9999999 if x[1] is None else x[1])[1], pick_user_positions
     
-        return None, None
+        return -1, []
     
     def winning_user_ids(self):
         """Get the user ids of the winner(s) of this tournament season. Returns none
         if the tournament has not yet finished.
         """
         if self.end_date > datetime.now(timezone.utc):
-            return None
+            return []
         
         highest_position, pick_user_positions = self.winning_pick_position()
         if (highest_position != None and pick_user_positions != None):

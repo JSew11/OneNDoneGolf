@@ -51,8 +51,8 @@
         "user_season": 2,
         "tournament": 2,
         "scored_golfer": null,
-        "primary_selection": 4,
-        "backup_selection": 2
+        "primary_selection": 2,
+        "backup_selection": 4
     }
 }
 ]
