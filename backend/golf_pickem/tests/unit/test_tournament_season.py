@@ -52,7 +52,7 @@ class TestTournamentSeasonModel(TestCase):
         """Test the winners property of the tournament_season model.
         """
         # test getting winning_users for an unfinished tournament_season
-        self.assertIsNone(self.test_tournament_season_3.winning_user_ids())
+        self.assertListEqual([], self.test_tournament_season_3.winning_user_ids())
 
         # test getting winning_users for a tournament_season with only one winner
         self.assertEqual(1, len(self.test_tournament_season_1.winning_user_ids()))
