@@ -14,19 +14,7 @@ Golf Pick'em site where users compete to select the best golfer on a tournament 
 ### Project Setup
 1. Clone the repo (https://github.com/JSew11/OneNDoneGolf) using the command:  
     `git clone https://github.com/JSew11/OneNDoneGolf`
-1. Make sure you have a file named `.env` in your root directory with the following structure (you will most likely have to create one):  
-```
-DB_NAME=# this can be anything you want
-DB_USERNAME=# this can be anything you want
-DB_PASSWORD=# this can be anything you want
-DB_HOST=db
-DB_PORT=5432
-
-SECRET_KEY=# this can be anything you want
-
-APP_NAME="One N' Done Country Club"
-API_BASE_URL="http://localhost:8000/api" # development api url
-```
+1. Copy the contents of `.env.sample` into a new file named `.env`. Once the file is copied, fill in the required missing values in your new `.env` file.
 1. Open the project in your command terminal, navigate to the `client-web` directory and run `npm install`
 
 ### Running the App
