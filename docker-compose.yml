@@ -43,6 +43,7 @@ services:
     image: rabbitmq:latest
     ports:
       - "${RABBITMQ_PORT}:${RABBITMQ_PORT}"
+      - "15672:15672"
     environment:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
@@ -52,11 +53,15 @@ services:
   
   celery_worker:
     restart: always
-    build:
-      context: ./backend/
+    build: ./backend
     command: celery -A one_n_done_api worker -l INFO
     volumes:
       - ./backend:/code/backend
+    environment:
+      - RABBITMQ_HOST=${RABBITMQ_HOST}
+      - RABBITMQ_PORT=${RABBITMQ_PORT}
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
     depends_on:
       - backend
       - rabbitmq

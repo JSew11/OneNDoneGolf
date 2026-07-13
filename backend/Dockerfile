@@ -8,3 +8,4 @@ WORKDIR /code/backend
 COPY requirements.txt /code/backend/
 RUN pip install -r requirements.txt
 COPY --chown=app:app . /code/backend
+ENV PATH="/home/app/.local/bin:${PATH}"

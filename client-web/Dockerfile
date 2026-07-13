@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1s
+# syntax=docker/dockerfile:1
 FROM node:18
 RUN useradd -ms /bin/sh -u 1001 app
 USER app
