@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 FROM python:3
 RUN useradd -ms /bin/sh -u 1001 app
 USER app
