@@ -9,6 +9,8 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
     ports:
       - "5432:5432"
+    networks:
+      - default
 
   backend:
     build: ./backend
@@ -38,6 +40,8 @@ services:
       - GOLF_API_KEY=${GOLF_DATA_API_KEY}
     depends_on:
       - db
+    networks:
+      - default
   
   rabbitmq:
     image: rabbitmq:latest
@@ -45,26 +49,48 @@ services:
       - "${RABBITMQ_PORT}:${RABBITMQ_PORT}"
       - "15672:15672"
     environment:
+      - RABBITMQ_DEFAULT_VHOST=${RABBITMQ_VHOST}
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
     volumes:
       - ./data/rabbitmq/data:/var/lib/rabbitmq
       - ./data/rabbitmq/log:/var/log/rabbitmq
+    networks:
+      - default
   
   celery_worker:
-    restart: always
     build: ./backend
-    command: celery -A one_n_done_api worker -l INFO
+    command: celery -A one_n_done_api worker -l info
     volumes:
       - ./backend:/code/backend
     environment:
       - RABBITMQ_HOST=${RABBITMQ_HOST}
+      - RABBITMQ_VHOST=${RABBITMQ_VHOST}
       - RABBITMQ_PORT=${RABBITMQ_PORT}
       - RABBITMQ_USER=${RABBITMQ_USER}
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - SECRET_KEY=${SECRET_KEY}
     depends_on:
-      - backend
       - rabbitmq
+    networks:
+      - default
+  
+  celery_beat:
+    build: ./backend
+    command: celery -A one_n_done_api beat -l info
+    volumes:
+      - ./backend:/code/backend
+    environment:
+      - RABBITMQ_HOST=${RABBITMQ_HOST}
+      - RABBITMQ_VHOST=${RABBITMQ_VHOST}
+      - RABBITMQ_PORT=${RABBITMQ_PORT}
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
+      - SECRET_KEY=${SECRET_KEY}
+    depends_on:
+      - rabbitmq
+    networks:
+      - default
   
   client_web:
     build: ./client-web
@@ -86,3 +112,9 @@ services:
       - VITE_APP_NAME=${APP_NAME}
     depends_on:
       - backend
+    networks:
+      - default
+
+networks:
+  default:
+    driver: bridge
