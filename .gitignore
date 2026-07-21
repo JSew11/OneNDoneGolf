@@ -20,4 +20,4 @@ client-web/node_modules/
 backend/pytest.ini
 
 # celery schedule
-backend/celerybeat-schedule
+backend/celerybeat-*
