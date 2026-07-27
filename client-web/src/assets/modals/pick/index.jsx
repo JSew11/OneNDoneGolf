@@ -17,6 +17,7 @@ import { responsiveProperty } from '@mui/material/styles/cssUtils';
 
 const PickModal = ({ season, tournament, pick, setPick }) => {
   const [open, setOpen] = useState(false);
+  const [errors, setErrors] = useState([]);
   const [field, setField] = useState([]);
   const [currentPickPrimarySelectionGolferId, setCurrentPickPrimarySelectionGolferId] = useState('');
   const [primarySelectionGolferId, setPrimarySelectionGolferId] = useState('');
@@ -70,7 +71,7 @@ const PickModal = ({ season, tournament, pick, setPick }) => {
           }
         })
         .catch((response) => {
-          // todo - make error message pop up on modal
+          setErrors(response.data['errors']);
         });
     } else {
       PicksApi.create(season.id, tournament.id, primarySelectionGolferId, backupSelectionGolferId)
@@ -83,7 +84,7 @@ const PickModal = ({ season, tournament, pick, setPick }) => {
           }
         })
         .catch((response) => {
-          // todo - make error message pop up on modal
+          setErrors(response.data['errors']);
         });
     }
     handleClose();
@@ -122,6 +123,13 @@ const PickModal = ({ season, tournament, pick, setPick }) => {
       >
         <DialogTitle>Make your Pick for the {tournament.name}</DialogTitle>
         <DialogContent className='py-0'>
+          <Box sx={{flexGrow: 1}}>
+            <Grid container>
+              {errors.map((error, index) => {
+                return <span>{error}</span>
+              })}
+            </Grid>
+          </Box>
           <FormControl required fullWidth variant='outlined' className='my-2'>
             <InputLabel htmlFor='primary-golfer-select'>Golfer</InputLabel>
             <Select
