@@ -46,7 +46,7 @@ const Dashboard = () => {
       { isLoggedIn && activeSeason && nextTournament && 
         <Grid container justifyContent='center' alignItems='center' className='py-4'>
           <Grid item xs={8}>
-            <PickModal season={activeSeason} tournament={nextTournament} pick={pick}/>
+            <PickModal season={activeSeason} tournament={nextTournament} pick={pick} setPick={setPick} />
           </Grid>
         </Grid>
       }

@@ -9,8 +9,6 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
     ports:
       - "5432:5432"
-    networks:
-      - default
 
   backend:
     build: ./backend
@@ -40,8 +38,6 @@ services:
       - GOLF_API_KEY=${GOLF_DATA_API_KEY}
     depends_on:
       - db
-    networks:
-      - default
   
   rabbitmq:
     image: rabbitmq:latest
@@ -55,8 +51,6 @@ services:
     volumes:
       - ./data/rabbitmq/data:/var/lib/rabbitmq
       - ./data/rabbitmq/log:/var/log/rabbitmq
-    networks:
-      - default
   
   celery_worker:
     build: ./backend
@@ -72,8 +66,6 @@ services:
       - SECRET_KEY=${SECRET_KEY}
     depends_on:
       - rabbitmq
-    networks:
-      - default
   
   celery_beat:
     build: ./backend
@@ -89,8 +81,6 @@ services:
       - SECRET_KEY=${SECRET_KEY}
     depends_on:
       - rabbitmq
-    networks:
-      - default
   
   client_web:
     build: ./client-web
@@ -112,9 +102,3 @@ services:
       - VITE_APP_NAME=${APP_NAME}
     depends_on:
       - backend
-    networks:
-      - default
-
-networks:
-  default:
-    driver: bridge

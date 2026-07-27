@@ -13,8 +13,9 @@ import Grid from '@mui/material/Grid';
 
 import SeasonTournamentsApi from 'src/api/seasonTournament';
 import PicksApi from 'src/api/pick';
+import { responsiveProperty } from '@mui/material/styles/cssUtils';
 
-const PickModal = ({ season, tournament, pick }) => {
+const PickModal = ({ season, tournament, pick, setPick }) => {
   const [open, setOpen] = useState(false);
   const [field, setField] = useState([]);
   const [currentPickPrimarySelectionGolferId, setCurrentPickPrimarySelectionGolferId] = useState('');
@@ -56,12 +57,36 @@ const PickModal = ({ season, tournament, pick }) => {
     setBackupSelectionGolferId('');
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
     if (pick) {
       PicksApi.changeGolfer(pick.id, primarySelectionGolferId, backupSelectionGolferId)
+        .then((response) => {
+          if (response.status === 200) {
+            var newPick = pick;
+            newPick['primary_selection'] = primarySelectionGolferId;
+            newPick['backup_selection'] = backupSelectionGolferId;
+            setPick(newPick);
+          }
+        })
+        .catch((response) => {
+          // todo - make error message pop up on modal
+        });
     } else {
-      PicksApi.create(season.id, tournament.id, primarySelectionGolferId, backupSelectionGolferId);
+      PicksApi.create(season.id, tournament.id, primarySelectionGolferId, backupSelectionGolferId)
+        .then((response) => {
+          if (response.status === 200) {
+            var newPick = pick;
+            newPick['primary_selection'] = primarySelectionGolferId;
+            newPick['backup_selection'] = backupSelectionGolferId;
+            setPick(newPick);
+          }
+        })
+        .catch((response) => {
+          // todo - make error message pop up on modal
+        });
     }
+    handleClose();
   }
 
   return (
