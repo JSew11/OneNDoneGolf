@@ -9,4 +9,4 @@ app = Celery('one_n_done_api')
 
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
-app.autodiscover_tasks()
+app.autodiscover_tasks(['golf_pickem.tasks'])

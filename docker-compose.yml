@@ -51,6 +51,7 @@ services:
     volumes:
       - ./data/rabbitmq/data:/var/lib/rabbitmq
       - ./data/rabbitmq/log:/var/log/rabbitmq
+      - ./data/rabbitmq/rabbitmq.conf:/etc/rabbitmq/conf.d/10-defaults.conf
   
   celery_worker:
     build: ./backend
