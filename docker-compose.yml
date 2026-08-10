@@ -65,6 +65,8 @@ services:
       - RABBITMQ_USER=${RABBITMQ_USER}
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
       - SECRET_KEY=${SECRET_KEY}
+      - GOLF_API_BASE_URL=${GOLF_DATA_API_BASE_URL}
+      - GOLF_API_KEY=${GOLF_DATA_API_KEY}
     depends_on:
       - rabbitmq
   
@@ -80,6 +82,8 @@ services:
       - RABBITMQ_USER=${RABBITMQ_USER}
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
       - SECRET_KEY=${SECRET_KEY}
+      - GOLF_API_BASE_URL=${GOLF_DATA_API_BASE_URL}
+      - GOLF_API_KEY=${GOLF_DATA_API_KEY}
     depends_on:
       - rabbitmq
   
