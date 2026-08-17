@@ -3,7 +3,8 @@ from django.db.models import (
     BigAutoField,
     DateTimeField,
     CharField,
-    BooleanField
+    BooleanField,
+    SmallIntegerField
 )
 from safedelete.models import SafeDeleteModel
 from safedelete import SOFT_DELETE_CASCADE
@@ -28,8 +29,7 @@ class Season(SafeDeleteModel):
     name = CharField(max_length=255)
     alias = CharField(max_length=255)
     active = BooleanField(default=False)
-    start_date = DateTimeField(blank=True, null=True)
-    end_date = DateTimeField(blank=True, null=True)
+    year = SmallIntegerField()
     registration_cutoff = DateTimeField(blank=True, null=True)
 
     def next_tournament_id(self, after_date: datetime = None) -> int:

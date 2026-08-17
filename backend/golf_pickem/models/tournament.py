@@ -27,3 +27,9 @@ class Tournament(SafeDeleteModel):
     alias = CharField(max_length=4, blank=True, null=True)
     course = CharField(max_length=255)
     location = CharField(max_length=255)
+
+    @staticmethod
+    def create_from_external_data(api_data: dict) -> Tournament:
+        """Creates a Tournament model from external api data taken from json)
+        """
+        # TODO - write this

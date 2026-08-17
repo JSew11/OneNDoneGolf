@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 FROM python:3
-RUN useradd -ms /bin/sh -u 1001 app
+RUN useradd -ms /bin/sh -u 1101 app
 USER app
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
