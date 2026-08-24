@@ -26,7 +26,8 @@ class TestTournamentSeasonModel(TestCase):
 
     def setUp(self) -> None:
         self.test_user: User = User.objects.get(id=1)
-        self.test_season: Season = Season.objects.get(id=1)
+        self.test_season_1: Season = Season.objects.get(id=1)
+        self.test_season_2: Season = Season.objects.get(id=2)
         self.test_tournament: Tournament = Tournament.objects.get(id=1)
         self.test_tournament_season_1: TournamentSeason = TournamentSeason.objects.get(id=1)
         self.test_tournament_season_2: TournamentSeason = TournamentSeason.objects.get(id=2)
@@ -84,7 +85,7 @@ class TestTournamentSeasonModel(TestCase):
                 "$numberInt": "9100000"
             }
         }
-        created_tournament_season: TournamentSeason = TournamentSeason.create_from_external_data(year=self.test_season.year, tournament_id=self.test_tournament.id, external_api_data=sample_api_response)
+        created_tournament_season: TournamentSeason = TournamentSeason.create_from_external_data(year=self.test_season_2.year, tournament_id=self.test_tournament.id, external_api_data=sample_api_response)
         self.assertEqual(created_tournament_season.purse, 9100000)
         self.assertEqual(created_tournament_season.start_date, datetime.fromtimestamp(1768435200000 / 1e3))
         self.assertEqual(created_tournament_season.start_date, datetime.fromtimestamp(1768694400000 / 1e3))
