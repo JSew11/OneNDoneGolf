@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('golf_pickem', '0003_remove_pick_unique_user_tournament_season_and_more'),
+        ('golf_pickem', '0004_season_registration_cutoff'),
     ]
 
     operations = [

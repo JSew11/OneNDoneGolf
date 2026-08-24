@@ -9,7 +9,8 @@
         "name": "Season Opener",
         "alias": "SOP",
         "course": "Nice and Easy Links",
-        "location": "Spokane, WA USA"
+        "location": "Spokane, WA USA",
+        "external_id": "001"
     }
 },
 {
@@ -22,7 +23,8 @@
         "name": "Midway Challenge",
         "alias": "MID",
         "course": "Pretty Tough Valley",
-        "location": "Los Angeles, CA USA"
+        "location": "Los Angeles, CA USA",
+        "external_id": "002"
     }
 },
 {
@@ -35,7 +37,8 @@
         "name": "Championship",
         "alias": "CHP",
         "course": "Insanely Tough Country Club",
-        "location": "Manchester, NH USA"
+        "location": "Manchester, NH USA",
+        "external_id": "003"
     }
 }
 ]
