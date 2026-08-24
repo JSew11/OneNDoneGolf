@@ -1,7 +1,7 @@
 from django.db.models import (
     BigAutoField,
     DateTimeField,
-    CharField,
+    CharField
 )
 from safedelete.models import SafeDeleteModel
 from safedelete import SOFT_DELETE_CASCADE
@@ -27,9 +27,15 @@ class Tournament(SafeDeleteModel):
     alias = CharField(max_length=4, blank=True, null=True)
     course = CharField(max_length=255)
     location = CharField(max_length=255)
+    external_id = CharField(max_length=3) # id used in external api calls
 
     @staticmethod
-    def create_from_external_data(api_data: dict) -> Tournament:
-        """Creates a Tournament model from external api data taken from json)
+    def create_from_external_data(external_api_data: dict) -> Tournament:
+        """Creates a Tournament model from external api data taken from json.
         """
-        # TODO - write this
+        return Tournament.objects.create(
+            name=external_api_data['name'],
+            course=external_api_data['courses'][0]['courseName'] if len(external_api_data['courses']) == 1 else 'Multiple',
+            location=external_api_data['courses'][0]['location']['country'] if len(external_api_data['courses']) == 1 else 'Earth',
+            external_id=external_api_data['tournId']
+        )

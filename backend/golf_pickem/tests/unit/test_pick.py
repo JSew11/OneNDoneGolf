@@ -65,7 +65,7 @@ class TestPickModel(TestCase):
         """
         with self.assertRaises(IntegrityError) as error:
             Pick.objects.create(
-            user_season = self.test_user_season,
+                user_season = self.test_user_season,
                 tournament = self.test_tournament_1,
                 primary_selection = self.test_golfer_3,
                 backup_selection = self.test_golfer_4

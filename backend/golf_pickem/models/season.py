@@ -29,7 +29,7 @@ class Season(SafeDeleteModel):
     name = CharField(max_length=255)
     alias = CharField(max_length=255)
     active = BooleanField(default=False)
-    year = SmallIntegerField()
+    year = SmallIntegerField() # functions as the external_id stored in other models
     registration_cutoff = DateTimeField(blank=True, null=True)
 
     def next_tournament_id(self, after_date: datetime = None) -> int:

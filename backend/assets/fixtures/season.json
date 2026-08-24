@@ -10,7 +10,8 @@
         "alias": "TGL",
         "active": true,
         "start_date": null,
-        "end_date": null
+        "end_date": null,
+        "year": 2026
     }
 },
 {
@@ -24,7 +25,8 @@
         "alias": "TGL",
         "active": false,
         "start_date": null,
-        "end_date": null
+        "end_date": null,
+        "year": 2026
     }
 }
 ]

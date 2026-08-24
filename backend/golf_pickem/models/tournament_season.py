@@ -18,7 +18,8 @@ from core.models import User
 from . import (
     Tournament,
     Season,
-    UserSeason,)
+    UserSeason,
+)
 
 class TournamentSeason(SafeDeleteModel):
     """Model for a tournament taking part in a season.
@@ -116,3 +117,22 @@ class TournamentSeason(SafeDeleteModel):
         highest_position, _ = self.winning_pick_position()
 
         return [picked_golfer.golfer_season.golfer.id for picked_golfer in picked_tournament_golfers if picked_golfer.position == highest_position]
+
+    @staticmethod
+    def create_from_external_data(year: int, tournament_id: int, external_api_data: dict):
+        """Creates a Tournament Season model from external api data taken from json.
+        """
+        try:
+            season = Season.objects.get(year=year)
+            tournament = Tournament.objects.get(tournament_id)
+            return TournamentSeason.objects.create(
+                purse=external_api_data['purse']['$numberInt'],
+                start_date=datetime.fromtimestamp(int(external_api_data['date']['start']['$date']['$numberLong']) / 1e3),
+                end_date=datetime.fromtimestamp(int(external_api_data['date']['end']['$date']['$numberLong']) / 1e3),
+                tournament=tournament,
+                season=season
+            )
+        except Season.DoesNotExist:
+            raise Exception('could not create scheduled tournament - season was not found')
+        except Tournament.DoesNotExist:
+            raise Exception('could not create scheduled tournament - tournament was not found')
