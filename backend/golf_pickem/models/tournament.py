@@ -30,7 +30,7 @@ class Tournament(SafeDeleteModel):
     external_id = CharField(max_length=3) # id used in external api calls
 
     @staticmethod
-    def create_from_external_data(external_api_data: dict) -> Tournament:
+    def create_from_external_data(external_api_data: dict):
         """Creates a Tournament model from external api data taken from json.
         """
         return Tournament.objects.create(
