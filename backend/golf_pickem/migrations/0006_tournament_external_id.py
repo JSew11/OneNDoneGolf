@@ -4,7 +4,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('golf_pickem', '0006_tournament_external_id'),
+        ('golf_pickem', '0005_season_year'),
     ]
 
     operations = [

@@ -4,7 +4,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('golf_pickem', '0005_season_year'),
+        ('golf_pickem', '0004_season_registration_cutoff'),
     ]
 
     operations = [
