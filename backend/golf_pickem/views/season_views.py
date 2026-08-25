@@ -117,7 +117,7 @@ class SeasonViewSet(ModelViewSet):
     def active_season(self, request: Request) -> Response:
         """Get the active season's details.
         """
-        active_season: Season = Season.objects.filter(active=True).order_by('start_date').first()
+        active_season: Season = Season.objects.filter(active=True).order_by('year').first()
         if active_season is None:
             return Response(
                 data={'status': 'There is no current active season'},
