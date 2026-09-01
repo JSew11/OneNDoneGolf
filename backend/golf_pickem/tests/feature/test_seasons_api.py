@@ -2,6 +2,7 @@ from datetime import datetime
 from rest_framework.test import APITestCase, APIClient
 from rest_framework.response import Response
 from rest_framework import status
+from unittest.mock import patch, MagicMock
 
 from core.models import User
 from golf_pickem.models import (
@@ -41,7 +42,7 @@ class TestSeasonViewSet(APITestCase):
         response: Response = self.client.get(path='/api/golf-pickem/seasons/')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(2, len(response.data))
-    
+
     def test_create_season_endpoint(self):
         """Test the POST endpoint for creating a season.
         """
@@ -55,14 +56,16 @@ class TestSeasonViewSet(APITestCase):
         response: Response = self.client.post(path='/api/golf-pickem/seasons/', data={})
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
-        # test creating a valid new season
-        new_season_data = {
-            'year': 2002,
-            'name': 'Test Golf League',
-            'alias': 'TGL'
-        }
-        response: Response = self.client.post(path='/api/golf-pickem/seasons/', data=new_season_data)
-        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
+        with patch('golf_pickem.views.season_views.gather_golf_data.get_season_schedule.delay') as mock_task:
+            # test creating a valid new season
+            new_season_data = {
+                'year': 2002,
+                'name': 'Test Golf League',
+                'alias': 'TGL'
+            }
+            response: Response = self.client.post(path='/api/golf-pickem/seasons/', data=new_season_data)
+            self.assertEqual(status.HTTP_201_CREATED, response.status_code)
+            self.assertTrue(mock_task.called)
     
     def test_retrieve_season_endpoint(self):
         """Test the GET endpoint for retrieving a season by its id.

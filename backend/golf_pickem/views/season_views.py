@@ -5,7 +5,7 @@ from rest_framework.request import Request
 from rest_framework.decorators import action
 from rest_framework import status, permissions
 
-from ..models import (
+from golf_pickem.models import (
     Season,
     UserSeason,
     GolferSeason,
@@ -13,7 +13,7 @@ from ..models import (
     TournamentSeason,
     TournamentGolfer,
 )
-from ..serializers import (
+from golf_pickem.serializers import (
     SeasonSerializer,
     UserSeasonSerializer,
     NewUserSeasonSerializer,
@@ -23,6 +23,9 @@ from ..serializers import (
     TournamentSeasonSerializer,
     TournamentGolferSerializer,
     PickSerializer
+)
+from golf_pickem.tasks import (
+    gather_golf_data
 )
 
 class SeasonViewSet(ModelViewSet):
@@ -48,7 +51,8 @@ class SeasonViewSet(ModelViewSet):
         """
         serializer: SeasonSerializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            season: Season = serializer.save()
+            gather_golf_data.get_season_schedule.delay(season.year)
             return Response(
                 data=serializer.data,
                 status=status.HTTP_201_CREATED,
