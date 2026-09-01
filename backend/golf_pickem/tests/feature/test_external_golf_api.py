@@ -3,6 +3,7 @@ from django.test import TestCase
 
 from golf_pickem.external_golf_api import (
     get_schedule,
+    get_tournament,
 )
 
 class TestExternalGolfApi(TestCase):
@@ -24,5 +25,5 @@ class TestExternalGolfApi(TestCase):
         # commented to reduce test runtime
         # uncomment below if you want to make sure the api request is working
         
-        # response = get_tournament(2026, 006)
+        # response = get_tournament(2026, '006')
         # self.assertEqual(response.status_code, 200)
