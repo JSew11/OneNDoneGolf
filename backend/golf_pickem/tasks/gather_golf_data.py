@@ -1,3 +1,7 @@
+from datetime import (
+    datetime,
+    timezone
+)
 from celery import shared_task
 
 from golf_pickem.models import (
@@ -10,7 +14,7 @@ from golf_pickem.external_golf_api import (
 )
 
 @shared_task
-def get_season_schedule(year: int) -> None:
+def get_season_schedule(year: int, start_from_current_date: bool = False) -> None:
     """Get the season schedule from the external golf data API and translate the
     data to the appropriate stored models. (Called by the Season model)
     """
@@ -19,6 +23,11 @@ def get_season_schedule(year: int) -> None:
         failed_external_ids = list()
         for tourn in schedule_response.json().get('schedule'):
             try:
+                if (
+                    start_from_current_date and
+                    datetime.fromtimestamp(int(tourn['date']['start']['$date']['$numberLong'])/1e3) < datetime.now()
+                ):
+                    continue
                 tournament: Tournament = Tournament.objects.filter(external_id=tourn['tournId']).first()
                 if (tournament is None):
                     tournament_response = get_tournament(year, tourn['tournId'])

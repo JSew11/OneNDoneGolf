@@ -52,7 +52,7 @@ class SeasonViewSet(ModelViewSet):
         serializer: SeasonSerializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             season: Season = serializer.save()
-            gather_golf_data.get_season_schedule.delay(season.year)
+            gather_golf_data.get_season_schedule.delay(season.year, True)
             return Response(
                 data=serializer.data,
                 status=status.HTTP_201_CREATED,
