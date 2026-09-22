@@ -13,20 +13,20 @@ import {
   Tabs,
   Tab,
   AppBar,
+  ListSubheader,
+  Divider,
 } from '@mui/material';
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 
 import { logout } from 'src/state/token/actions';
 import LoginModal from 'src/assets/modals/login';
-
-const UserDropdownItem = styled(MenuItem)(({theme}) => ({
-  justifyContent: 'flex-end'
-}));
+import NewSeasonModal from 'src/assets/modals/newSeason';
 
 const Header = () => {
   const APP_NAME = import.meta.env.VITE_APP_NAME;
 
   const [username, setUsername] = useState('');
+  const [isAdminUser, setIsAdminUser] = useState(false);
   const [tabs, setTabs] = useState([]);
 
   const navigate = useNavigate();
@@ -36,6 +36,7 @@ const Header = () => {
   useEffect(() => {
     if (access !== null) {
       setUsername(jwtDecode(access)['username']);
+      setIsAdminUser(jwtDecode(access)['isAdmin']);
     }
   }, [access]);
 
@@ -65,7 +66,7 @@ const Header = () => {
           <Grid item xs={4} className='text-end'>
             {
               isLoggedIn ?
-              <UserDropdown username={username}/> :
+              <UserDropdown username={username} isAdminUser={isAdminUser}/> :
               <LoginModal />
             }
           </Grid>
@@ -101,7 +102,15 @@ const UserDropdownMenu = styled((props) => (
   },
 }));
 
-const UserDropdown = ({ username }) => {
+export const UserDropdownItem = styled(MenuItem)(({theme}) => ({
+  justifyContent: 'flex-end'
+}));
+
+const UserDropdownListHeader = styled(ListSubheader)({
+  backgroundImage: 'var(--Paper-overlay)',
+});
+
+const UserDropdown = ({ username, isAdminUser }) => {
   const [userDropdownAnchorEl, setUserDropdownAnchorEl] = useState(null);
   const isUserDropdownOpen = Boolean(userDropdownAnchorEl);
 
@@ -148,6 +157,13 @@ const UserDropdown = ({ username }) => {
           'aria-labelledby': 'user-dropdown'
         }}
       >
+        { isAdminUser && (
+          <div>
+            <UserDropdownListHeader>Admin</UserDropdownListHeader>
+            <NewSeasonModal />
+            <Divider sx={{ my: 0.5 }} />
+          </div>
+        )}
         <UserDropdownItem onClick={logoutUser}>Logout</UserDropdownItem>
       </UserDropdownMenu>
     </>

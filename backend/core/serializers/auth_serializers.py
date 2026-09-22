@@ -20,6 +20,7 @@ class LoginUserSerializer(TokenObtainPairSerializer):
 
         token['id'] = user.id
         token['username'] = user.username
+        token['isAdmin'] = user.is_staff
 
         return token
 

@@ -13,7 +13,6 @@ import Grid from '@mui/material/Grid';
 
 import SeasonTournamentsApi from 'src/api/seasonTournament';
 import PicksApi from 'src/api/pick';
-import { responsiveProperty } from '@mui/material/styles/cssUtils';
 
 const PickModal = ({ season, tournament, pick, setPick }) => {
   const [open, setOpen] = useState(false);
@@ -83,8 +82,8 @@ const PickModal = ({ season, tournament, pick, setPick }) => {
             setPick(newPick);
           }
         })
-        .catch((response) => {
-          setErrors(response.data['errors']);
+        .catch((error) => {
+          setErrors(JSON.stringify(error.response.data['errors']));
         });
     }
     handleClose();
