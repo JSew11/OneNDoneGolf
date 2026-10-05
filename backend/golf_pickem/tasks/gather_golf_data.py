@@ -34,10 +34,10 @@ def get_season_schedule(year: int, start_from_current_date: bool = False) -> Non
                     if (tournament_response.status_code == 200) :
                         Tournament.create_from_external_data(tournament_response.json())
                 else:
-                    failed_external_ids.push(tourn['tournId'])
+                    failed_external_ids.append(tourn['tournId'])
                     continue
                 TournamentSeason.create_from_external_data(year, tournament.id, tourn)
             except Exception:
-                failed_external_ids.push(tourn['tournId'])
+                failed_external_ids.append(tourn['tournId'])
                 continue
         # TODO - log the failed external ids somewhere
