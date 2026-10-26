@@ -14,7 +14,6 @@ import SeasonsApi from 'src/api/season';
 
 const NewSeasonModal = () => {
   const [open, setOpen] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   const [name, setName] = useState('');
@@ -22,7 +21,6 @@ const NewSeasonModal = () => {
   const [year, setYear] = useState(new Date().getFullYear());
 
   const handleOpen = () => {
-    setSubmitted(false);
     setErrorMessage('');
     setName('');
     setAlias('');
@@ -39,7 +37,7 @@ const NewSeasonModal = () => {
     SeasonsApi.create(name, alias, year)
       .then((response) => {
         if (response.status === 200) {
-          setSubmitted(true);
+          handleClose();
         }
       })
       .catch((error) => {
@@ -63,45 +61,43 @@ const NewSeasonModal = () => {
       >
         <DialogTitle>Start a New Season</DialogTitle>
         <DialogContent>
-          {!submitted ? <div>
-            <FormControl required fullWidth variant='outlined' className='my-2'>
-              <InputLabel htmlFor='name'>Name</InputLabel>
-              <OutlinedInput
-                id='name'
-                label='Name'
-                type='text'
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </FormControl>
-            <FormControl required fullWidth variant='outlined' className='my-2'>
-              <InputLabel htmlFor='alias'>Alias</InputLabel>
-              <OutlinedInput
-                id='alias'
-                label='alias'
-                type='text'
-                value={alias}
-                onChange={(e) => setAlias(e.target.value)}
-              />
-            </FormControl>
-            <FormControl required fullWidth variant='outlined' className='my-2'>
-              <InputLabel htmlFor='year'>Year</InputLabel>
-              <OutlinedInput
-                id='year'
-                label='year'
-                type='number'
-                value={year}
-                onChange={(e) => setYear(e.target.value)}
-              />
-            </FormControl>
-          </div> : 'New Season Created'}
+          <FormControl required fullWidth variant='outlined' className='my-2'>
+            <InputLabel htmlFor='name'>Name</InputLabel>
+            <OutlinedInput
+              id='name'
+              label='Name'
+              type='text'
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </FormControl>
+          <FormControl required fullWidth variant='outlined' className='my-2'>
+            <InputLabel htmlFor='alias'>Alias</InputLabel>
+            <OutlinedInput
+              id='alias'
+              label='alias'
+              type='text'
+              value={alias}
+              onChange={(e) => setAlias(e.target.value)}
+            />
+          </FormControl>
+          <FormControl required fullWidth variant='outlined' className='my-2'>
+            <InputLabel htmlFor='year'>Year</InputLabel>
+            <OutlinedInput
+              id='year'
+              label='year'
+              type='number'
+              value={year}
+              onChange={(e) => setYear(e.target.value)}
+            />
+          </FormControl>
         </DialogContent>
         <DialogContentText className='text-center text-danger'>
           {errorMessage}
         </DialogContentText>
         <DialogActions>
-          <Button variant='contained' color='secondary' onClick={handleClose}>{submitted ? 'Exit': 'Cancel'}</Button>
-          { !submitted && <Button variant='contained' color='primary' type='submit'>Create</Button> }
+          <Button variant='contained' color='secondary' onClick={handleClose}>Cancel</Button>
+          <Button variant='contained' color='primary' type='submit'>Create</Button>
         </DialogActions>
       </Dialog>
     </div>
