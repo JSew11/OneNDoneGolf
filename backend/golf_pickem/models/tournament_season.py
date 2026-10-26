@@ -127,8 +127,8 @@ class TournamentSeason(SafeDeleteModel):
             tournament = Tournament.objects.get(id=tournament_id)
             return TournamentSeason.objects.create(
                 purse=int(external_api_data['purse']['$numberInt']),
-                start_date=datetime.fromtimestamp(int(external_api_data['date']['start']['$date']['$numberLong']) / 1e3),
-                end_date=datetime.fromtimestamp(int(external_api_data['date']['end']['$date']['$numberLong']) / 1e3),
+                start_date=int(external_api_data['date']['start']['$date']['$numberLong']) / 1e3,
+                end_date=int(external_api_data['date']['end']['$date']['$numberLong']) / 1e3,
                 tournament=tournament,
                 season=season
             )

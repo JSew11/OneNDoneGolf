@@ -33,6 +33,11 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
       - DB_HOST=${DB_HOST}
       - DB_PORT=${DB_PORT}
+      - RABBITMQ_HOST=${RABBITMQ_HOST}
+      - RABBITMQ_VHOST=${RABBITMQ_VHOST}
+      - RABBITMQ_PORT=${RABBITMQ_PORT}
+      - RABBITMQ_USER=${RABBITMQ_USER}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
       - SECRET_KEY=${SECRET_KEY}
       - GOLF_API_BASE_URL=${GOLF_DATA_API_BASE_URL}
       - GOLF_API_KEY=${GOLF_DATA_API_KEY}
@@ -59,6 +64,11 @@ services:
     volumes:
       - ./backend:/code/backend
     environment:
+      - DB_DATABASE=${DB_NAME}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
       - RABBITMQ_HOST=${RABBITMQ_HOST}
       - RABBITMQ_VHOST=${RABBITMQ_VHOST}
       - RABBITMQ_PORT=${RABBITMQ_PORT}
@@ -76,6 +86,11 @@ services:
     volumes:
       - ./backend:/code/backend
     environment:
+      - DB_DATABASE=${DB_NAME}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
       - RABBITMQ_HOST=${RABBITMQ_HOST}
       - RABBITMQ_VHOST=${RABBITMQ_VHOST}
       - RABBITMQ_PORT=${RABBITMQ_PORT}

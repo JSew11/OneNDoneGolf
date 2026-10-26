@@ -1,3 +1,4 @@
+import sys
 from .base import *
 
 DEBUG = True
@@ -18,3 +19,21 @@ RABBITMQ = {
 }
 
 CELERY_BROKER_URL = f"{RABBITMQ['PROTOCOL']}://{RABBITMQ['USER']}:{RABBITMQ['PASSWORD']}@{RABBITMQ['HOST']}:{RABBITMQ['PORT']}/{RABBITMQ['VHOST']}"
+
+LOGGING = {
+    'version': 1,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'stream': sys.stdout,
+            'level': 'DEBUG'
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'propogate': True,
+            'level': 'INFO'
+        }
+    }
+}

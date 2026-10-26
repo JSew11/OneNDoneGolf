@@ -3,6 +3,9 @@
 # environment variables
 .env
 
+# logs
+logs/*
+
 # pytest cache
 .pytest_cache/
 
