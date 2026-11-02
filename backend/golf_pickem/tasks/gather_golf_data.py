@@ -1,6 +1,7 @@
 import logging
 from datetime import (
-    datetime
+    datetime,
+    timedelta
 )
 from celery import shared_task
 
@@ -49,8 +50,9 @@ def get_season_schedule(year: int, start_from_current_date: bool = False) -> Non
 
 @shared_task
 def get_next_tournament_field():
-    """Get the participating golfers for a given tournament season model.
+    """Get the participating golfers for the next upcoming tournament in the active season.
     """
     active_season = Season.active_season()
-    next_tournament = Tournament.objects.get(active_season.next_tournament_id())
+    next_tournament = Tournament.objects.get(active_season.next_tournament_id(after_date=datetime.now() + timedelta(days=1)))
+   
     # TODO - call external API and create models from results (associated with existing golfers if possible)
