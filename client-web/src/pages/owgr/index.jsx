@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 
 import SeasonsApi from 'src/api/season';
-import OWGRTable from '../../assets/components/owgrTable';
+import OWGRTable from './owgrTable';
 
 const OWGR = () => {
 

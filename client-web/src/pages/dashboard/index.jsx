@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid';
 
 import SeasonsApi from 'src/api/season';
 import PickModal from 'src/assets/modals/pick';
-import PickemStandingsTable from 'src/assets/components/pickemStandingsTable';
+import PickemStandingsTable from './pickemStandingsTable';
 import GameInformation from 'src/pages/dashboard/gameInformation';
 
 const Dashboard = () => {
