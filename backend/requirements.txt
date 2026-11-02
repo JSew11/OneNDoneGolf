@@ -8,4 +8,5 @@ django-safedelete
 django-cors-headers
 djangorestframework-simplejwt
 Celery
+django-celery-beat
 requests

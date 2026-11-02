@@ -1,6 +1,5 @@
 import os
 from celery import Celery
-from django.conf import settings
 
 # todo - change this to use 'one_n_done_api.settings.base' when deploying
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'one_n_done_api.settings.dev')
@@ -9,5 +8,9 @@ app = Celery('one_n_done_api')
 
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
-
 app.autodiscover_tasks(['golf_pickem.tasks'])
+
+@app.on_after_finalize.connect
+def setup_periodic_tasks(sender: Celery, **kwargs):
+    """Set up tasks to run on periodic schedule
+    """

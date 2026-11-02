@@ -21,6 +21,3 @@ client-web/node_modules/
 
 # pytest config
 backend/pytest.ini
-
-# celery schedule
-backend/celerybeat-*

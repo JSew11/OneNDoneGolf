@@ -82,7 +82,7 @@ services:
   
   celery_beat:
     build: ./backend
-    command: celery -A one_n_done_api beat -l info
+    command: celery -A one_n_done_api beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
     volumes:
       - ./backend:/code/backend
     environment:

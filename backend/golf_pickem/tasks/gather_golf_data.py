@@ -45,3 +45,8 @@ def get_season_schedule(year: int, start_from_current_date: bool = False) -> Non
         # todo - find a better way to log failed data imports
     else :
         raise Exception(f'Problem gathering the schedule from external source {schedule_response.status_code}')
+
+@shared_task
+def get_next_tournament_field():
+    """Get the participating golfers for a given torunament season model.
+    """
