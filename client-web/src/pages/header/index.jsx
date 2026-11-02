@@ -20,7 +20,6 @@ import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 
 import { logout } from 'src/state/token/actions';
 import LoginModal from 'src/assets/modals/login';
-import NewSeasonModal from 'src/assets/modals/newSeason';
 
 const Header = () => {
   const APP_NAME = import.meta.env.VITE_APP_NAME;
@@ -160,8 +159,7 @@ const UserDropdown = ({ username, isAdminUser }) => {
         { isAdminUser && (
           <div>
             <UserDropdownListHeader>Admin</UserDropdownListHeader>
-            <NewSeasonModal />
-            {/* <UserDropdownItem component={Link} to="/seasons">Seasons</UserDropdownItem> */}
+            <UserDropdownItem component={Link} to="/seasons">Seasons</UserDropdownItem>
             <Divider sx={{ my: 0.5 }} />
           </div>
         )}

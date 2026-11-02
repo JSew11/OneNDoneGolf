@@ -9,7 +9,6 @@ import FormControl from '@mui/material/FormControl';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 
-import { UserDropdownItem } from 'src/pages/header';
 import SeasonsApi from 'src/api/season';
 
 const NewSeasonModal = () => {
@@ -47,7 +46,7 @@ const NewSeasonModal = () => {
 
   return (
     <div>
-      <UserDropdownItem onClick={handleOpen}>New Season</UserDropdownItem>
+      <Button fullWidth variant='contained' color='secondary' onClick={handleOpen}>New Season</Button>
       <Dialog
         open={open}
         onClose={handleClose}
