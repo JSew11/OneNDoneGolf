@@ -5,6 +5,7 @@ from datetime import (
 from celery import shared_task
 
 from golf_pickem.models import (
+    Season,
     TournamentSeason,
     Tournament
 )
@@ -48,5 +49,8 @@ def get_season_schedule(year: int, start_from_current_date: bool = False) -> Non
 
 @shared_task
 def get_next_tournament_field():
-    """Get the participating golfers for a given torunament season model.
+    """Get the participating golfers for a given tournament season model.
     """
+    active_season = Season.active_season()
+    next_tournament = Tournament.objects.get(active_season.next_tournament_id())
+    # TODO - call external API and create models from results (associated with existing golfers if possible)

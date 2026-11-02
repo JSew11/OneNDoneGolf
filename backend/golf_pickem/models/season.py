@@ -49,3 +49,9 @@ class Season(SafeDeleteModel):
         if tournament_season:
             return tournament_season.tournament.id
         return None
+
+    @staticmethod
+    def active_season() -> Season|None:
+        """Gets the current active season object.
+        """
+        return Season.objects.filter(active=True).first()
