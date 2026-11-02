@@ -9,6 +9,7 @@ import ParticipantPicks from 'src/pages/participantPicks/index.jsx';
 import Winnings from 'src/pages/winnings/index.jsx';
 import TournamentSchedule from './pages/tournamentSchedule';
 import OWGR from './pages/owgr';
+import Seasons from './pages/seasons';
 
 const Routes = () => (
   <Switch>
@@ -19,6 +20,7 @@ const Routes = () => (
       <Route path='/participant-picks' Component={ParticipantPicks}/>
       <Route path='/schedule' Component={TournamentSchedule} />
       <Route path='/owgr' Component={OWGR} />
+      <Route path='/seasons' Component={Seasons} />
     </Route>
     <Route path='*' Component={Error404} />
   </Switch>

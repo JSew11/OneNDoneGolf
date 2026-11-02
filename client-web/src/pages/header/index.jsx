@@ -161,6 +161,7 @@ const UserDropdown = ({ username, isAdminUser }) => {
           <div>
             <UserDropdownListHeader>Admin</UserDropdownListHeader>
             <NewSeasonModal />
+            {/* <UserDropdownItem component={Link} to="/seasons">Seasons</UserDropdownItem> */}
             <Divider sx={{ my: 0.5 }} />
           </div>
         )}
@@ -199,24 +200,24 @@ const samePageLinkNavigation = (event) => {
 }
 
 const NavTabs = ({ tabs }) => {
-  const [value, setValue] = useState(0);
+  const [linkKeyMap, setLinkKeyMap] = useState({});
+  
+  const { pathname } = window.location;
 
-  const handleChange = (event, newValue) => {
-    if (
-      event.type !== 'click' ||
-      (event.type === 'click' && samePageLinkNavigation(event))
-    ) {
-      setValue(newValue);
-    }
-  };
+  useEffect(() => {
+    const tempMap = {};
+    tabs.forEach(tab => {
+      tempMap[tab.link] = tab.key;
+    });
+    setLinkKeyMap(tempMap);
+  }, [tabs])
 
   return (
     <Box sx={{ width: '100%' }}>
       <AppBar position='static'>
         <Tabs
           key='header-nav'
-          value={value}
-          onChange={handleChange}
+          value={linkKeyMap[pathname] ?? false}
           indicatorColor='secondary'
           textColor='inherit'
           aria-label='one-n-done-golf-nav'
