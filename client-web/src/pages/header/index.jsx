@@ -58,11 +58,11 @@ const Header = () => {
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
-        <Grid container justifyContent='flex-end' alignItems='center' className='py-2 px-4'>
-          <Grid item xs={8} onClick={() => {navigate('/');}}>
+        <Grid container className='py-2 px-4'>
+          <Grid size={8} onClick={() => {navigate('/');}}>
             <h1 className='site-logo'>{APP_NAME}</h1>
           </Grid>
-          <Grid item xs={4} className='text-end'>
+          <Grid size={4} className='text-end'>
             {
               isLoggedIn ?
               <UserDropdown username={username} isAdminUser={isAdminUser}/> :
@@ -152,8 +152,11 @@ const UserDropdown = ({ username, isAdminUser }) => {
         anchorEl={userDropdownAnchorEl}
         open={isUserDropdownOpen}
         onClose={closeUserDropdown}
-        MenuListProps={{
-          'aria-labelledby': 'user-dropdown'
+        onClick={closeUserDropdown}
+        slotProps={{
+          list: {
+            'aria-labelledby': 'user-dropdown'
+          },
         }}
       >
         { isAdminUser && (

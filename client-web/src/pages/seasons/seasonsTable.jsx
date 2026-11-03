@@ -3,7 +3,6 @@ import Table from '@mui/material/Table';
 import TableHead from '@mui/material/TableHead';
 import TableBody from '@mui/material/TableBody';
 import CircularProgress from '@mui/material/CircularProgress';
-import Button from '@mui/material/Button';
 
 import StyledTableRow from 'src/assets/components/styledTable/row';
 import {
@@ -11,30 +10,35 @@ import {
   StyledTableCell
 } from 'src/assets/components/styledTable/tableCells';
 import SeasonsApi from 'src/api/season';
+import SeasonModal from 'src/assets/modals/season';
 
 const SeasonsTable = () => {
+  const [loadTableData, reloadTableData] = useState(true);
   const [tableData, setTableData] = useState([]);
 
   useEffect(() => {
-    SeasonsApi.list().then(
-      (response) => {
-        if (response.data.length > 0) {
-          setTableData(response.data.sort((a,b) => b.year - a.year));
-        }
-      })
-  }, []);
+    if (loadTableData) {
+      SeasonsApi.list().then(
+        (response) => {
+          if (response.data.length > 0) {
+            setTableData(response.data.sort((a,b) => b.year - a.year));
+          }
+        })
+      reloadTableData(false);
+    }
+  }, [loadTableData]);
 
   return (
     <Table stickyHeader size='small' className='my-0 pb-3'>
       <TableHead>
         <StyledTableRow key='title'>
-          <StyledTitleCell colSpan={6}>Seasons</StyledTitleCell>
+          <StyledTitleCell colSpan={5}>Seasons</StyledTitleCell>
         </StyledTableRow>
         <StyledTableRow key='header'>
           <StyledTableCell align='center'>Year</StyledTableCell>
           <StyledTableCell align='center'>Alias</StyledTableCell>
           <StyledTableCell align='center'>Registration Cutoff</StyledTableCell>
-          <StyledTableCell align='center' colSpan={2}></StyledTableCell>
+          <StyledTableCell align='center'></StyledTableCell>
         </StyledTableRow>
       </TableHead>
       <TableBody>
@@ -43,9 +47,8 @@ const SeasonsTable = () => {
               <StyledTableRow key={row.id}>
                 <StyledTableCell align='center'>{row.year}</StyledTableCell>
                 <StyledTableCell align='center'>{row.alias}</StyledTableCell>
-                <StyledTableCell align='center'>{row.registration_cutoff}</StyledTableCell>
-                <StyledTableCell align='center'><Button disabled variant='contained' color='primary'>Edit</Button></StyledTableCell>
-                <StyledTableCell align='center'><Button disabled variant='contained' color='error'>Delete</Button></StyledTableCell>
+                <StyledTableCell align='center'>{new Date(row.registration_cutoff).toDateString('MM-dd-yyyy')}</StyledTableCell>
+                <StyledTableCell align='center'><SeasonModal season={row} callback={reloadTableData}/></StyledTableCell>
               </StyledTableRow>
             ))
           :

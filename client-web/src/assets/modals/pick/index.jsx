@@ -110,95 +110,91 @@ const PickModal = ({ season, tournament, pick, setPick }) => {
       </Button>
       <Dialog
         fullWidth
+        maxWidth='xs'
         open={open}
         onClose={handleClose}
-        PaperProps={{
-          component: 'form',
-          onSubmit: handleSubmit,
-          sx: {
-            maxWidth: '50%'
-          }
-        }}
       >
         <DialogTitle>Make your Pick for the {tournament.name}</DialogTitle>
         <DialogContent className='py-0'>
           <Box sx={{flexGrow: 1}}>
             <Grid container>
               {errors.map((error, index) => {
-                return <span>{error}</span>
+                return <Grid>{error}</Grid>
               })}
             </Grid>
           </Box>
-          <FormControl required fullWidth variant='outlined' className='my-2'>
-            <InputLabel htmlFor='primary-golfer-select'>Golfer</InputLabel>
-            <Select
-              id='primary-golfer-select'
-              value={primarySelectionGolferId}
-              label='Golfer'
-              onChange={handlePrimarySelectionChange}
-              required
-            >
-              {field.map((golfer, index) => {
-                return <MenuItem 
-                          key={index}
-                          value={golfer.id}
-                          disabled={(golfer.already_picked && currentPickPrimarySelectionGolferId !== golfer.id) || (golfer.id === backupSelectionGolferId)}
-                        >
-                          <Box sx={{flexGrow: 1}}>
-                            <Grid container sx={{justifyContent: 'space-between'}}>
-                              <span>{golfer.first_name} {golfer.last_name}</span>
-                              <span>
-                                { 
-                                  (golfer.id === backupSelectionGolferId) ?
-                                    'Backup Pick'
-                                  :
-                                    golfer.tournament_picked_in ?
-                                      golfer.tournament_picked_in
-                                    : 
-                                      ''
-                                }
-                              </span>
-                            </Grid>
-                          </Box>
-                        </MenuItem>
-              })}
-            </Select>
-          </FormControl>
-          <FormControl required fullWidth variant='outlined' className='my-2'>
-            <InputLabel htmlFor='backup-golfer-select'>Backup Golfer</InputLabel>
-            <Select
-              id='backup-golfer-select'
-              value={backupSelectionGolferId}
-              label='Backup Golfer'
-              onChange={handleBackupSelectionChange}
-              required
-            >
-              {field.map((golfer, index) => {
-                return <MenuItem 
-                          key={index}
-                          value={golfer.id}
-                          disabled={(golfer.already_picked && currentPickBackupSelectionGolferId !== golfer.id) || (golfer.id === primarySelectionGolferId)}
-                        >
-                          <Box sx={{flexGrow: 1}}>
-                            <Grid container sx={{justifyContent: 'space-between'}}>
-                              <span>{golfer.first_name} {golfer.last_name}</span>
-                              <span>
-                                { 
-                                  (golfer.id === primarySelectionGolferId) ?
-                                    'Primary Pick'
-                                  :
-                                    golfer.tournament_picked_in ?
-                                      golfer.tournament_picked_in
-                                    : 
-                                      ''
-                                }
-                              </span>
-                            </Grid>
-                          </Box>
-                        </MenuItem>
-              })}
-            </Select>
-          </FormControl>
+          <form onSubmit={handleSubmit} id='pick-form'>
+            <FormControl required fullWidth variant='outlined' className='my-2'>
+              <InputLabel htmlFor='primary-golfer-select'>Golfer</InputLabel>
+              <Select
+                id='primary-golfer-select'
+                value={primarySelectionGolferId}
+                label='Golfer'
+                onChange={handlePrimarySelectionChange}
+                required
+              >
+                {field.map((golfer, index) => {
+                  return <MenuItem 
+                            key={index}
+                            value={golfer.id}
+                            disabled={(golfer.already_picked && currentPickPrimarySelectionGolferId !== golfer.id) || (golfer.id === backupSelectionGolferId)}
+                          >
+                            <Box sx={{flexGrow: 1}}>
+                              <Grid container sx={{justifyContent: 'space-between'}}>
+                                <span>{golfer.first_name} {golfer.last_name}</span>
+                                <span>
+                                  { 
+                                    (golfer.id === backupSelectionGolferId) ?
+                                      'Backup Pick'
+                                    :
+                                      golfer.tournament_picked_in ?
+                                        golfer.tournament_picked_in
+                                      : 
+                                        ''
+                                  }
+                                </span>
+                              </Grid>
+                            </Box>
+                          </MenuItem>
+                })}
+              </Select>
+            </FormControl>
+            <FormControl required fullWidth variant='outlined' className='my-2'>
+              <InputLabel htmlFor='backup-golfer-select'>Backup Golfer</InputLabel>
+              <Select
+                id='backup-golfer-select'
+                value={backupSelectionGolferId}
+                label='Backup Golfer'
+                onChange={handleBackupSelectionChange}
+                required
+              >
+                {field.map((golfer, index) => {
+                  return <MenuItem 
+                            key={index}
+                            value={golfer.id}
+                            disabled={(golfer.already_picked && currentPickBackupSelectionGolferId !== golfer.id) || (golfer.id === primarySelectionGolferId)}
+                          >
+                            <Box sx={{flexGrow: 1}}>
+                              <Grid container sx={{justifyContent: 'space-between'}}>
+                                <span>{golfer.first_name} {golfer.last_name}</span>
+                                <span>
+                                  { 
+                                    (golfer.id === primarySelectionGolferId) ?
+                                      'Primary Pick'
+                                    :
+                                      golfer.tournament_picked_in ?
+                                        golfer.tournament_picked_in
+                                      : 
+                                        ''
+                                  }
+                                </span>
+                              </Grid>
+                            </Box>
+                          </MenuItem>
+                })}
+              </Select>
+            </FormControl>
+          </form>
         </DialogContent>
         <DialogActions className='px-4 mb-2'>
           <Button
@@ -221,6 +217,7 @@ const PickModal = ({ season, tournament, pick, setPick }) => {
             color='primary'
             type='submit'
             disabled={(primarySelectionGolferId === '' || backupSelectionGolferId === '') || (pick && (currentPickPrimarySelectionGolferId === primarySelectionGolferId && currentPickBackupSelectionGolferId === backupSelectionGolferId))}
+            form='pick-form'
           >
             Submit
           </Button>

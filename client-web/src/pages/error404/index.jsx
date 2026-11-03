@@ -11,13 +11,13 @@ const Error404 = () => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container className='p-2'>
-        <Grid item xs={12}><h1 className='text-center'>{APP_NAME}</h1></Grid>
+        <Grid size={12}><h1 className='text-center'>{APP_NAME}</h1></Grid>
       </Grid>
       <Grid container className='p-2'>
-        <Grid item xs={12}><h3 className='text-center'>404: This page could not be found</h3></Grid>
+        <Grid size={12}><h3 className='text-center'>404: This page could not be found</h3></Grid>
       </Grid>
       <Grid container className='p-2'>
-        <Grid item xs={12} className='text-center'><Button onClick={() => {navigate('/');}} disableElevation variant='contained'>Home</Button></Grid>
+        <Grid size={12} className='text-center'><Button onClick={() => {navigate('/');}} disableElevation variant='contained'>Home</Button></Grid>
       </Grid>
     </Box>
   );

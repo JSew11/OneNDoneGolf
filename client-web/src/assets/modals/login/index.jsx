@@ -36,6 +36,17 @@ export default function LoginModal() {
     setOpen(false);
   }
 
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    dispatch(login(email, password)).then(
+      (result) => {
+        if (result.response && result.response.status !== 200) {
+          setErrorMessage(result.response.data.detail);
+        }
+      },
+    );
+  }
+
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleMouseDownPassword = (event) => {
@@ -45,64 +56,50 @@ export default function LoginModal() {
   return (
     <div>
       <Button variant='contained' onClick={handleOpen} sx={{ fontSize: '1em' }}>Log In</Button>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        PaperProps={{
-          component: 'form',
-          onSubmit: async (event) => {
-            event.preventDefault();
-            dispatch(login(email, password)).then(
-              (result) => {
-                if (result.response && result.response.status !== 200) {
-                  setErrorMessage(result.response.data.detail);
-                }
-              },
-            );
-          }
-        }}
-      >
+      <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Log In</DialogTitle>
         <DialogContent>
-          <FormControl required variant='outlined' fullWidth className='my-2'>
-            <InputLabel htmlFor='email'>Email</InputLabel>
-            <OutlinedInput
-              id='email'
-              label='Email'
-              type='email'
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </FormControl>
-          <FormControl required variant='outlined' fullWidth>
-            <InputLabel htmlFor='password'>Password</InputLabel>
-            <OutlinedInput 
-              id='password'
-              label='Password'
-              type={ showPassword ? 'text' : 'password' }
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              endAdornment={
-                <InputAdornment position='end'>
-                  <IconButton
-                    aria-label='toggle password visibility'
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                    edge='end'
-                  >
-                    { showPassword ? <VisibilityOff /> : <Visibility /> }
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-          </FormControl>
+          <form onSubmit={handleSubmit} id='login-form'>
+            <FormControl required variant='outlined' fullWidth className='my-2'>
+              <InputLabel htmlFor='email'>Email</InputLabel>
+              <OutlinedInput
+                id='email'
+                label='Email'
+                type='email'
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </FormControl>
+            <FormControl required variant='outlined' fullWidth>
+              <InputLabel htmlFor='password'>Password</InputLabel>
+              <OutlinedInput 
+                id='password'
+                label='Password'
+                type={ showPassword ? 'text' : 'password' }
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                endAdornment={
+                  <InputAdornment position='end'>
+                    <IconButton
+                      aria-label='toggle password visibility'
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge='end'
+                    >
+                      { showPassword ? <VisibilityOff /> : <Visibility /> }
+                    </IconButton>
+                  </InputAdornment>
+                }
+              />
+            </FormControl>
+          </form>
         </DialogContent>
         <DialogContentText className='text-center text-danger'>
           {errorMessage}
         </DialogContentText>
         <DialogActions>
           <Button variant='contained' color='secondary' onClick={handleClose}>Cancel</Button>
-          <Button variant='contained' color='primary' type='submit'>Log In</Button>
+          <Button variant='contained' color='primary' type='submit' form='login-form'>Log In</Button>
         </DialogActions>
       </Dialog>
     </div>

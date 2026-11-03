@@ -28,7 +28,7 @@ const WeeklyPicks = () => {
   return (
     <Box sx={{ flexGrow: 1, textAlign: 'center'}}>
       <Grid container className='mt-3 px-2'>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <FullTournamentTable seasonId={activeSeason?.id}/>
         </Grid>
       </Grid>

@@ -7,11 +7,12 @@ const list = async () => {
     return await privateAxios.get(BASE_URL);
 };
 
-const create = async (name, alias, year) => {
+const create = async (name, alias, year, registrationCutoff) => {
     const newSeasonData = {
         name: name,
         alias: alias,
-        year: year
+        year: year,
+        registration_cutoff: registrationCutoff
     };
     return await privateAxios.post(BASE_URL, newSeasonData);
 };

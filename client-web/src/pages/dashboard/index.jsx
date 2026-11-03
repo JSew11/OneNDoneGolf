@@ -44,14 +44,14 @@ const Dashboard = () => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       { isLoggedIn && activeSeason && nextTournament && 
-        <Grid container justifyContent='center' alignItems='center' className='py-4'>
-          <Grid item xs={8}>
+        <Grid container className='py-4 justify-content-center'>
+          <Grid size={8}>
             <PickModal season={activeSeason} tournament={nextTournament} pick={pick} setPick={setPick} />
           </Grid>
         </Grid>
       }
-      <Grid container justifyContent='center' alignItems='center'>
-        <Grid item xs={10}>
+      <Grid container className='justify-content-center'>
+        <Grid size={10}>
           { 
             isLoggedIn ?
             <PickemStandingsTable seasonId={activeSeason?.id}/> :

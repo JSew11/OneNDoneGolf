@@ -28,7 +28,7 @@ const ParticipantPicks = () => {
   return (
     <Box sx={{ flexGrow: 1 }} className='mt-3 px-2'>
       <Grid container spacing={1}>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <PicksTable seasonId={activeSeason?.id}/>
         </Grid>
       </Grid>

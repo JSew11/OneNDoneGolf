@@ -7,7 +7,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 
 import SeasonsTable from 'src/pages/seasons/seasonsTable';
-import NewSeasonModal from 'src/assets/modals/newSeason';
+import SeasonModal from 'src/assets/modals/season';
 import SeasonsApi from 'src/api/season';
 
 const Seasons = () => {
@@ -38,7 +38,7 @@ const Seasons = () => {
   return (
     <Box sx={{ flexGrow: 1, textAlign: 'center'}}>
       <Grid container className='my-3 px-2'>
-        <Grid item xs={7}>
+        <Grid size={7}>
           { activeSeason && incompleteSeasons.length > 0 ?
             <FormControl variant='outlined' fullWidth className='px-2'>
                 <InputLabel id='active-season-label' className='px-2'>Active Season</InputLabel>
@@ -62,11 +62,11 @@ const Seasons = () => {
               'Loading Table Data'
           }
         </Grid>
-        <Grid item xs={3}></Grid>
-        <Grid item xs={2}><NewSeasonModal /></Grid>
+        <Grid size={3}></Grid>
+        <Grid size={2}><SeasonModal /></Grid>
       </Grid>
       <Grid container className='px-2'>
-        <Grid item xs={12}>
+        <Grid size={12}>
           <SeasonsTable />
         </Grid>
       </Grid>

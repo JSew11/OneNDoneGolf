@@ -156,7 +156,9 @@ const FullTournamentTable = ({ seasonId }) => {
               className='py-0 my-0'
               checked={onlyShowPicked}
               onChange={handleHideUnpickedGolfersChange}
-              inputProps={{ 'aria-label': 'controlled' }}
+              slotProps={{
+                input: { 'aria-label': 'controlled' }
+              }}
             /> Hide Unpicked Golfers
           </StyledTableCell>
         </StyledTableRow>
