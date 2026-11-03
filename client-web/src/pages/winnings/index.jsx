@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 
 import SeasonsApi from 'src/api/season';
-import WinningsTable from './winningsTable';
+import WinningsTable from 'src/pages/winnings/winningsTable';
 
 const Winnings = () => {
   

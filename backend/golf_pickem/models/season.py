@@ -31,6 +31,7 @@ class Season(SafeDeleteModel):
     active = BooleanField(default=False)
     year = SmallIntegerField(unique=True) # functions as the external_id stored in other models
     registration_cutoff = DateTimeField(blank=True, null=True)
+    completed = BooleanField(default=False)
 
     def next_tournament_id(self, after_date: datetime = None) -> int:
         """Get the next tournament in the season's schedule.

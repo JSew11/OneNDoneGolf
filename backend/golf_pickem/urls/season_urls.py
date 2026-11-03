@@ -23,6 +23,10 @@ active_season_view = SeasonViewSet.as_view({
     'get': 'active_season',
 })
 
+set_active_season_view = SeasonViewSet.as_view({
+    'post': 'set_active_season',
+})
+
 next_tournament_view = SeasonViewSet.as_view({
     'get': 'next_tournament',
 })
@@ -71,6 +75,7 @@ season_tournament_golfer_detail_views = SeasonTournamentGolferViewSet.as_view({
 urlpatterns = [
     path('', season_list_views, name='seasons_list'),
     path('active/', active_season_view, name='active_season'),
+    path('active/<int:season_id>/', set_active_season_view, name='set_active_season'),
     path('<int:season_id>/', season_details_views, name='season_details'),
     path('<int:season_id>/next-tournament/', next_tournament_view, name='next_tournament'),
     path('<int:season_id>/active-tournament/', active_tournament_view, name='active_tournament'),

@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 
 import SeasonsApi from 'src/api/season';
-import FullTournamentTable from './fullTournamentTable';
+import FullTournamentTable from 'src/pages/weeklyPicks/fullTournamentTable';
 
 const WeeklyPicks = () => {
 

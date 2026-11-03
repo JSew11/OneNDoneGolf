@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 
 import SeasonsApi from 'src/api/season';
-import PicksTable from './picksTable';
+import PicksTable from 'src/pages/participantPicks/picksTable';
 
 const ParticipantPicks = () => {
 

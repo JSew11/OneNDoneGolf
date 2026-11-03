@@ -105,7 +105,7 @@ const PicksTable = ({ seasonId }) => {
     }
   }, [seasonId, selectedUserId]);
 
-  const handleChange = (event)=> {
+  const handleChange = (event) => {
     setSelectedUserId(event.target.value);
   }
 

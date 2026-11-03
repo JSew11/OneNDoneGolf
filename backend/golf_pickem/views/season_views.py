@@ -197,6 +197,25 @@ class SeasonViewSet(ModelViewSet):
                 status=status.HTTP_404_NOT_FOUND, 
             )
 
+    @action(detail=True, methods=['POST'])
+    def set_active_season(self, request: Request, season_id: int) -> Response:
+        """Changes the active season to the season with the given id. Changes the current active season to be inactive.
+        """
+        try:
+            season: Season = Season.objects.get(id=season_id)
+            Season.objects.update(active=False)
+            season.active = True
+            season.save()
+            return Response(
+                data={'status': f'Season with id \'{season_id}\' is now active'},
+                status=status.HTTP_200_OK, 
+            )
+        except Season.DoesNotExist:
+            return Response(
+                data={'status': f'Season with id \'{season_id}\' not found'},
+                status=status.HTTP_404_NOT_FOUND, 
+            )
+
 class SeasonUsersViewset(ModelViewSet):
     """Viewset for the users participating in a season. Supports creating and viewing
     either as a list o individually.
