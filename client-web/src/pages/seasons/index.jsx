@@ -40,8 +40,8 @@ const Seasons = () => {
       <Grid container className='my-3 px-2'>
         <Grid item xs={7}>
           { activeSeason && incompleteSeasons.length > 0 ?
-            <FormControl variant='outlined' fullWidth>
-                <InputLabel id='active-season-label'>Active Season</InputLabel>
+            <FormControl variant='outlined' fullWidth className='px-2'>
+                <InputLabel id='active-season-label' className='px-2'>Active Season</InputLabel>
                 <Select
                   labelId='active-season-label'
                   id='active-season'
