@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DJANGO_SECRET_KEY: very-bad-prod-secret-key
-      PYTHON_VERSION: 3.11.5
+      PYTHON_VERSION: 3.15.2
       MY_POSTGRES_USER: postgres
       MY_POSTGRES_PASSWORD: postgres
       MY_POSTGRES_DB: postgres
