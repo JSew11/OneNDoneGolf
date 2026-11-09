@@ -28,7 +28,7 @@ class Golfer(SafeDeleteModel):
     # golfer info
     first_name = CharField(max_length=255, validators=[RegexValidator(r'^[a-zA-Z]+$')])
     last_name = CharField(max_length=255, validators=[RegexValidator(r'^[a-zA-Z .]+$')])
-    country = CharField(max_length=255, validators=[RegexValidator(r'^[a-zA-Z .,]+$')])
+    external_id = CharField(max_length=16) # id used in external api calls
 
     def times_picked(self, seasonId: int) -> int:
         """Get the number of times the golfer was picked in the given 
@@ -47,3 +47,13 @@ class Golfer(SafeDeleteModel):
         given season.
         """
         return UserSeason.objects.filter(season=seasonId).count() - self.times_picked(seasonId)
+
+    @staticmethod
+    def create_from_external_data(external_api_data: dict) -> Golfer:
+        """Creates a Golfer model from external api data taken from json.
+        """
+        return Golfer.objects.create(
+            first_name=external_api_data['firstName'],
+            last_name=external_api_data['lastName'],
+            external_id=external_api_data['playerId']
+        )

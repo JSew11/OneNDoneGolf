@@ -119,7 +119,7 @@ class TournamentSeason(SafeDeleteModel):
         return [picked_golfer.golfer_season.golfer.id for picked_golfer in picked_tournament_golfers if picked_golfer.position == highest_position]
 
     @staticmethod
-    def create_from_external_data(year: int, tournament_id: int, external_api_data: dict):
+    def create_from_external_data(year: int, tournament_id: int, external_api_data: dict) -> TournamentSeason:
         """Creates a Tournament Season model from external api data taken from json.
         """
         try:

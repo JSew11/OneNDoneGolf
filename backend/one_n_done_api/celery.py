@@ -9,8 +9,3 @@ app = Celery('one_n_done_api')
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
 app.autodiscover_tasks(['golf_pickem.tasks'])
-
-@app.on_after_finalize.connect
-def setup_periodic_tasks(sender: Celery, **kwargs):
-    """Set up tasks to run on periodic schedule
-    """

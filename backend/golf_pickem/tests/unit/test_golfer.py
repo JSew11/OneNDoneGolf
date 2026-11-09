@@ -37,7 +37,6 @@ class TestGolferModel(TestCase):
         )
         self.assertEqual(test_golfer.first_name, test_first_name)
         self.assertEqual(test_golfer.last_name, test_last_name)
-        self.assertEqual(test_golfer.country, test_country)
     
     def test_times_picked(self) -> None:
         """Test the times_picked method for a golfer.

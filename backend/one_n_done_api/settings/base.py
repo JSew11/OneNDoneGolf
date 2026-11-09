@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 import os, os.path
 from datetime import timedelta
+from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.realpath('manage.py'))
@@ -187,3 +188,14 @@ RABBITMQ = {
 
 CELERY_BROKER_URL = f"{RABBITMQ['PROTOCOL']}://{RABBITMQ['USER']}:{RABBITMQ['PASSWORD']}@{RABBITMQ['HOST']}:{RABBITMQ['PORT']}/{RABBITMQ['VHOST']}"
 CELERY_WORKER_CANCEL_LONG_RUNNING_TASKS_ON_CONNECTION_LOSS = True
+
+CELERY_IMPORTS = [
+    'golf_pickem.tasks'
+]
+
+CELERY_BEAT_SCHEDULE = {
+    'get_next_tournament_field': {
+        'task': 'golf_pickem.tasks.get_tournament_field',
+        'schedule': crontab(hour=0, minute=0)
+    }
+}
