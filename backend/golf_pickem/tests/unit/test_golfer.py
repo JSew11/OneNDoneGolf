@@ -27,13 +27,11 @@ class TestGolferModel(TestCase):
         """
         test_first_name = 'Test'
         test_last_name = 'Name'
-        test_country = 'COUNTRY'
 
         # test creating a golfer with all fields
         test_golfer: Golfer = Golfer.objects.create(
             first_name=test_first_name,
-            last_name=test_last_name,
-            country=test_country
+            last_name=test_last_name
         )
         self.assertEqual(test_golfer.first_name, test_first_name)
         self.assertEqual(test_golfer.last_name, test_last_name)

@@ -7,8 +7,7 @@
         "created": "2023-12-01T18:54:20.119Z",
         "updated": "2023-12-01T18:54:20.119Z",
         "first_name": "James",
-        "last_name": "Rookie",
-        "country": "RUS"
+        "last_name": "Rookie"
     }
 },
 {
@@ -19,8 +18,7 @@
         "created": "2023-12-01T18:54:33.532Z",
         "updated": "2023-12-01T18:54:33.532Z",
         "first_name": "Max",
-        "last_name": "Veteran",
-        "country": "GBA"
+        "last_name": "Veteran"
     }
 },
 {
@@ -31,8 +29,7 @@
         "created": "2023-12-01T18:54:51.969Z",
         "updated": "2023-12-01T18:54:51.969Z",
         "first_name": "Will",
-        "last_name": "Champion",
-        "country": "USA"
+        "last_name": "Champion"
     }
 },
 {
@@ -43,8 +40,7 @@
         "created": "2023-12-01T18:54:51.969Z",
         "updated": "2023-12-01T18:54:51.969Z",
         "first_name": "Billy",
-        "last_name": "BadSwing",
-        "country": "AUS"
+        "last_name": "BadSwing"
     }
 }
 ]
