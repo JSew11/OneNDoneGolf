@@ -1,6 +1,12 @@
 services:
   db:
     image: postgres:17.9
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
     volumes:
       - ./data/db:/var/lib/postgresql/data
     environment:
@@ -42,10 +48,18 @@ services:
       - GOLF_API_BASE_URL=${GOLF_DATA_API_BASE_URL}
       - GOLF_API_KEY=${GOLF_DATA_API_KEY}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+        restart: true
   
   rabbitmq:
     image: rabbitmq:latest
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
     ports:
       - "${RABBITMQ_PORT}:${RABBITMQ_PORT}"
       - "15672:15672"
@@ -78,7 +92,9 @@ services:
       - GOLF_API_BASE_URL=${GOLF_DATA_API_BASE_URL}
       - GOLF_API_KEY=${GOLF_DATA_API_KEY}
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
+        restart: true
   
   celery_beat:
     build: ./backend
@@ -100,7 +116,12 @@ services:
       - GOLF_API_BASE_URL=${GOLF_DATA_API_BASE_URL}
       - GOLF_API_KEY=${GOLF_DATA_API_KEY}
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
+        restart: true
+      db:
+        condition: service_healthy
+        restart: true
   
   client_web:
     build: ./client-web
