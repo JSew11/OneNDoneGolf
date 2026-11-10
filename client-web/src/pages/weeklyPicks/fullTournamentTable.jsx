@@ -89,6 +89,7 @@ const FullTournamentTable = ({ seasonId }) => {
 
   const handleChange = (event)=> {
     setSelectedTournamentId(event.target.value);
+    setTableData([]);
   }
 
   const handleHideUnpickedGolfersChange = () => {
