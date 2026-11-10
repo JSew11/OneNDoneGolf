@@ -56,7 +56,7 @@ class TestSeasonViewSet(APITestCase):
         response: Response = self.client.post(path='/api/golf-pickem/seasons/', data={})
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
-        with patch('golf_pickem.views.season_views.gather_golf_data.get_season_schedule.delay') as mock_task:
+        with patch('golf_pickem.views.season_views.get_season_schedule.delay') as mock_task:
             # test creating a valid new season
             new_season_data = {
                 'year': 2002,
