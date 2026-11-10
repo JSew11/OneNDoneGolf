@@ -3,6 +3,7 @@ import Table from '@mui/material/Table';
 import TableHead from '@mui/material/TableHead';
 import TableBody from '@mui/material/TableBody';
 import CircularProgress from '@mui/material/CircularProgress';
+import Button from '@mui/material/Button';
 
 import StyledTableRow from 'src/assets/components/styledTable/row';
 import {
@@ -11,7 +12,7 @@ import {
 } from 'src/assets/components/styledTable/tableCells';
 import SeasonTournamentsApi from 'src/api/seasonTournament';
 
-const TournamentScheduleTable = ({ seasonId }) => {
+const TournamentScheduleTable = ({ seasonId, isAdminUser }) => {
 
   const [tableData, setTableData] = useState([]);
 
@@ -38,6 +39,10 @@ const TournamentScheduleTable = ({ seasonId }) => {
     }
   }, [seasonId]);
 
+  const handleResetField = async (tournamentId) => {
+    await SeasonTournamentsApi.generateField(seasonId, tournamentId);
+  };
+
   return (
     <Table stickyHeader size='small' className='my-0 pb-3'>
       <TableHead>
@@ -48,6 +53,7 @@ const TournamentScheduleTable = ({ seasonId }) => {
           <StyledTableCell align='center'>Start Date</StyledTableCell>
           <StyledTableCell align='center'>End Date</StyledTableCell>
           <StyledTableCell align='center'>Tournament</StyledTableCell>
+          { isAdminUser && <StyledTableCell align='center'></StyledTableCell> }
         </StyledTableRow>
       </TableHead>
       <TableBody>
@@ -59,11 +65,20 @@ const TournamentScheduleTable = ({ seasonId }) => {
                 <StyledTableCell align='center'>{row.startDate}</StyledTableCell>
                 <StyledTableCell align='center'>{row.endDate}</StyledTableCell>
                 <StyledTableCell align='center'>{row.tournament}</StyledTableCell>
+                { isAdminUser &&
+                  <StyledTableCell align='center'>
+                    <Button
+                      variant='contained'
+                      disabled={(new Date().getTime() > new Date(row.startDate).getTime())}
+                      onClick={() => handleResetField(row.id)}
+                    >Reset Field</Button>
+                  </StyledTableCell>
+                }
               </StyledTableRow>
             ))
           :
             <StyledTableRow key='loading'>
-              <StyledTableCell align='center' colSpan={3}>
+              <StyledTableCell align='center' colSpan={10}>
                 <CircularProgress className='my-4' size='50px'/>
               </StyledTableCell>
             </StyledTableRow>

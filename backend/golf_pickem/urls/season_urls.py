@@ -61,7 +61,8 @@ season_tournaments_detail_views = SeasonTournamentsViewSet.as_view({
 })
 
 field_list_view = SeasonTournamentsViewSet.as_view({
-    'get': 'field'
+    'get': 'field',
+    'post': 'generate_field'
 })
 
 season_tournament_golfer_list_views = SeasonTournamentGolferViewSet.as_view({

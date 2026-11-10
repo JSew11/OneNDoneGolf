@@ -2,7 +2,7 @@ from datetime import datetime
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.request import Request
-from rest_framework.decorators import action
+from rest_framework.decorators import action, permission_classes
 from rest_framework import status, permissions
 
 from golf_pickem.models import (
@@ -25,7 +25,8 @@ from golf_pickem.serializers import (
     PickSerializer
 )
 from golf_pickem.tasks import (
-    gather_golf_data
+    get_season_schedule,
+    get_tournament_field,
 )
 
 class SeasonViewSet(ModelViewSet):
@@ -52,7 +53,7 @@ class SeasonViewSet(ModelViewSet):
         serializer: SeasonSerializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             season: Season = serializer.save()
-            gather_golf_data.get_season_schedule.delay(season.year, True)
+            get_season_schedule.delay(season.year, True)
             return Response(
                 data=serializer.data,
                 status=status.HTTP_201_CREATED,
@@ -378,6 +379,37 @@ class SeasonTournamentsViewSet(ModelViewSet):
                 data=serializer.data,
                 status=status.HTTP_200_OK
             )
+        except TournamentSeason.DoesNotExist:
+            return Response(
+                data={'message': f'Tournament with id \'{tournament_id}\' not found for the Season with id \'{season_id}\''},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+    @action(detail=False, methods=['POST'])
+    def generate_field(self, request: Request, season_id: int, tournament_id: int) -> Response:
+        """Triggers the async job to gather the given tournament's field from the external api.
+        """
+        if not request.user.is_staff:
+            return Response(
+                data={'message': 'Action not permitted'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        try:
+            get_tournament_field.delay(True, tournament_id, season_id)
+            return Response(
+                data={'message': 'Gathering the field from external source'},
+                status=status.HTTP_200_OK
+            )
+        except Season.DoesNotExist:
+                    return Response(
+                        data={'message': f'Season with id \'{tournament_id}\' not found'},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+        except Tournament.DoesNotExist:
+                    return Response(
+                        data={'message': f'Tournament with id \'{season_id}\' not found'},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
         except TournamentSeason.DoesNotExist:
             return Response(
                 data={'message': f'Tournament with id \'{tournament_id}\' not found for the Season with id \'{season_id}\''},
