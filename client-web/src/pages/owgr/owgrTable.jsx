@@ -3,15 +3,17 @@ import Table from '@mui/material/Table';
 import TableHead from '@mui/material/TableHead';
 import TableBody from '@mui/material/TableBody';
 import CircularProgress from '@mui/material/CircularProgress';
+import Button from '@mui/material/Button';
 
 import StyledTableRow from 'src/assets/components/styledTable/row';
 import {
   StyledTitleCell,
   StyledTableCell
 } from 'src/assets/components/styledTable/tableCells';
+import SeasonsApi from 'src/api/season';
 import SeasonGolfersApi from 'src/api/seasonGolfer';
 
-const OWGRTable = ({ seasonId }) => {
+const OWGRTable = ({ seasonId, isAdminUser }) => {
 
   const [tableData, setTableData] = useState([]);
 
@@ -21,25 +23,41 @@ const OWGRTable = ({ seasonId }) => {
         (response) => {
           const golferSeasonData = [];
           for (let golferSeason of response.data) {
-            golferSeasonData.push({
-              'id': golferSeason.id,
-              'golfer': golferSeason.golfer.first_name + ' ' + golferSeason.golfer.last_name,
-              'timesPicked': golferSeason.times_picked,
-              'remainingPicks': golferSeason.remaining_available_picks,
-              'timesPickedAsWinner': golferSeason.times_picked_as_winner
-            });
+            if (golferSeason.rank !== null) {
+              golferSeasonData.push({
+                'id': golferSeason.id,
+                'rank': golferSeason.rank,
+                'golfer': golferSeason.golfer.first_name + ' ' + golferSeason.golfer.last_name,
+                'timesPicked': golferSeason.times_picked,
+                'remainingPicks': golferSeason.remaining_available_picks,
+                'timesPickedAsWinner': golferSeason.times_picked_as_winner
+              });
+            }
           }
-          setTableData(golferSeasonData);
+          setTableData(golferSeasonData.sort((a, b) => a.rank - b.rank));
         }
       );
     }
   }, [seasonId]);
 
+  const handleUpdateOWGRClicked = async () => {
+    await SeasonsApi.updateOWGR(seasonId);
+  };
+
   return (
-    <Table stickyHeader size='small' className='my-0 pb-3'>
+    <Table size='small' className='my-0 pb-3'>
       <TableHead>
         <StyledTableRow key='title'>
-          <StyledTitleCell colSpan={5}>Official World Golf Rankings</StyledTitleCell>
+          <StyledTitleCell colSpan={isAdminUser ? 4 : 5}>Official World Golf Rankings</StyledTitleCell>
+          { isAdminUser &&
+            <StyledTitleCell>
+              <Button
+                variant='contained'
+                color='secondary'
+                onClick={() => handleUpdateOWGRClicked()}
+              >Update OWGR</Button>
+            </StyledTitleCell>
+          }
         </StyledTableRow>
         <StyledTableRow key='header'>
           <StyledTableCell align='center'>Rank</StyledTableCell>
@@ -55,7 +73,7 @@ const OWGRTable = ({ seasonId }) => {
             // render table data
             tableData.map((row) => (
               <StyledTableRow key={row.id}>
-                <StyledTableCell align='center'>N/A</StyledTableCell>
+                <StyledTableCell align='center'>{row.rank}</StyledTableCell>
                 <StyledTableCell align='center'>{row.golfer}</StyledTableCell>
                 <StyledTableCell align='center'>{row.timesPicked}</StyledTableCell>
                 <StyledTableCell align='center'>{row.remainingPicks}</StyledTableCell>

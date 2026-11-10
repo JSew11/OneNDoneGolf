@@ -47,6 +47,15 @@ def get_earnings(year: int, tournament_external_id: str):
     }
     return requests.get(url, headers=_headers(), params=queryParams)
 
+def get_owgr(year: int):
+    """Get the owgr for the given year from the external golf api.
+    """
+    url = API_BASE_URL + '/owgr'
+    queryParams = {
+        'year': year
+    }
+    return requests.get(url, headers=_headers(), params=queryParams)
+
 def _headers() -> dict:
     """Returns the headers dict used for all external api requests.
     """

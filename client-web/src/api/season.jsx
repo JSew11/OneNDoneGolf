@@ -41,12 +41,12 @@ const activeTournament = async (seasonId) => {
     return await privateAxios.get(BASE_URL + seasonId + '/active-tournament/')
 }
 
-const standings = async (seasonId) => {
-    return await privateAxios.get(BASE_URL + seasonId + '/users/');
-};
-
 const setActiveSeason = async (seasonId) => {
     return await privateAxios.post(BASE_URL + 'active/' + seasonId + '/');
+}
+
+const updateOWGR = async (seasonId) => {
+    return await privateAxios.post(BASE_URL + seasonId + '/owgr/')
 }
 
 const SeasonsApi = {
@@ -58,8 +58,8 @@ const SeasonsApi = {
     active,
     nextTournament,
     activeTournament,
-    standings,
     setActiveSeason,
+    updateOWGR,
 };
 
 export default SeasonsApi;

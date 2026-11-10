@@ -27,6 +27,7 @@ from golf_pickem.serializers import (
 from golf_pickem.tasks import (
     get_season_schedule,
     get_tournament_field,
+    update_owgr
 )
 
 class SeasonViewSet(ModelViewSet):
@@ -215,6 +216,27 @@ class SeasonViewSet(ModelViewSet):
             return Response(
                 data={'status': f'Season with id \'{season_id}\' not found'},
                 status=status.HTTP_404_NOT_FOUND, 
+            )
+
+    @action(detail=True, methods=['POST'])
+    def update_owgr(self, request: Request, season_id: int) -> Response:
+        """Triggers an async task to update the stored OWGR rankings for the active season.
+        """
+        if not request.user.is_staff:
+            return Response(
+                data={'message': 'Action not permitted'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        try:
+            update_owgr.delay(season_id)
+            return Response(
+                data={'message': 'Updating OWGR from external source'},
+                status=status.HTTP_200_OK
+            )
+        except:
+            return Response(
+                data={'message': 'There was a problem updating the stored OWGR'},
+                status=status.HTTP_400_BAD_REQUEST
             )
 
 class SeasonUsersViewset(ModelViewSet):

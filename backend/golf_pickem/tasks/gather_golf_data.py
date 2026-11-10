@@ -15,7 +15,8 @@ from golf_pickem.models import (
 )
 from golf_pickem.external_golf_api import (
     get_schedule,
-    get_tournament
+    get_tournament,
+    get_owgr
 )
 
 logger = logging.getLogger('django')
@@ -45,13 +46,13 @@ def get_season_schedule(year: int, start_from_current_date: bool = False) -> Non
                             tournament = Tournament.create_from_external_data(tournament_response.json())
                     TournamentSeason.create_from_external_data(year, tournament.id, tourn)
                 except Exception as e:
-                    logger.info(f'failed to gather tournament id {tourn['tournId']} - {e}')
+                    logger.error(f'failed to gather tournament id {tourn['tournId']} - {e}')
                     failed_external_ids.append(tourn['tournId'])
                     continue
             # todo - find a better way to log failed data imports
     except Exception as e:
-        logger.info(e)
-        raise Exception(f'Problem gathering the schedule from external source {schedule_response.status_code}')
+        logger.error(e)
+        raise Exception(f'Problem gathering the schedule from external source | status - {schedule_response.status_code}')
 
 @shared_task
 def get_tournament_field(force: bool = False, tournament_id: int|None = None, season_id: int|None = None):
@@ -62,7 +63,7 @@ def get_tournament_field(force: bool = False, tournament_id: int|None = None, se
         tournament: Tournament = Tournament.objects.get(id=tournament_id) if tournament_id is not None else Tournament.objects.get(id=season.next_tournament_id(after_date=(datetime.now() + timedelta(days=1))))
         tournament_season: TournamentSeason = TournamentSeason.objects.filter(season_id=season_id, tournament_id=tournament_id).first()
     except Exception as e:
-        logger.info(e);
+        logger.error(e)
         raise Exception('Problem gathering db objects')
     if (not force and tournament_season.field.count() > 0):
         logger.info('skipping - a field already exists for the given tournament season')
@@ -77,9 +78,32 @@ def get_tournament_field(force: bool = False, tournament_id: int|None = None, se
                 golfer: Golfer = Golfer.objects.filter(external_id=player['playerId']).first()
                 if golfer is None:
                     golfer: Golfer = Golfer.create_from_external_data(external_api_data=player)
-                golfer_season: GolferSeason = GolferSeason.objects.get_or_create(golfer_id=golfer.id, season_id=season.id)
+                golfer_season, _ = GolferSeason.objects.get_or_create(golfer_id=golfer.id, season_id=season.id)
                 TournamentGolfer.objects.get_or_create(tournament_season=tournament_season, golfer_season=golfer_season)
     except Exception as e:
-        logger.info(e)
-        raise Exception(f'Problem gathering the field from external source {tournament_response.status_code}')
+        logger.error(e)
+        raise Exception(f'Problem gathering the field from external source | status - {tournament_response.status_code}')
         # todo - find a better way to log failed data imports
+
+@shared_task
+def update_owgr(season_id: int):
+    """Get OWGR rankings for the active season from the external API and store them in the associated models.
+    """
+    try:
+        season: Season = Season.objects.get(id=season_id)
+    except Exception as e:
+        logger.error(e)
+        raise Exception('Problem gathering db objects')
+    try:
+        owgr_response = get_owgr(season.year)
+        if owgr_response.status_code == 200:
+            for player in owgr_response.json().get('rankings'):
+                golfer: Golfer = Golfer.objects.filter(external_id=player['playerId']).first()
+                if golfer is None:
+                    golfer: Golfer = Golfer.create_from_external_data(external_api_data=player)
+                golfer_season, _ = GolferSeason.objects.get_or_create(golfer_id=golfer.id, season_id=season.id)
+                golfer_season.rank = int(player['rank']['$numberInt'])
+                golfer_season.save()
+    except Exception as e:
+        logger.info(e)
+        raise Exception(f'Problem gathering owgr from external source | status - {owgr_response.status_code}')

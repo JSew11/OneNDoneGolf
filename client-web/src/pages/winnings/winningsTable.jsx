@@ -36,7 +36,7 @@ const WinningsTable = ({ seasonId }) => {
   }, [seasonId]);
 
   return (
-    <Table stickyHeader size='small' className='my-0 pb-3'>
+    <Table size='small' className='my-0 pb-3'>
       <TableHead>
         <StyledTableRow key='title'>
           <StyledTitleCell colSpan={10}>Tournament Winners</StyledTitleCell>

@@ -3,6 +3,7 @@ from django.db.models import (
     Q,
     BigAutoField,
     DateTimeField,
+    PositiveIntegerField,
     ForeignKey,
     CASCADE,
 )
@@ -34,6 +35,9 @@ class GolferSeason(SafeDeleteModel):
     id = BigAutoField(primary_key=True, editable=False)
     created = DateTimeField(auto_now_add=True)
     updated = DateTimeField(auto_now=True)
+
+    # season-specific stats
+    rank = PositiveIntegerField(blank=True, null=True)
 
     # related models
     golfer = ForeignKey(Golfer, on_delete=CASCADE, related_name='seasons')

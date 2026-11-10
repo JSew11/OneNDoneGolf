@@ -4,7 +4,7 @@ import TableHead from '@mui/material/TableHead';
 import TableBody from '@mui/material/TableBody';
 import CircularProgress from '@mui/material/CircularProgress';
 
-import SeasonsApi from 'src/api/season';
+import SeasonUsersApi from 'src/api/seasonUser';
 import StyledTableRow from 'src/assets/components/styledTable/row';
 import {
   StyledTableCell,
@@ -16,7 +16,7 @@ const PickemStandingsTable = ({ seasonId }) => {
 
   useEffect(() => {
     if (seasonId) {
-      SeasonsApi.standings(seasonId).then(
+      SeasonUsersApi.list(seasonId).then(
         (response) => {
           if (response.status === 200) {
             const standingsData = [];
@@ -38,7 +38,7 @@ const PickemStandingsTable = ({ seasonId }) => {
   }, [seasonId]);
 
   return (
-    <Table stickyHeader size='small' className='py-3'>
+    <Table size='small' className='py-3'>
       <TableHead>
         <StyledTableRow key='title'>
           <StyledTitleCell colSpan='4'>
