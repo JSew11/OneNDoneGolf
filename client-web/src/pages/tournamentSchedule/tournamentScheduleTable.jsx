@@ -71,7 +71,7 @@ const TournamentScheduleTable = ({ seasonId, isAdminUser }) => {
                 <StyledTableCell align='center'>{row.endDate}</StyledTableCell>
                 <StyledTableCell align='center'>{row.tournament}</StyledTableCell>
                 { isAdminUser && 
-                  (new Date().getTime() <= new Date(row.startDate).getTime())?
+                  (new Date().getTime() <= new Date(row.startDate).getTime() ?
                     <StyledTableCell align='center'>
                       <Button
                         variant='contained'
@@ -85,7 +85,7 @@ const TournamentScheduleTable = ({ seasonId, isAdminUser }) => {
                         onClick={() => handleUpdateStandingsClicked(row.tournamentId)}
                       >Update Standings</Button>
                     </StyledTableCell>
-                }
+                )}
               </StyledTableRow>
             ))
           :
