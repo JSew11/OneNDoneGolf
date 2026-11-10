@@ -153,7 +153,7 @@ class TestPickModel(TestCase):
         tournament_season = TournamentSeason.objects.get(tournament=self.test_pick_1.tournament.id ,season=self.test_pick_1.user_season.season.id)
         golfer_season = GolferSeason.objects.get(golfer=self.test_pick_1.scored_golfer.id, season=self.test_pick_1.user_season.season.id)
         tournament_golfer = TournamentGolfer.objects.get(tournament_season=tournament_season.id, golfer_season=golfer_season.id)
-        self.assertEqual(tournament_golfer.position == 1, self.test_pick_1.won_tournament)
+        self.assertEqual(tournament_golfer.position == '1', self.test_pick_1.won_tournament)
     
     def test_score_pick(self):
         """Test the score_pick method of the Pick model.
