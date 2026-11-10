@@ -1,3 +1,4 @@
+import re
 from django.db.models import (
     UniqueConstraint,
     Q,
@@ -5,6 +6,7 @@ from django.db.models import (
     DateTimeField,
     PositiveSmallIntegerField,
     PositiveIntegerField,
+    CharField,
     ForeignKey,
     CASCADE,
 )
@@ -40,9 +42,33 @@ class TournamentGolfer(SafeDeleteModel):
     updated = DateTimeField(auto_now=True)
 
     # tournament_golfer info
-    position = PositiveSmallIntegerField(null=True)
+    position = CharField(max_length=16, null=True)
+    overall_score = CharField(max_length=16, null=True)
+    r1_strokes = CharField(max_length=16, null=True)
+    r2_strokes = CharField(max_length=16, null=True)
+    r3_strokes = CharField(max_length=16, null=True)
+    r4_strokes = CharField(max_length=16, null=True)
+    total_strokes = CharField(max_length=16, null=True)
     prize_money = PositiveIntegerField(null=True)
 
     # related models
     tournament_season = ForeignKey(TournamentSeason, on_delete=CASCADE, related_name='field')
     golfer_season = ForeignKey(GolferSeason, on_delete=CASCADE, related_name='tournaments')
+
+    def update_scores_from_external_api(self, external_api_data: dict) -> None:
+        """Updates the scores of the model based on the data from the external api.
+        """
+        self.position = external_api_data['position'] if external_api_data['position'] else None
+        self.overall_score = external_api_data['total'] or None
+        for round in external_api_data['rounds']:
+            roundId = round['roundId']['$numberInt']
+            if roundId == '1':
+                self.r1_strokes = round['strokes']['$numberInt']
+            if roundId == '2':
+                self.r2_strokes = round['strokes']['$numberInt']
+            if roundId == '3':
+                self.r3_strokes = round['strokes']['$numberInt']
+            if roundId == '4':
+                self.r4_strokes = round['strokes']['$numberInt']
+        self.total_strokes = external_api_data['totalStrokesFromCompletedRounds'] if external_api_data['totalStrokesFromCompletedRounds'] else None
+        self.save()

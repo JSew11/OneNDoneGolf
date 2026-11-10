@@ -69,6 +69,10 @@ field_list_view = SeasonTournamentsViewSet.as_view({
     'post': 'generate_field'
 })
 
+scores_list_view = SeasonTournamentsViewSet.as_view({
+    'post': 'update_standings'
+})
+
 season_tournament_golfer_list_views = SeasonTournamentGolferViewSet.as_view({
     'get': 'list'
 })
@@ -92,6 +96,7 @@ urlpatterns = [
     path('<int:season_id>/tournaments/', season_tournaments_list_views, name='season_tournaments_list'),
     path('<int:season_id>/tournaments/<int:tournament_id>/', season_tournaments_detail_views, name='season_tournament_details'),
     path('<int:season_id>/tournaments/<int:tournament_id>/field/', field_list_view, name='field_list'),
+    path('<int:season_id>/tournaments/<int:tournament_id>/scores/', scores_list_view, name='update_scores'),
     path('<int:season_id>/tournaments/<int:tournament_id>/golfers/', season_tournament_golfer_list_views, name='season_tournament_golfers_list'),
     path('<int:season_id>/tournaments/<int:tournament_id>/golfers/<int:golfer_id>/', season_tournament_golfer_detail_views, name='season_tournament_golfer_details'),
 ]

@@ -199,7 +199,7 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': crontab(hour=0, minute=0)
     },
     'gather_scores_score_picks': {
-        'task': 'golf_pickem.tasks.score_active_tournament_season',
+        'task': 'golf_pickem.tasks.score_tournament_season',
         'schedule': crontab(hour=12, minute=0)
     },
 }

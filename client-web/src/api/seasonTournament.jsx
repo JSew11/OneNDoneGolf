@@ -29,10 +29,19 @@ const generateField = async (seasonId, tournamentId) => {
   );
 }
 
+const updateScores = async (seasonId, tournamentId) => {
+  return await privateAxios.post(
+    GOLF_PICKEM_API_BASE_URL +
+    SEASON_API_BASE_URL + seasonId + '/' +
+    TOURNAMENT_API_BASE_URL + tournamentId + '/scores/'
+  );
+}
+
 const SeasonTournamentsApi = {
   list,
   field,
-  generateField
+  generateField,
+  updateScores,
 };
 
 export default SeasonTournamentsApi;

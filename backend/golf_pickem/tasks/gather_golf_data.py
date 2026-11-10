@@ -61,7 +61,7 @@ def get_tournament_field(force: bool = False, tournament_id: int|None = None, se
     try:
         season: Season = Season.objects.get(id=season_id) if season_id is not None else Season.active_season()
         tournament: Tournament = Tournament.objects.get(id=tournament_id) if tournament_id is not None else Tournament.objects.get(id=season.next_tournament_id(after_date=(datetime.now() + timedelta(days=1))))
-        tournament_season: TournamentSeason = TournamentSeason.objects.filter(season_id=season_id, tournament_id=tournament_id).first()
+        tournament_season: TournamentSeason = TournamentSeason.objects.get(season_id=season.id, tournament_id=tournament.id)
     except Exception as e:
         logger.error(e)
         raise Exception('Problem gathering db objects')

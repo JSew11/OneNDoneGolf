@@ -27,7 +27,8 @@ from golf_pickem.serializers import (
 from golf_pickem.tasks import (
     get_season_schedule,
     get_tournament_field,
-    update_owgr
+    update_owgr,
+    score_tournament_season,
 )
 
 class SeasonViewSet(ModelViewSet):
@@ -420,6 +421,37 @@ class SeasonTournamentsViewSet(ModelViewSet):
             get_tournament_field.delay(True, tournament_id, season_id)
             return Response(
                 data={'message': 'Gathering the field from external source'},
+                status=status.HTTP_200_OK
+            )
+        except Season.DoesNotExist:
+                    return Response(
+                        data={'message': f'Season with id \'{tournament_id}\' not found'},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+        except Tournament.DoesNotExist:
+                    return Response(
+                        data={'message': f'Tournament with id \'{season_id}\' not found'},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+        except TournamentSeason.DoesNotExist:
+            return Response(
+                data={'message': f'Tournament with id \'{tournament_id}\' not found for the Season with id \'{season_id}\''},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+    @action(detail=False, methods=['POST'])
+    def update_standings(self, request: Request, season_id: int, tournament_id: int) -> Response:
+        """Triggers the async job to update each participating golfers' scores.
+        """
+        if not request.user.is_staff:
+            return Response(
+                data={'message': 'Action not permitted'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        try:
+            score_tournament_season.delay(season_id, tournament_id)
+            return Response(
+                data={'message': 'Updating score data from external source'},
                 status=status.HTTP_200_OK
             )
         except Season.DoesNotExist:

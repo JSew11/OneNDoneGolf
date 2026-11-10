@@ -40,8 +40,12 @@ const TournamentScheduleTable = ({ seasonId, isAdminUser }) => {
     }
   }, [seasonId]);
 
-  const handleResetField = async (tournamentId) => {
+  const handleUpdateFieldClicked = async (tournamentId) => {
     await SeasonTournamentsApi.generateField(seasonId, tournamentId);
+  };
+
+  const handleUpdateStandingsClicked = async (tournamentId) => {
+    await SeasonTournamentsApi.updateScores(seasonId, tournamentId);
   };
 
   return (
@@ -66,14 +70,21 @@ const TournamentScheduleTable = ({ seasonId, isAdminUser }) => {
                 <StyledTableCell align='center'>{row.startDate}</StyledTableCell>
                 <StyledTableCell align='center'>{row.endDate}</StyledTableCell>
                 <StyledTableCell align='center'>{row.tournament}</StyledTableCell>
-                { isAdminUser &&
-                  <StyledTableCell align='center'>
-                    <Button
-                      variant='contained'
-                      disabled={(new Date().getTime() > new Date(row.startDate).getTime())}
-                      onClick={() => handleResetField(row.tournamentId)}
-                    >Reset Field</Button>
-                  </StyledTableCell>
+                { isAdminUser && 
+                  (new Date().getTime() <= new Date(row.startDate).getTime())?
+                    <StyledTableCell align='center'>
+                      <Button
+                        variant='contained'
+                        onClick={() => handleUpdateFieldClicked(row.tournamentId)}
+                      >Update Field</Button>
+                    </StyledTableCell>
+                  :
+                    <StyledTableCell align='center'>
+                      <Button
+                        variant='contained'
+                        onClick={() => handleUpdateStandingsClicked(row.tournamentId)}
+                      >Update Standings</Button>
+                    </StyledTableCell>
                 }
               </StyledTableRow>
             ))

@@ -166,8 +166,6 @@ const FullTournamentTable = ({ seasonId }) => {
           <StyledTableCell align='right'>Place</StyledTableCell>
           <StyledTableCell>Golfer</StyledTableCell>
           <StyledTableCell align='center'>Overall</StyledTableCell>
-          <StyledTableCell align='center'>Today</StyledTableCell>
-          <StyledTableCell>Thru</StyledTableCell>
           <StyledTableCell>R1</StyledTableCell>
           <StyledTableCell>R2</StyledTableCell>
           <StyledTableCell>R3</StyledTableCell>
@@ -189,28 +187,22 @@ const FullTournamentTable = ({ seasonId }) => {
                   {tournamentGolfer.golfer_season.golfer.first_name} {tournamentGolfer.golfer_season.golfer.last_name}
                 </StyledTableCell>
                 <StyledTableCell align='center'>
-                  N/A {/* TODO - Overall */}
-                </StyledTableCell>
-                <StyledTableCell align = 'center'>
-                  N/A {/* TODO - Today */}
+                  {tournamentGolfer.overall_score ?? 'N/A'}
                 </StyledTableCell>
                 <StyledTableCell>
-                  N/A {/* TODO - Thru */}
+                  {tournamentGolfer.r1_strokes ?? 'N/A'}
                 </StyledTableCell>
                 <StyledTableCell>
-                  N/A {/* TODO - R1 */}
+                  {tournamentGolfer.r2_strokes ?? 'N/A'}
                 </StyledTableCell>
                 <StyledTableCell>
-                  N/A {/* TODO - R2 */}
+                  {tournamentGolfer.r3_strokes ?? 'N/A'}
                 </StyledTableCell>
                 <StyledTableCell>
-                  N/A {/* TODO - R3 */}
+                  {tournamentGolfer.r4_strokes ?? 'N/A'}
                 </StyledTableCell>
                 <StyledTableCell>
-                  N/A {/* TODO - R4 */}
-                </StyledTableCell>
-                <StyledTableCell>
-                  N/A {/* TODO - Total */}
+                  {tournamentGolfer.total_strokes ?? 'N/A'}
                 </StyledTableCell>
                 <StyledTableCell>
                   {'$' + Number(tournamentGolfer.prize_money).toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}
