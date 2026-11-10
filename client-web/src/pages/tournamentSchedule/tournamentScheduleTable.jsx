@@ -31,6 +31,7 @@ const TournamentScheduleTable = ({ seasonId, isAdminUser }) => {
                 'dateStyle': 'full'
               }),
               'tournament': tournamentSeason.tournament.name,
+              'tournamentId': tournamentSeason.tournament.id,
             });
           }
           setTableData(tournamentSeasonData);
@@ -70,7 +71,7 @@ const TournamentScheduleTable = ({ seasonId, isAdminUser }) => {
                     <Button
                       variant='contained'
                       disabled={(new Date().getTime() > new Date(row.startDate).getTime())}
-                      onClick={() => handleResetField(row.id)}
+                      onClick={() => handleResetField(row.tournamentId)}
                     >Reset Field</Button>
                   </StyledTableCell>
                 }
