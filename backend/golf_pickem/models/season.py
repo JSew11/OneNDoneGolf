@@ -42,8 +42,7 @@ class Season(SafeDeleteModel):
             return tournament_season.tournament.id
     
     def active_tournament_id(self) -> int|None:
-        """Get the currently active tournament id for this
-        season. Returns false if there are no active tournaments.
+        """Get the currently active tournament id for this season. Returns None if there are no active tournaments.
         """
         current_date = datetime.now()
         tournament_season = self.schedule.filter(start_date__lte=current_date, end_date__gte=current_date).first()
