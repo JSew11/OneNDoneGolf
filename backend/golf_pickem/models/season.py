@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.db.models import (
     BigAutoField,
     DateTimeField,
@@ -45,7 +45,8 @@ class Season(SafeDeleteModel):
         """Get the currently active tournament id for this season. Returns None if there are no active tournaments.
         """
         current_date = datetime.now()
-        tournament_season = self.schedule.filter(start_date__lte=current_date, end_date__gte=current_date).first()
+        # want to keep a tournament active for a day longer than it is played to make scoring picks easier
+        tournament_season = self.schedule.filter(start_date__lte=current_date, end_date__gte=(current_date - timedelta(days=1))).first()
         if tournament_season:
             return tournament_season.tournament.id
         return None
