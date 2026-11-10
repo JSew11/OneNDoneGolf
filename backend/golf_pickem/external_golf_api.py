@@ -26,6 +26,27 @@ def get_tournament(year: int, tournament_external_id: str):
     }
     return requests.get(url, headers=_headers(), params=queryParams)
 
+def get_leaderboard(year: int, tournament_external_id: str):
+    """Get the leaderboard for a given tournament in a given year from the external golf api.
+    """
+    url = API_BASE_URL + '/leaderboard'
+    queryParams = {
+        'orgId': PGA_TOUR_LEAGUE_ID,
+        'tournId': tournament_external_id,
+        'year': year
+    }
+    return requests.get(url, headers=_headers(), params=queryParams)
+
+def get_earnings(year: int, tournament_external_id: str):
+    """Get the leaderboard for a given tournament in a given year from the external golf api.
+    """
+    url = API_BASE_URL + '/earnings'
+    queryParams = {
+        'tournId': tournament_external_id,
+        'year': year
+    }
+    return requests.get(url, headers=_headers(), params=queryParams)
+
 def _headers() -> dict:
     """Returns the headers dict used for all external api requests.
     """

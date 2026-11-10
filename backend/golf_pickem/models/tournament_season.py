@@ -20,6 +20,10 @@ from . import (
     Season,
     UserSeason,
 )
+from golf_pickem.external_golf_api import (
+    get_leaderboard,
+    get_earnings
+)
 
 class TournamentSeason(SafeDeleteModel):
     """Model for a tournament taking part in a season.
@@ -99,8 +103,22 @@ class TournamentSeason(SafeDeleteModel):
     def finish_tournament_season(self) -> None:
         """Scores all picks for the current tournament season.
         """
-        # TODO - make sure external API has obtained all final tournament data before scoring picks
-        
+        learderboard_response = get_leaderboard(year=self.season.year, tournament_external_id=self.tournament.external_id)
+        if learderboard_response.status_code != 200:
+            raise Exception(f'failed to gather leaderboard data for tournament {self.tournament.external_id} in year {self.season.year}')
+        earnings_response = get_earnings(year=self.season.year, tournament_external_id=self.tournament.external_id)
+        if earnings_response != 200:
+            raise Exception(f'failed to gather earnings data for tournament {self.tournament.external_id} in year {self.season.year}')
+        leaderboard_data = learderboard_response.json().get('leaderboardRows')
+        earnings_data = earnings_response.json().get('leaderboard')
+        for tournament_golfer in self.field.all():
+            golfer_external_id = tournament_golfer.golfer_season.golfer.external_id
+            leaderboard_golfer = next((golfer for golfer in leaderboard_data if golfer['playerId'] == golfer_external_id), None)
+            tournament_golfer.position = int(leaderboard_golfer['position'] if leaderboard_golfer is not None else 0)
+            earnings_golfer = next((golfer for golfer in earnings_data if golfer['playerId'] == golfer_external_id), None)
+            tournament_golfer.prize_money = int(earnings_golfer['earnings']['$numberInt'] if earnings_golfer is not None else 0)
+            tournament_golfer.save()
+
         users = [season_user.user for season_user in UserSeason.objects.filter(season=self.season_id).all()]
         picks = [self.user_pick(user) for user in users if self.user_pick(user) is not None]
         for pick in picks:

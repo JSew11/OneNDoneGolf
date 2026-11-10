@@ -67,6 +67,8 @@ def get_tournament_field(force: bool = False, tournament_id: int = None):
     if (tournament_response.status_code == 200):
         failed_external_ids = list()
         for player in tournament_response.json().get('players'):
+            if player['isAmateur']:
+                continue  # amateurs do not win prize money - they should not be included in the field
             try:
                 golfer: Golfer = Golfer.objects.filter(external_id=player['playerId']).first()
                 if golfer is None:

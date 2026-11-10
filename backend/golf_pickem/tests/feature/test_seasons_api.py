@@ -2,7 +2,7 @@ from datetime import datetime
 from rest_framework.test import APITestCase, APIClient
 from rest_framework.response import Response
 from rest_framework import status
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 from core.models import User
 from golf_pickem.models import (
