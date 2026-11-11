@@ -44,7 +44,7 @@ const SeasonModal = ({ season, callback }) => {
   const handleClose = () => {
     setOpen(false);
     if (callback) {
-      callback(true);
+      callback();
     }
   }
 

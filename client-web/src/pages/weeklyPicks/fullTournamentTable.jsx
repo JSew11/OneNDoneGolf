@@ -8,7 +8,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Checkbox from '@mui/material/Checkbox';
 import CircularProgress from '@mui/material/CircularProgress';
-import { responsiveFontSizes, styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import { useTheme } from '@mui/material';
 
 import SeasonsApi from 'src/api/season';

@@ -12,19 +12,31 @@ import {
   StyledTableCell
 } from 'src/assets/components/styledTable/tableCells';
 import UsersApi from 'src/api/user';
+import UserModal from 'src/assets/modals/user';
 
 const UsersTable = () => {
   const [tableData, setTableData] = useState([]);
+  const [loadTableData, setLoadTableData] = useState(true);
+
+  const paymentMethodMap = {
+    'venmo': 'Venmo',
+    'cash_app': 'Cash App',
+    'paypal': 'PayPal',
+    'zelle': 'Zelle'
+  }
 
   useEffect(() => {
-    UsersApi.list().then(
-      (response) => {
-        if (response.data.results.length > 0) {
-          setTableData(response.data.results);
+    if (loadTableData) {
+      UsersApi.list().then(
+        (response) => {
+          if (response.data.results.length > 0) {
+            setTableData(response.data.results);
+            setLoadTableData(false);
+          }
         }
-      }
-    )
-  }, [])
+      )
+    }
+  }, [loadTableData])
 
   return (
     <Table size='small' className='my-0 pb-3'>
@@ -42,15 +54,15 @@ const UsersTable = () => {
       </TableHead>
       <TableBody>
         { tableData.length > 0 ? 
-            tableData.map((row) => (
-              <StyledTableRow key={row.id}>
-                <StyledTableCell align='center'>{row.username}</StyledTableCell>
-                <StyledTableCell align='center'>{row.email}</StyledTableCell>
-                <StyledTableCell align='center'>{(row.first_name ?? '') + (row.last_name ? ' ' + row.last_name : '')}</StyledTableCell>
-                <StyledTableCell align='center'>{row.payment_method}</StyledTableCell>
+            tableData.map((user) => (
+              <StyledTableRow key={user.id}>
+                <StyledTableCell align='center'>{user.username}</StyledTableCell>
+                <StyledTableCell align='center'>{user.email}</StyledTableCell>
+                <StyledTableCell align='center'>{(user.first_name ?? '') + (user.last_name ? ' ' + user.last_name : '')}</StyledTableCell>
+                <StyledTableCell align='center'>{paymentMethodMap[user.payment_method]}</StyledTableCell>
                 <StyledTableCell>
                   <ButtonGroup size='small' variant='contained' aria-label='user-row-actions'>
-                    <Button>Edit</Button>
+                    <UserModal user={user} callback={() => setLoadTableData(true)}/>
                     <Button color='error'>Delete</Button>
                   </ButtonGroup>
                 </StyledTableCell>

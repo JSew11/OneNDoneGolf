@@ -13,7 +13,7 @@ import SeasonsApi from 'src/api/season';
 import SeasonModal from 'src/assets/modals/season';
 
 const SeasonsTable = () => {
-  const [loadTableData, reloadTableData] = useState(true);
+  const [loadTableData, setLoadTableData] = useState(true);
   const [tableData, setTableData] = useState([]);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ const SeasonsTable = () => {
             setTableData(response.data.sort((a,b) => b.year - a.year));
           }
         })
-      reloadTableData(false);
+      setLoadTableData(false);
     }
   }, [loadTableData]);
 
@@ -48,7 +48,7 @@ const SeasonsTable = () => {
                 <StyledTableCell align='center'>{row.year}</StyledTableCell>
                 <StyledTableCell align='center'>{row.alias}</StyledTableCell>
                 <StyledTableCell align='center'>{new Date(row.registration_cutoff).toDateString('MM-dd-yyyy')}</StyledTableCell>
-                <StyledTableCell align='center'><SeasonModal season={row} callback={reloadTableData}/></StyledTableCell>
+                <StyledTableCell align='center'><SeasonModal season={row} callback={() => setLoadTableData(true)}/></StyledTableCell>
               </StyledTableRow>
             ))
           :

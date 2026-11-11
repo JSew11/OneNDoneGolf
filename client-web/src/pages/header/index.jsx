@@ -20,6 +20,7 @@ import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 
 import { logout } from 'src/state/token/actions';
 import LoginModal from 'src/assets/modals/login';
+import UserModal from 'src/assets/modals/user';
 
 const Header = () => {
   const APP_NAME = import.meta.env.VITE_APP_NAME;
@@ -34,8 +35,8 @@ const Header = () => {
 
   useEffect(() => {
     if (access !== null) {
-      setUsername(jwtDecode(access)['username']);
-      setIsAdminUser(jwtDecode(access)['isAdmin']);
+      setUsername(jwtDecode(access)['username'] ?? 'My Profile');
+      setIsAdminUser(jwtDecode(access)['isAdmin'] ?? false);
     }
   }, [access]);
 
@@ -90,7 +91,7 @@ const UserDropdownMenu = styled((props) => (
     }}
     {...props}
   />
-))(({ theme }) => ({
+))(() => ({
   '& .MuiPaper-root': {
     borderRadius: 3,
     marginTop: 0,
@@ -152,7 +153,6 @@ const UserDropdown = ({ username, isAdminUser }) => {
         anchorEl={userDropdownAnchorEl}
         open={isUserDropdownOpen}
         onClose={closeUserDropdown}
-        onClick={closeUserDropdown}
         slotProps={{
           list: {
             'aria-labelledby': 'user-dropdown'
@@ -162,11 +162,12 @@ const UserDropdown = ({ username, isAdminUser }) => {
         { isAdminUser && (
           <div>
             <UserDropdownListHeader>Admin</UserDropdownListHeader>
-            <UserDropdownItem component={Link} to="/users">Users</UserDropdownItem>
-            <UserDropdownItem component={Link} to="/seasons">Seasons</UserDropdownItem>
+            <UserDropdownItem component={Link} to="/users" onClick={closeUserDropdown}>Users</UserDropdownItem>
+            <UserDropdownItem component={Link} to="/seasons" onClick={closeUserDropdown}>Seasons</UserDropdownItem>
             <Divider sx={{ my: 0.5 }} />
           </div>
         )}
+        <UserDropdownItem className='py-0 px-1 m-0'><UserModal callback={closeUserDropdown}/></UserDropdownItem>
         <UserDropdownItem onClick={logoutUser}>Logout</UserDropdownItem>
       </UserDropdownMenu>
     </>

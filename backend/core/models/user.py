@@ -85,8 +85,8 @@ class User(AbstractUser, SafeDeleteModel):
 
     # user info
     email = models.EmailField(unique=True)
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
+    first_name = models.CharField(max_length=50, blank=True, null=True)
+    last_name = models.CharField(max_length=50, blank=True, null=True)
     payment_method = models.CharField(max_length=16,
                                       choices=PAYMENT_METHOD_CHOICES,
                                       default=VENMO)

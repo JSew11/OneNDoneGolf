@@ -13,10 +13,15 @@ const retrieve = async (userId) => {
     return await privateAxios.get(CORE_API_BASE_URL + userId + '/');
 }
 
+const partialUpdate = async (userId, updatedUserData) => {
+    return await privateAxios.patch(CORE_API_BASE_URL + userId + '/', updatedUserData);
+}
+
 const UsersApi = {
     list,
     me,
     retrieve,
+    partialUpdate,
 };
 
 export default UsersApi;
