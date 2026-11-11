@@ -61,8 +61,8 @@ class TestUserModel(TestCase):
             username=test_username,
             password=test_password
         )
-        self.assertEqual(test_user_nameless.first_name, '')
-        self.assertEqual(test_user_nameless.last_name, '')
+        self.assertEqual(test_user_nameless.first_name, None)
+        self.assertEqual(test_user_nameless.last_name, None)
 
         # test creating a duplicate user
         with atomic(): # need this to allow the db query to run so this is caught
