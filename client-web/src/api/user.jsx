@@ -17,11 +17,16 @@ const partialUpdate = async (userId, updatedUserData) => {
     return await privateAxios.patch(CORE_API_BASE_URL + userId + '/', updatedUserData);
 }
 
+const destroy = async (userId) => {
+    return await privateAxios.delete(CORE_API_BASE_URL + userId + '/');
+}
+
 const UsersApi = {
     list,
     me,
     retrieve,
     partialUpdate,
+    destroy,
 };
 
 export default UsersApi;

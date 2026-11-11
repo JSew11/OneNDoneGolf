@@ -13,7 +13,7 @@ class UserListView (ListAPIView):
     """
     serializer_class = UserSerializer
     model = User
-    queryset = User.objects.order_by('created')
+    queryset = User.objects.filter(deleted__isnull=True).order_by('created')
     permission_classes = [permissions.IsAdminUser]
 
 class UserViewSet (ModelViewSet):
@@ -81,6 +81,31 @@ class UserViewSet (ModelViewSet):
                         data=serializer.errors,
                         status=status.HTTP_400_BAD_REQUEST
                     )
+            except User.DoesNotExist:
+                return Response(
+                    data={
+                        'message': f'User with id \'{user_id}\' not found'
+                    },
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+        return Response(
+            data={
+                'message': 'You do not have access to this object.',
+            },
+            status=status.HTTP_403_FORBIDDEN
+        )
+
+    def destroy(self, request: Request, user_id: int, *args, **kwargs) -> Response:
+        """Delete the user with the given user_id.
+        """
+        if request.user.has_perm('core.delete_user'):
+            try:
+                user_to_delete: User = User.objects.get(id=user_id)
+                user_to_delete.delete()
+                return Response(
+                    data={'message': 'User deleted successfully'},
+                    status=status.HTTP_204_NO_CONTENT
+                )
             except User.DoesNotExist:
                 return Response(
                     data={

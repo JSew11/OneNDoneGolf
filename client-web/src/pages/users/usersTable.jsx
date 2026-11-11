@@ -11,6 +11,7 @@ import {
   StyledTitleCell,
   StyledTableCell
 } from 'src/assets/components/styledTable/tableCells';
+import ButtonConfirm from 'src/assets/components/buttonConfirm';
 import UsersApi from 'src/api/user';
 import UserModal from 'src/assets/modals/user';
 
@@ -37,6 +38,16 @@ const UsersTable = () => {
       )
     }
   }, [loadTableData])
+  
+  const handleDelete = (userId) => {
+    UsersApi.destroy(userId).then(
+      (response) => {
+        if (response.status === 204) {
+          setLoadTableData(true);
+        }
+      }
+    ).catch((error) => error)
+  }
 
   return (
     <Table size='small' className='my-0 pb-3'>
@@ -63,7 +74,13 @@ const UsersTable = () => {
                 <StyledTableCell>
                   <ButtonGroup size='small' variant='contained' aria-label='user-row-actions'>
                     <UserModal user={user} callback={() => setLoadTableData(true)}/>
-                    <Button color='error'>Delete</Button>
+                    <ButtonConfirm
+                      onClick={() => handleDelete(user.id)}
+                      buttonText='Delete'
+                      buttonColor='error'
+                      title='Delete this User?'
+                      message='Are you sure you want to delete this User?'
+                    />
                   </ButtonGroup>
                 </StyledTableCell>
               </StyledTableRow>

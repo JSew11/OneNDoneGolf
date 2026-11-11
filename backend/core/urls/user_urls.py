@@ -9,6 +9,7 @@ current_user_view = UserViewSet.as_view({
 user_viewset = UserViewSet.as_view({
     'get': 'retrieve',
     'patch': 'partial_update',
+    'delete': 'destroy',
 })
 
 urlpatterns = [
