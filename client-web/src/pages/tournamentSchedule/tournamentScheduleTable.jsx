@@ -75,6 +75,7 @@ const TournamentScheduleTable = ({ seasonId, isAdminUser }) => {
                     <StyledTableCell align='center'>
                       <Button
                         variant='contained'
+                        size='small'
                         onClick={() => handleUpdateFieldClicked(row.tournamentId)}
                       >Update Field</Button>
                     </StyledTableCell>
@@ -82,6 +83,7 @@ const TournamentScheduleTable = ({ seasonId, isAdminUser }) => {
                     <StyledTableCell align='center'>
                       <Button
                         variant='contained'
+                        size='small'
                         onClick={() => handleUpdateStandingsClicked(row.tournamentId)}
                       >Update Standings</Button>
                     </StyledTableCell>

@@ -17,6 +17,7 @@ import Winnings from 'src/pages/winnings/index.jsx';
 import TournamentSchedule from './pages/tournamentSchedule';
 import OWGR from './pages/owgr';
 import Seasons from './pages/seasons';
+import Users from './pages/users';
 
 const Routes = () => {
   const [isAdminUser, setIsAdminUser] = useState(false);
@@ -40,6 +41,7 @@ const Routes = () => {
           <Route path='/schedule' Component={TournamentSchedule} />
           <Route path='/owgr' Component={OWGR} />
           <Route element={<AdminRoute isAdmin={isAdminUser}/>}>
+            <Route path='/users' Component={Users} />
             <Route path='/seasons' Component={Seasons} />
           </Route>
         </Route>

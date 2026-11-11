@@ -84,6 +84,7 @@ const SeasonModal = ({ season, callback }) => {
       <Button
         fullWidth={!season}
         variant='contained'
+        size={season ? 'small': 'large'}
         color={season ? 'primary' : 'secondary'}
         onClick={handleOpen}
       >{season ? 'Edit' : 'New Season'}</Button>

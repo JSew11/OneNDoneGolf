@@ -59,7 +59,7 @@ class User(AbstractUser, SafeDeleteModel):
     """
     deleted_by_cascade = None # removes this default field from the db table
     _safedelete_policy = SOFT_DELETE_CASCADE
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name', 'password', 'payment_method']
+    REQUIRED_FIELDS = ['username', 'password', 'payment_method']
     USERNAME_FIELD = 'email'
     PAYMENT_METHOD_CHOICES = (
         (VENMO, 'Venmo'),

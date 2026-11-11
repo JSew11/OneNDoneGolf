@@ -162,6 +162,7 @@ const UserDropdown = ({ username, isAdminUser }) => {
         { isAdminUser && (
           <div>
             <UserDropdownListHeader>Admin</UserDropdownListHeader>
+            <UserDropdownItem component={Link} to="/users">Users</UserDropdownItem>
             <UserDropdownItem component={Link} to="/seasons">Seasons</UserDropdownItem>
             <Divider sx={{ my: 0.5 }} />
           </div>
@@ -185,20 +186,6 @@ function LinkTab(props) {
 LinkTab.propTypes = {
   selected: PropTypes.bool,
 };
-
-const samePageLinkNavigation = (event) => {
-  if (
-    event.defaultPrevented ||
-    event.button !== 0 || // ignore everything but left-click
-    event.metaKey ||
-    event.ctrlKey ||
-    event.altKey ||
-    event.shiftKey
-  ) {
-    return false;
-  }
-  return true;
-}
 
 const NavTabs = ({ tabs }) => {
   const [linkKeyMap, setLinkKeyMap] = useState({});
