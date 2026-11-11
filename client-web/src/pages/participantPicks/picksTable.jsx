@@ -26,6 +26,7 @@ const PicksTable = ({ seasonId }) => {
   const [seasonUsers, setSeasonUsers] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [selectedUserTotals, setSelectedUserTotals] = useState([]);
+  const [seasonUsersRankMap, setSeasonUsersRankMap] = useState({});
   
   const { access } = useSelector(state => state.auth);
 
@@ -35,13 +36,16 @@ const PicksTable = ({ seasonId }) => {
         (response) => {
           if (response.status === 200) {
             const seasonUserData = [];
+            const rankMap = {};
             for (let seasonUsersIndex in response.data) {
               seasonUserData.push({
                 id: response.data[seasonUsersIndex]['user']['id'],
-                username: response.data[seasonUsersIndex]['user']['username']
+                username: response.data[seasonUsersIndex]['user']['username'],
               });
+              rankMap[response.data[seasonUsersIndex]['user']['id']] = Number(seasonUsersIndex) + 1;
             }
             setSeasonUsers(seasonUserData);
+            setSeasonUsersRankMap(rankMap);
           }
         },
         (error) => error
@@ -70,8 +74,7 @@ const PicksTable = ({ seasonId }) => {
                 '$' + Number(response.data['prize_money']).toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
               :
                 'N/A',
-            'rank': response.data['rank'] ?? 'N/A',
-            'cash_won': response.data['cash_won'] ?? 'N/A'
+            'rank': seasonUsersRankMap[response.data['user']['id']] ?? 'N/A'
         })
         }
       );
@@ -164,10 +167,9 @@ const PicksTable = ({ seasonId }) => {
           </StyledTitleCell>
         </StyledTableRow>
         <StyledTableRow key='totals'>
-          <StyledTableCell></StyledTableCell>
-          <StyledTableCell align='center'><b>Winnings:</b> {selectedUserTotals['winnings']}</StyledTableCell>
-          <StyledTableCell align='center'><b>Rank:</b> {selectedUserTotals['rank']}</StyledTableCell>
-          <StyledTableCell align='center'><b>Cash Won:</b> {selectedUserTotals['cash_won']}</StyledTableCell>
+          <StyledTableCell colSpan={2} sx={{ borderBottom: 0 }}></StyledTableCell>
+          <StyledTableCell align='center' sx={{ borderBottom: 0 }}><b>Rank:</b> {selectedUserTotals['rank']}</StyledTableCell>
+          <StyledTableCell align='center' sx={{ borderBottom: 0 }}><b>Winnings:</b> {selectedUserTotals['winnings']}</StyledTableCell>
         </StyledTableRow>
         <StyledTableRow key='header'>
           <StyledTableCell align='center'>Tournament</StyledTableCell>
