@@ -169,6 +169,8 @@ class SeasonViewSet(ModelViewSet):
                 data={'status': f'Could not find the next tournament for Season with id \'{season_id}\' '},
                 status=status.HTTP_404_NOT_FOUND,
             )
+        except UserSeason.DoesNotExist:
+            return
     
     @action(detail=True, methods=['GET'])
     def active_tournament(self, request: Request, season_id: int) -> Response:
