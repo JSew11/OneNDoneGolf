@@ -108,10 +108,10 @@ class Pick(SafeDeleteModel):
         primary_golfer_season: GolferSeason = GolferSeason.objects.get(golfer=self.primary_selection.id, season=self.user_season.season.id)
         primary_tournament_golfer: TournamentGolfer = TournamentGolfer.objects.get(tournament_season=tournament_season.id, golfer_season=primary_golfer_season.id)
 
-        # position = 0 indicates that the golfer did not participate in the tournament
-        if primary_tournament_golfer.position != 0:
-            self.scored_golfer = self.primary_selection
-        else:
+        # position = 'WD' indicates that the golfer withdrew from the tournament
+        if primary_tournament_golfer.position == 'WD':
             self.scored_golfer = self.backup_selection
+        else:
+            self.scored_golfer = self.primary_selection
         
         self.save()

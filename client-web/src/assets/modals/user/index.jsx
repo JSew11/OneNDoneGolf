@@ -17,9 +17,10 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import UsersApi from 'src/api/user';
+import SeasonUsersApi from 'src/api/seasonUser';
 import { register } from 'src/state/token/actions.jsx';
 
-const UserModal = ({ user = null, creating = false, callback = null }) => {
+const UserModal = ({ user = null, creating = false, callback = null, seasonId = null }) => {
   const dispatch = useDispatch();
 
   const [open, setOpen] = useState(false);
@@ -136,6 +137,17 @@ const UserModal = ({ user = null, creating = false, callback = null }) => {
     }
   };
 
+  const handleActivateUser = async () => {
+    SeasonUsersApi.create(seasonId, user.id)
+      .then((response) => {
+        if (response.status === 201) {
+          handleClose();
+        }
+      }).catch((error) => {
+        setErrorMessage(JSON.stringify(error.response.data));
+      })
+  }
+
   const passwordValidation = () => (
     password != '' && password != confirmPassword
   );
@@ -161,7 +173,18 @@ const UserModal = ({ user = null, creating = false, callback = null }) => {
         fullWidth
         maxWidth='sm'
       >
-        <DialogTitle>{dialogTitleText}</DialogTitle>
+        <DialogTitle>
+          {dialogTitleText}
+          { user && seasonId &&
+            <div className='float-end'>
+              <Button
+                variant='contained'
+                disabled={user.active}
+                onClick={() => handleActivateUser()}
+              >{user.active ? 'User is Active' : 'Add User to Active Season'}</Button>
+            </div>
+          }
+        </DialogTitle>
         <DialogContent>
           <form onSubmit={handleSubmit} id='user-form'>
             <FormControl required fullWidth variant='outlined' className='my-2'>

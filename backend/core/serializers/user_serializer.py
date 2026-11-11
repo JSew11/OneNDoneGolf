@@ -26,4 +26,4 @@ class UserSerializer(ModelSerializer):
         """Method to tell if a user is a participant in the currently active season.
         """
         active_season = Season.active_season()
-        return UserSeason.objects.filter(deleted__isnull=True, season=active_season.id, user=obj.id).count() > 0
+        return None if active_season is None else UserSeason.objects.filter(deleted__isnull=True, season=active_season.id, user=obj.id).count() > 0

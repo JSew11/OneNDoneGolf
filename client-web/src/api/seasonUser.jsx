@@ -13,6 +13,15 @@ const list = async (seasonId) => {
   )
 };
 
+const create = async (seasonId, userId) => {
+  return await privateAxios.post(
+    GOLF_PICKEM_API_BASE_URL +
+    SEASON_API_BASE_URL + seasonId + '/' +
+    USER_API_BASE_URL, 
+    {user: userId}
+  )
+}
+
 const retrieve = async (seasonId, userId) => {
   return await privateAxios.get(
     GOLF_PICKEM_API_BASE_URL + 
@@ -23,6 +32,7 @@ const retrieve = async (seasonId, userId) => {
 
 const SeasonUsersApi = {
   list,
+  create,
   retrieve,
 };
 

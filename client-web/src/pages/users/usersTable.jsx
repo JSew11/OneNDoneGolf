@@ -14,9 +14,11 @@ import {
 } from 'src/assets/components/styledTable/tableCells';
 import ButtonConfirm from 'src/assets/components/buttonConfirm';
 import UsersApi from 'src/api/user';
+import SeasonsApi from 'src/api/season';
 import UserModal from 'src/assets/modals/user';
 
 const UsersTable = () => {
+  const [activeSeason, setActiveSeason] = useState(null);
   const [fullUserList, setFullUserList] = useState([]);
   const [loadTableData, setLoadTableData] = useState(true);
 
@@ -30,6 +32,12 @@ const UsersTable = () => {
     'paypal': 'PayPal',
     'zelle': 'Zelle'
   }
+
+  useEffect(() => {
+    SeasonsApi.active().then((response) => {
+      setActiveSeason(response.data);
+    })
+  }, [])
 
   useEffect(() => {
     if (loadTableData) {
@@ -92,13 +100,13 @@ const UsersTable = () => {
           </StyledTitleCell>
         </StyledTableRow>
         <StyledTableRow key='filters'>
-          <StyledTableCell colSpan={1} sx={{ borderBottom: 0  }}>
+          <StyledTableCell colSpan={1} sx={{ borderBottom: 0 }}>
             <Button
               variant='contained'
               size='small'
               onClick={() => setReloadTableFilters(true)}
               className='float-start'
-            >Filter</Button>
+            >Apply Filters</Button>
           </StyledTableCell>
           <StyledTableCell colSpan={4} sx={{ borderBottom: 0 }}>
             <Checkbox
@@ -129,7 +137,7 @@ const UsersTable = () => {
                 <StyledTableCell align='center'>{paymentMethodMap[user.payment_method]}</StyledTableCell>
                 <StyledTableCell align='center'>
                   <ButtonGroup size='small' variant='contained' aria-label='user-row-actions'>
-                    <UserModal user={user} callback={() => setLoadTableData(true)}/>
+                    <UserModal user={user} callback={() => setLoadTableData(true)} seasonId={activeSeason.id}/>
                     <ButtonConfirm
                       onClick={() => handleDelete(user.id)}
                       buttonText='Delete'

@@ -274,8 +274,8 @@ class SeasonUsersViewset(ModelViewSet):
             'season': season_id,
             'user': request.user.id
         }
-        user_id = request.data.get('user', default=None)
-        if request.user.has_perm('core.create_user') and user_id!= None: # only want admin to be able to do this
+        user_id = request.data.get('user')
+        if request.user.has_perm('core.create_user') and user_id != None: # only want admin to be able to do this
             user_registration_data['user'] = user_id
         serializer: NewUserSeasonSerializer = NewUserSeasonSerializer(data=user_registration_data)
         if serializer.is_valid():
