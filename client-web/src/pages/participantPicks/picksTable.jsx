@@ -44,7 +44,7 @@ const PicksTable = ({ seasonId }) => {
               });
               rankMap[response.data[seasonUsersIndex]['user']['id']] = Number(seasonUsersIndex) + 1;
             }
-            setSeasonUsers(seasonUserData);
+            setSeasonUsers(seasonUserData.reverse());
             setSeasonUsersRankMap(rankMap);
           }
         },
