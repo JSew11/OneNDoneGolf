@@ -5,6 +5,7 @@ import TableBody from '@mui/material/TableBody';
 import CircularProgress from '@mui/material/CircularProgress';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
 
 import StyledTableRow from 'src/assets/components/styledTable/row';
 import {
@@ -16,8 +17,12 @@ import UsersApi from 'src/api/user';
 import UserModal from 'src/assets/modals/user';
 
 const UsersTable = () => {
-  const [tableData, setTableData] = useState([]);
+  const [fullUserList, setFullUserList] = useState([]);
   const [loadTableData, setLoadTableData] = useState(true);
+
+  const [tableData, setTableData] = useState([]);
+  const [showInactiveUsers, setShowInactiveUsers] = useState(false);
+  const [reloadTableFilters, setReloadTableFilters] = useState(false);
 
   const paymentMethodMap = {
     'venmo': 'Venmo',
@@ -31,13 +36,26 @@ const UsersTable = () => {
       UsersApi.list().then(
         (response) => {
           if (response.data.results.length > 0) {
-            setTableData(response.data.results);
+            setFullUserList(response.data.results);
+            setReloadTableFilters(true);
             setLoadTableData(false);
           }
         }
       )
     }
   }, [loadTableData])
+
+  useEffect(() => {
+    if (reloadTableFilters) {
+      setTableData(fullUserList.filter((user) => {
+        if (!showInactiveUsers) {
+          return user.active;
+        }
+        return true;
+      }));
+      setReloadTableFilters(false);
+    }
+  }, [reloadTableFilters])
   
   const handleDelete = (userId) => {
     UsersApi.destroy(userId).then(
@@ -49,11 +67,49 @@ const UsersTable = () => {
     ).catch((error) => error)
   }
 
+  const handleDownloadEmailList = () => {
+    const csvEmailList = 'data:text/csv;charset=utf-8,' + tableData.map((user) => user.email + ',').join('\n');
+    const encodedCSV = encodeURI(csvEmailList);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedCSV);
+    link.setAttribute('download', 'one_n_done_email_list_' + new Date().toLocaleDateString('en-US'));
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
   return (
     <Table size='small' className='my-0 pb-3'>
       <TableHead>
         <StyledTableRow key='title'>
-          <StyledTitleCell colSpan={5}>Users</StyledTitleCell>
+          <StyledTitleCell colSpan={4}>Users</StyledTitleCell>
+          <StyledTitleCell colSpan={1}>
+            <Button
+              variant='contained'
+              color='secondary'
+              onClick={handleDownloadEmailList}
+            >Download Email List</Button>
+          </StyledTitleCell>
+        </StyledTableRow>
+        <StyledTableRow key='filters'>
+          <StyledTableCell colSpan={1} sx={{ borderBottom: 0  }}>
+            <Button
+              variant='contained'
+              size='small'
+              onClick={() => setReloadTableFilters(true)}
+              className='float-start'
+            >Filter</Button>
+          </StyledTableCell>
+          <StyledTableCell colSpan={4} sx={{ borderBottom: 0 }}>
+            <Checkbox
+              className='py-0 my-0'
+              checked={showInactiveUsers}
+              onChange={() => setShowInactiveUsers((show) => !show)}
+              slotProps={{
+                input: { 'aria-label': 'controlled' }
+              }}
+            /> Show Inactive Users
+          </StyledTableCell>
         </StyledTableRow>
         <StyledTableRow key='header'>
           <StyledTableCell align='center'>Username</StyledTableCell>
@@ -71,7 +127,7 @@ const UsersTable = () => {
                 <StyledTableCell align='center'>{user.email}</StyledTableCell>
                 <StyledTableCell align='center'>{(user.first_name ?? '') + (user.last_name ? ' ' + user.last_name : '')}</StyledTableCell>
                 <StyledTableCell align='center'>{paymentMethodMap[user.payment_method]}</StyledTableCell>
-                <StyledTableCell>
+                <StyledTableCell align='center'>
                   <ButtonGroup size='small' variant='contained' aria-label='user-row-actions'>
                     <UserModal user={user} callback={() => setLoadTableData(true)}/>
                     <ButtonConfirm
