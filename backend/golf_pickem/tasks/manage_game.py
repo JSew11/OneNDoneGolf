@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from celery import shared_task
 
 from golf_pickem.models import (
@@ -37,10 +37,10 @@ def score_tournament_season(season_id: int|None = None, tournament_id: int = Non
                 golfer_season, _ = GolferSeason.objects.get_or_create(golfer=golfer, season=season)
                 tournament_golfer, _ = TournamentGolfer.objects.get_or_create(tournament_season=tournament_season, golfer_season=golfer_season)
                 tournament_golfer.update_scores_from_external_api(player)
+        if datetime.now(timezone.utc) > tournament_season.end_date:
+            tournament_season.finish_tournament_season()
     except TournamentSeason.DoesNotExist as dne:
         raise dne
     except Exception as e:
         logger.error(e)
         raise Exception('Problem gathering leaderboard data from external source')
-    if datetime.now() > tournament_season.end_date:
-        tournament_season.finish_tournament_season()
