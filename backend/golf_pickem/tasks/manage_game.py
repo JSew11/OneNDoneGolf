@@ -27,7 +27,7 @@ def score_tournament_season(season_id: int|None = None, tournament_id: int = Non
         raise Exception('Problem gathering db objects')
     try:
         leaderboard_response = get_leaderboard(season.year, tournament.external_id)
-        if leaderboard_response.status_code == 200:
+        if leaderboard_response.status_code == 200 and leaderboard_response.json().get('leaderboardRows'):
             for player in leaderboard_response.json().get('leaderboardRows'):
                 if player['isAmateur']:
                     continue

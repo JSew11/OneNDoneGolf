@@ -1,6 +1,7 @@
 import logging
 from datetime import (
     datetime,
+    timezone,
     timedelta
 )
 from celery import shared_task
@@ -28,12 +29,12 @@ def get_season_schedule(year: int, start_from_current_date: bool = False) -> Non
     """
     try:
         schedule_response = get_schedule(year)
-        if (schedule_response.status_code == 200):
+        if schedule_response.status_code == 200 and schedule_response.json().get('schedule'):
             failed_external_ids = list()
             for tourn in schedule_response.json().get('schedule'):
                 if (
                     start_from_current_date and
-                    datetime.fromtimestamp(int(tourn['date']['start']['$date']['$numberLong'])/1e3) < datetime.now()
+                    datetime.fromtimestamp(int(tourn['date']['start']['$date']['$numberLong'])/1e3).replace(tzinfo=timezone.utc) < datetime.now(tz=timezone.utc)
                 ):
                     logger.info(f'skipping tournament id {tourn['tournId']}')
                     continue
@@ -70,7 +71,7 @@ def get_tournament_field(force: bool = False, tournament_id: int|None = None, se
         return # do not want to get the field if it has already been gathered for the next tournament
     try:
         tournament_response = get_tournament(season.year, tournament.external_id)
-        if (tournament_response.status_code == 200):
+        if tournament_response.status_code == 200 and tournament_response.json().get('players'):
             for player in tournament_response.json().get('players'):
                 if player['isAmateur']:
                     logger.info(f'skipping player {player['playerId']} - amateur')
@@ -96,7 +97,7 @@ def update_owgr(season_id: int):
         raise Exception('Problem gathering db objects')
     try:
         owgr_response = get_owgr(season.year)
-        if owgr_response.status_code == 200:
+        if owgr_response.status_code == 200 and owgr_response.json().get('rankings'):
             for player in owgr_response.json().get('rankings'):
                 golfer: Golfer = Golfer.objects.filter(external_id=player['playerId']).first()
                 if golfer is None:

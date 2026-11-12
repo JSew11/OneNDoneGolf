@@ -28,7 +28,7 @@ const Dashboard = () => {
   }, [isLoggedIn]);
 
   useEffect(() => {
-    if (activeSeason !== null) {
+    if (activeSeason !== null && activeSeason['user_active'] === 'true') {
       SeasonsApi.nextTournament(activeSeason.id).then(
         (response) => {
           if (response.status === 200) {

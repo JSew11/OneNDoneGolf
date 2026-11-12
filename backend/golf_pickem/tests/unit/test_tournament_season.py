@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from django.test import TestCase
 
 from core.models import User
@@ -87,5 +87,5 @@ class TestTournamentSeasonModel(TestCase):
         }
         created_tournament_season: TournamentSeason = TournamentSeason.create_from_external_data(year=self.test_season_2.year, tournament_id=self.test_tournament.id, external_api_data=sample_api_response)
         self.assertEqual(created_tournament_season.purse, 9100000)
-        self.assertEqual(created_tournament_season.start_date, datetime.fromtimestamp(1768435200000 / 1e3))
-        self.assertEqual(created_tournament_season.end_date, datetime.fromtimestamp(1768694400000 / 1e3))
+        self.assertEqual(created_tournament_season.start_date, datetime.fromtimestamp(1768435200000 / 1e3).replace(tzinfo=timezone.utc))
+        self.assertEqual(created_tournament_season.end_date, datetime.fromtimestamp(1768694400000 / 1e3).replace(tzinfo=timezone.utc))

@@ -131,8 +131,10 @@ class SeasonViewSet(ModelViewSet):
                 status=status.HTTP_204_NO_CONTENT,
             )
         serializer: SeasonSerializer = self.serializer_class(active_season)
+        data = serializer.data
+        data['user_active'] = UserSeason.objects.filter(season=active_season.id, user=request.user.id).count() > 0
         return Response(
-            data=serializer.data,
+            data=data,
             status=status.HTTP_200_OK
         )
     

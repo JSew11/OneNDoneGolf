@@ -34,7 +34,7 @@ const TournamentScheduleTable = ({ seasonId, isAdminUser }) => {
               'tournamentId': tournamentSeason.tournament.id,
             });
           }
-          setTableData(tournamentSeasonData);
+          setTableData(tournamentSeasonData.sort((a,b) => new Date(a.startDate) - new Date(b.startDate)));
         }
       );
     }
